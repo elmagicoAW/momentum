@@ -24,7 +24,34 @@ export const Colors = {
   },
 } as const;
 
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+/**
+ * MOMENTUM brand palette — premium dark mode. The app is dark-only for now.
+ */
+export const Palette = {
+  background: '#08080D',
+  surface: '#12121A',
+  surfaceRaised: '#1A1A25',
+  border: '#24243A',
+  text: '#F4F4F8',
+  textSecondary: '#9A9AB0',
+  textMuted: '#5E5E75',
+  accent: '#8B7CF6', // violet
+  accentSoft: 'rgba(139, 124, 246, 0.14)',
+  accentBlue: '#5B8DEF',
+  accentBlueSoft: 'rgba(91, 141, 239, 0.14)',
+  success: '#4ADE9B',
+  ring: '#8B7CF6',
+  ringTrack: '#1F1F2E',
+} as const;
+
+export const Radius = {
+  sm: 10,
+  md: 16,
+  lg: 24,
+  pill: 999,
+} as const;
+
+export type ThemeColor =keyof typeof Colors.light & keyof typeof Colors.dark;
 
 export const Fonts = Platform.select({
   ios: {
