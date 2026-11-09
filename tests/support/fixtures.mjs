@@ -43,6 +43,15 @@ export const TUESDAY = new Date(2026, 10, 10, 9, 0, 0);
 
 export const EMPTY = () => ({ entries: {} });
 
+export const profile = (extra = {}) => ({
+  displayName: 'Maya Lin',
+  avatar: { kind: 'initials' },
+  namePrompt: 'completed',
+  createdAt: '2026-01-01T00:00:00.000Z',
+  updatedAt: '2026-01-01T00:00:00.000Z',
+  ...extra,
+});
+
 /** Like a deferred promise: resolve/reject from the test. */
 export function deferred() {
   let resolve;

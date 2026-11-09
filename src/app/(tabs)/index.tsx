@@ -1,22 +1,26 @@
 import { router } from 'expo-router';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
+import { NamePromptCard } from '@/components/profile/name-prompt-card';
+import { ProfileAvatar } from '@/components/profile/profile-avatar';
 import { TodaysPlan } from '@/components/routines/todays-plan';
 import { HabitCard } from '@/components/today/habit-card';
 import { ProgressNotices, saveLabel } from '@/components/today/progress-notices';
 import { ProgressRing } from '@/components/today/progress-ring';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
-import { DEMO_USER_NAME, getDailyMotivation } from '@/data/demo-habits';
+import { getDailyMotivation } from '@/data/demo-habits';
+import { shouldShowNamePrompt } from '@/data/profile-storage';
 import { useCurrentDate } from '@/hooks/use-current-date';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
+import { useProfile } from '@/hooks/use-profile';
 import { useRoutines } from '@/hooks/use-routines';
 import { useTimeOfDay } from '@/hooks/use-time-of-day';
 import { formatLongDate, getGreeting, parseLocalDateKey } from '@/utils/date';
 import { isCompleteNow } from '@/utils/habit-progress';
-import { HABITS_HREF, openRoutine, openRoutineList } from '@/utils/navigation';
+import { HABITS_HREF, openProfileEditor, openRoutine, openRoutineList } from '@/utils/navigation';
 import { planForDay } from '@/utils/routine-progress';
 import { isScheduledOn, WEEKDAY_LONG } from '@/utils/schedule';
 
@@ -53,6 +57,15 @@ export default function TodayScreen() {
   const bucket = useTimeOfDay();
   const plan = planForDay(routines, habitsReady ? habits : [], today, record, bucket);
 
+  // Profile: a name only once it has loaded — never a placeholder name, and no
+  // first-run card while loading or after a load error. Habits never wait for it.
+  const { profile, status: profileStatus, dismissNamePrompt } = useProfile();
+  const profileReady = profileStatus === 'ready';
+  const displayName = profileReady ? profile.displayName : undefined;
+  const greeting = getGreeting(now);
+  const showNamePrompt = profileReady && shouldShowNamePrompt(profile);
+  const avatarLabel = displayName ? `Profile: ${displayName}. Edit profile` : 'Set up your profile';
+
   return (
     <View style={styles.screen}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -63,14 +76,25 @@ export default function TodayScreen() {
           <View style={styles.header}>
             <View style={styles.headerText}>
               <Text style={styles.date}>{formatLongDate(now).toUpperCase()}</Text>
-              <Text style={styles.greeting}>
-                {getGreeting(now)},{'\n'}
-                <Text style={styles.name}>{DEMO_USER_NAME}</Text>
+              <Text style={styles.greeting} accessibilityRole="header">
+                {displayName ? (
+                  <>
+                    {greeting},{'\n'}
+                    <Text style={styles.name}>{displayName}</Text>
+                  </>
+                ) : (
+                  `${greeting}.`
+                )}
               </Text>
             </View>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{DEMO_USER_NAME.charAt(0)}</Text>
-            </View>
+            <Pressable
+              onPress={openProfileEditor}
+              accessibilityRole="button"
+              accessibilityLabel={avatarLabel}
+              hitSlop={8}
+              style={({ pressed }) => pressed && styles.pressed}>
+              <ProfileAvatar avatar={profileReady ? profile.avatar : { kind: 'initials' }} displayName={displayName} />
+            </Pressable>
           </View>
 
           {/* Progress */}
@@ -84,6 +108,9 @@ export default function TodayScreen() {
               <Text style={styles.progressSubtitle}>{progressMessage(doneCount, total)}</Text>
             </View>
           </View>
+
+          {/* Optional first-run name card — below the progress, so habits stay in view */}
+          {showNamePrompt && <NamePromptCard onAdd={openProfileEditor} onDismiss={dismissNamePrompt} />}
 
           {/* Today's plan — only when a routine has habits due today */}
           {habitsReady && (
@@ -220,20 +247,8 @@ const styles = StyleSheet.create({
     color: Palette.text,
     fontWeight: '700',
   },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.pill,
-    backgroundColor: Palette.accentSoft,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 124, 246, 0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarText: {
-    color: Palette.accent,
-    fontSize: 18,
-    fontWeight: '700',
+  pressed: {
+    opacity: 0.75,
   },
   progressCard: {
     flexDirection: 'row',

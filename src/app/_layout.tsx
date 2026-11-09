@@ -7,6 +7,7 @@ import { Palette } from '@/constants/theme';
 import { DailyProgressProvider } from '@/hooks/use-daily-progress';
 import { GoalsProvider } from '@/hooks/use-goals';
 import { HabitsProvider } from '@/hooks/use-habits';
+import { ProfileProvider } from '@/hooks/use-profile';
 import { RoutinesProvider } from '@/hooks/use-routines';
 
 SplashScreen.preventAutoHideAsync();
@@ -32,7 +33,7 @@ export const unstable_settings = {
 /**
  * Root Stack above the five tabs (`(tabs)/_layout.tsx`).
  *
- * Routine screens live here, not inside a tab, so they are pushed OVER whichever
+ * Routine screens and the profile editor live here, not inside a tab, so they are pushed OVER whichever
  * tab opened them: Back (header button or Android hardware back) always returns
  * to that tab — Today's plan → Today, Habits › Routines → the routine list.
  * This is the pattern the Expo Router docs recommend for "returning to the
@@ -41,26 +42,29 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <ThemeProvider value={MomentumTheme}>
-      <HabitsProvider>
-        <DailyProgressProvider>
-          <GoalsProvider>
-            <RoutinesProvider>
-              <StatusBar style="light" />
-              <AnimatedSplashOverlay />
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: Palette.background },
-                }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
-                <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
-                <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
-              </Stack>
-            </RoutinesProvider>
-          </GoalsProvider>
-        </DailyProgressProvider>
-      </HabitsProvider>
+      <ProfileProvider>
+        <HabitsProvider>
+          <DailyProgressProvider>
+            <GoalsProvider>
+              <RoutinesProvider>
+                <StatusBar style="light" />
+                <AnimatedSplashOverlay />
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: Palette.background },
+                  }}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
+                  <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
+                  <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
+                  <Stack.Screen name="profile/edit" options={{ animation: 'slide_from_bottom' }} />
+                </Stack>
+              </RoutinesProvider>
+            </GoalsProvider>
+          </DailyProgressProvider>
+        </HabitsProvider>
+      </ProfileProvider>
     </ThemeProvider>
   );
 }

@@ -93,6 +93,26 @@ export function closeRoutineEditor() {
   leaveRoutineScreen(router, ROUTINES_HREF);
 }
 
+// ---------------------------------------------------------------------------
+// Profile — a root-stack route like the routine screens, so Back returns to the
+// tab that opened it (Today or Settings).
+// ---------------------------------------------------------------------------
+
+/** The profile editor (`src/app/profile/edit.tsx`). */
+export const PROFILE_EDIT_HREF = '/profile/edit' as Href;
+
+/** The Settings tab (`src/app/(tabs)/settings.tsx`). */
+export const SETTINGS_HREF = '/settings' as Href;
+
+export function openProfileEditor() {
+  router.push(PROFILE_EDIT_HREF);
+}
+
+/** Leaves the profile editor. Fallback (opened with nothing underneath): Settings. */
+export function closeProfileEditor() {
+  leaveRoutineScreen(router, SETTINGS_HREF);
+}
+
 /** After a routine is deleted: pops the editor and the stale detail screen together. */
 export function closeAfterRoutineDeleted() {
   leaveAfterRoutineDeleted(router, ROUTINES_HREF);

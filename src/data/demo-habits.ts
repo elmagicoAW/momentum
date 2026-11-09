@@ -1,7 +1,5 @@
 import type { HabitIconKey } from '@/data/habit-options';
 
-export const DEMO_USER_NAME = 'Alex';
-
 /**
  * The four habits the app shipped with before habits were user-editable.
  * Saved completions reference these exact IDs, so the one-time migration in
