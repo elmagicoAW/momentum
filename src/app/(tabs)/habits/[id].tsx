@@ -10,10 +10,12 @@ import type { Habit, TrackingType } from '@/data/habit-storage';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
+import { useRoutines } from '@/hooks/use-routines';
 import { confirmDestructive } from '@/utils/confirm';
 import { hasAnyProgress } from '@/utils/habit-progress';
 import { habitToDraft } from '@/utils/habit-validation';
 import { closeHabitEditor } from '@/utils/navigation';
+import { routinesContaining } from '@/utils/routine-progress';
 
 const TYPE_LABEL: Record<TrackingType, string> = { tick: 'Tick', count: 'Count', checklist: 'Checklist' };
 
@@ -21,6 +23,7 @@ export default function EditHabitScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { habits, status, updateHabit, deleteHabit, reload } = useHabits();
   const { goals } = useGoals();
+  const { routines } = useRoutines();
   const daily = useDailyProgress();
   // While a delete is in flight (and after it succeeds, until the screen closes),
   // keep showing the habit so the form stays mounted and can show errors.
@@ -92,9 +95,15 @@ export default function EditHabitScreen() {
           linkedGoals > 0
             ? ` It’s linked to ${linkedGoals === 1 ? '1 goal' : `${linkedGoals} goals`} and will be unlinked; the goals themselves are kept.`
             : '';
+        // Routines keep the ID until they're next saved; it's ignored everywhere meanwhile.
+        const inRoutines = routinesContaining(routines, habit.id).length;
+        const routineNote =
+          inRoutines > 0
+            ? ` It’s in ${inRoutines === 1 ? '1 routine' : `${inRoutines} routines`} and will be removed from ${inRoutines === 1 ? 'it' : 'them'}; the routines themselves are kept.`
+            : '';
         const confirmed = await confirmDestructive({
           title: `Delete “${habit.name}”?`,
-          message: `It will be removed from your habits and from Today.${goalNote} This can’t be undone.`,
+          message: `It will be removed from your habits and from Today.${goalNote}${routineNote} This can’t be undone.`,
           confirmLabel: 'Delete',
         });
         if (!confirmed) return false;

@@ -1,18 +1,23 @@
 import { router } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
+import { TodaysPlan } from '@/components/routines/todays-plan';
 import { HabitCard } from '@/components/today/habit-card';
+import { ProgressNotices, saveLabel } from '@/components/today/progress-notices';
 import { ProgressRing } from '@/components/today/progress-ring';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
 import { DEMO_USER_NAME, getDailyMotivation } from '@/data/demo-habits';
 import { useCurrentDate } from '@/hooks/use-current-date';
-import { useDailyProgress, type SaveState } from '@/hooks/use-daily-progress';
+import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
+import { useRoutines } from '@/hooks/use-routines';
+import { useTimeOfDay } from '@/hooks/use-time-of-day';
 import { formatLongDate, getGreeting, parseLocalDateKey } from '@/utils/date';
 import { isCompleteNow } from '@/utils/habit-progress';
-import { HABITS_HREF } from '@/utils/navigation';
+import { HABITS_HREF, openRoutine, openRoutineList } from '@/utils/navigation';
+import { planForDay } from '@/utils/routine-progress';
 import { isScheduledOn, WEEKDAY_LONG } from '@/utils/schedule';
 
 function progressMessage(done: number, total: number) {
@@ -21,13 +26,6 @@ function progressMessage(done: number, total: number) {
   if (done === total) return 'All done. You showed up for yourself today.';
   if (done / total >= 0.5) return 'Over halfway there — keep it rolling.';
   return 'Great start. One habit at a time.';
-}
-
-/** Saving status shown next to "N left". Never says "Saved" before the data is on disk. */
-function saveLabel(saveState: SaveState): string | null {
-  if (saveState === 'saving') return 'Saving…';
-  if (saveState === 'saved') return 'Saved';
-  return null;
 }
 
 export default function TodayScreen() {
@@ -49,6 +47,11 @@ export default function TodayScreen() {
   const savingText = saveLabel(saveState);
   const motivation = getDailyMotivation(now);
   const openHabits = () => router.navigate(HABITS_HREF);
+
+  // Today's plan: overview of routines only. It never changes the ring or list above/below.
+  const { routines, status: routinesStatus, reload: reloadRoutines } = useRoutines();
+  const bucket = useTimeOfDay();
+  const plan = planForDay(routines, habitsReady ? habits : [], today, record, bucket);
 
   return (
     <View style={styles.screen}>
@@ -81,6 +84,17 @@ export default function TodayScreen() {
               <Text style={styles.progressSubtitle}>{progressMessage(doneCount, total)}</Text>
             </View>
           </View>
+
+          {/* Today's plan — only when a routine has habits due today */}
+          {habitsReady && (
+            <TodaysPlan
+              plan={plan}
+              routinesStatus={routinesStatus}
+              onOpen={openRoutine}
+              onManage={openRoutineList}
+              onRetry={reloadRoutines}
+            />
+          )}
 
           {/* Habits */}
           <View style={styles.sectionHeader}>
@@ -144,20 +158,12 @@ export default function TodayScreen() {
             </View>
           )}
 
-          {habitsReady && total > 0 && status === 'load-error' && (
-            <Notice
-              message="Couldn’t load today’s saved progress, so changes are paused. Your saved data is untouched."
-              actionLabel="Try again"
-              onAction={daily.reloadDay}
-            />
-          )}
-          {saveState === 'error' && (
-            <Notice
-              message="Couldn’t save your latest changes. They’re kept here and will be retried automatically — keep the app open until it says Saved."
-              actionLabel="Retry now"
-              onAction={daily.retrySave}
-            />
-          )}
+          <ProgressNotices
+            loadError={habitsReady && total > 0 && status === 'load-error'}
+            saveError={saveState === 'error'}
+            onReload={daily.reloadDay}
+            onRetry={daily.retrySave}
+          />
 
           {/* Motivation */}
           <View style={styles.quoteCard}>
@@ -167,21 +173,6 @@ export default function TodayScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </View>
-  );
-}
-
-function Notice({ message, actionLabel, onAction }: { message: string; actionLabel: string; onAction: () => void }) {
-  return (
-    <View style={styles.notice} accessibilityRole="alert" accessibilityLiveRegion="polite">
-      <Text style={styles.noticeText}>{message}</Text>
-      <Pressable
-        onPress={onAction}
-        accessibilityRole="button"
-        hitSlop={8}
-        style={({ pressed }) => [styles.noticeButton, pressed && styles.noticePressed]}>
-        <Text style={styles.noticeButtonText}>{actionLabel}</Text>
-      </Pressable>
     </View>
   );
 }
@@ -303,37 +294,6 @@ const styles = StyleSheet.create({
   saveMeta: {
     color: Palette.textMuted,
     fontWeight: '500',
-  },
-  notice: {
-    marginTop: -Spacing.two,
-    gap: 10,
-    padding: 14,
-    borderRadius: Radius.md,
-    backgroundColor: Palette.dangerSoft,
-    borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
-  },
-  noticeText: {
-    color: Palette.text,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  noticeButton: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: Radius.pill,
-    backgroundColor: Palette.surfaceRaised,
-    borderWidth: 1,
-    borderColor: Palette.border,
-  },
-  noticePressed: {
-    opacity: 0.75,
-  },
-  noticeButtonText: {
-    color: Palette.text,
-    fontSize: 13,
-    fontWeight: '700',
   },
   quoteCard: {
     padding: 20,

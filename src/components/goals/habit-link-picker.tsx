@@ -13,17 +13,19 @@ type Props = {
   /** Shown when there are no habits yet. */
   onCreateHabit: () => void;
   disabled?: boolean;
+  /** Shown when there are no habits yet. Defaults to the Goals wording. */
+  emptyText?: string;
 };
 
+const DEFAULT_EMPTY_TEXT =
+  'You don’t have any habits yet. Goals can be saved without habits, but Habit Consistency needs at least one linked habit.';
+
 /** Multi-select list of existing habits. Selection order is kept. */
-export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, disabled }: Props) {
+export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, disabled, emptyText }: Props) {
   if (habits.length === 0) {
     return (
       <View style={styles.empty}>
-        <Text style={styles.emptyText}>
-          You don’t have any habits yet. Goals can be saved without habits, but Habit Consistency needs at least one
-          linked habit.
-        </Text>
+        <Text style={styles.emptyText}>{emptyText ?? DEFAULT_EMPTY_TEXT}</Text>
         <Pressable
           onPress={onCreateHabit}
           disabled={disabled}

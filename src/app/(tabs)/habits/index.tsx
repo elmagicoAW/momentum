@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { HabitRow } from '@/components/habits/habit-row';
+import { RoutinesEntryCard } from '@/components/routines/routines-entry-card';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
 import { useHabits } from '@/hooks/use-habits';
 
@@ -79,6 +80,8 @@ export default function HabitsScreen() {
               onAction={openNew}
             />
           )}
+
+          {ready && <RoutinesEntryCard />}
 
           {ready && habits.length > 0 && (
             <View style={styles.list}>

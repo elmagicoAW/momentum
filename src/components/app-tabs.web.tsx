@@ -10,7 +10,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, useColorScheme, View, StyleSheet } from 'react-native';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
-import { GOALS_HREF, HABITS_HREF, INSIGHTS_HREF } from '@/utils/navigation';
+import { GOALS_HREF, HABITS_HREF, HOME_HREF, INSIGHTS_HREF } from '@/utils/navigation';
 
 import { ExternalLink } from './external-link';
 import { ThemedText } from './themed-text';
@@ -22,7 +22,7 @@ export default function AppTabs() {
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
-          <TabTrigger name="index" href="/" asChild>
+          <TabTrigger name="index" href={HOME_HREF} asChild>
             <TabButton>Today</TabButton>
           </TabTrigger>
           <TabTrigger name="habits" href={HABITS_HREF} asChild>
