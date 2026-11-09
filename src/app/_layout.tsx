@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
 import { Palette } from '@/constants/theme';
+import { DailyProgressProvider } from '@/hooks/use-daily-progress';
 import { GoalsProvider } from '@/hooks/use-goals';
 import { HabitsProvider } from '@/hooks/use-habits';
 
@@ -27,11 +28,13 @@ export default function TabLayout() {
   return (
     <ThemeProvider value={MomentumTheme}>
       <HabitsProvider>
-        <GoalsProvider>
-          <StatusBar style="light" />
-          <AnimatedSplashOverlay />
-          <AppTabs />
-        </GoalsProvider>
+        <DailyProgressProvider>
+          <GoalsProvider>
+            <StatusBar style="light" />
+            <AnimatedSplashOverlay />
+            <AppTabs />
+          </GoalsProvider>
+        </DailyProgressProvider>
       </HabitsProvider>
     </ThemeProvider>
   );

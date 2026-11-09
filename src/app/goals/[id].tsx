@@ -9,11 +9,11 @@ import { EmptyState } from '@/components/habits/empty-state';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import type { Goal } from '@/data/goal-storage';
 import { useCompletionHistory } from '@/hooks/use-completion-history';
-import { useCurrentDate } from '@/hooks/use-current-date';
+import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
 import { confirmDestructive } from '@/utils/confirm';
-import { formatShortDate, toLocalDateKey } from '@/utils/date';
+import { formatShortDate } from '@/utils/date';
 import { computeHabitConsistency } from '@/utils/goal-progress';
 import { closeGoalEditor } from '@/utils/navigation';
 
@@ -22,7 +22,9 @@ export default function EditGoalScreen() {
   const { goals, status, updateGoal, deleteGoal, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
   const history = useCompletionHistory();
-  const todayKey = toLocalDateKey(useCurrentDate());
+  const daily = useDailyProgress();
+  const todayKey = daily.dateKey;
+  const todayRecord = daily.status === 'ready' ? daily.record : undefined;
   // Keep showing the goal while a delete is in flight so the form can show errors.
   const [deleting, setDeleting] = useState<Goal | null>(null);
   const goal = goals.find((g) => g.id === id) ?? (deleting?.id === id ? deleting : undefined);
@@ -57,7 +59,7 @@ export default function EditGoalScreen() {
 
   const consistency =
     history.status === 'ready' && habitsStatus === 'ready'
-      ? computeHabitConsistency(goal, habits, history.history, todayKey)
+      ? computeHabitConsistency(goal, habits, history.history, todayKey, todayRecord)
       : null;
   const historyLoading = history.status === 'loading' || habitsStatus === 'loading';
 

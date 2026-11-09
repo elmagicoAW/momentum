@@ -6,16 +6,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { EmptyState } from '@/components/habits/empty-state';
 import { HabitForm } from '@/components/habits/habit-form';
 import { Palette, Spacing } from '@/constants/theme';
-import type { Habit } from '@/data/habit-storage';
+import type { Habit, TrackingType } from '@/data/habit-storage';
+import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
 import { confirmDestructive } from '@/utils/confirm';
+import { hasAnyProgress } from '@/utils/habit-progress';
+import { habitToDraft } from '@/utils/habit-validation';
 import { closeHabitEditor } from '@/utils/navigation';
+
+const TYPE_LABEL: Record<TrackingType, string> = { tick: 'Tick', count: 'Count', checklist: 'Checklist' };
 
 export default function EditHabitScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { habits, status, updateHabit, deleteHabit, reload } = useHabits();
   const { goals } = useGoals();
+  const daily = useDailyProgress();
   // While a delete is in flight (and after it succeeds, until the screen closes),
   // keep showing the habit so the form stays mounted and can show errors.
   const [deleting, setDeleting] = useState<Habit | null>(null);
@@ -54,16 +60,29 @@ export default function EditHabitScreen() {
       key={habit.id}
       title="Edit habit"
       submitLabel="Save"
-      initialDraft={{
-        name: habit.name,
-        description: habit.description ?? '',
-        icon: habit.icon,
-        color: habit.color,
-        scheduleKind: habit.schedule.kind,
-        days: habit.schedule.kind === 'weekdays' ? habit.schedule.days : [1, 2, 3, 4, 5],
-      }}
+      initialDraft={habitToDraft(habit)}
       onCancel={closeHabitEditor}
       onSubmit={async (input) => {
+        const from = habit.tracking.type;
+        const to = input.tracking.type;
+        if (from !== to) {
+          // Changing type resets TODAY's progress for this habit (past days keep
+          // their own records). Only allowed once today's progress has loaded, so
+          // the reset can actually be saved and we know whether to ask.
+          if (daily.status !== 'ready') {
+            throw new Error("today's progress hasn't loaded yet, so the tracking type can't be changed right now");
+          }
+          if (hasAnyProgress(daily.record, habit.id)) {
+            const confirmed = await confirmDestructive({
+              title: 'Reset today’s progress?',
+              message:
+                `Changing “${habit.name}” from ${TYPE_LABEL[from]} to ${TYPE_LABEL[to]} resets today’s progress for this habit. ` +
+                'Earlier days, your history and linked goals are kept.',
+              confirmLabel: 'Change and reset',
+            });
+            if (!confirmed) return false; // form stays open, nothing saved
+          }
+        }
         await updateHabit(habit.id, input); // throws on failure → form stays open
         closeHabitEditor();
       }}

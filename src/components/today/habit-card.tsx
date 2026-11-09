@@ -1,72 +1,221 @@
 import { SymbolView } from 'expo-symbols';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ChecklistSteps } from '@/components/today/checklist-steps';
+import { CountControl } from '@/components/today/count-control';
 import { Palette, Radius, Spacing } from '@/constants/theme';
+import type { DayRecord } from '@/data/completion-storage';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
+import { countValue, doneStepIds, isCompleteNow, requiredStepIds } from '@/utils/habit-progress';
 import { describeSchedule } from '@/utils/schedule';
 
 type Props = {
   habit: Habit;
-  done: boolean;
+  /** Today's progress. */
+  record: DayRecord;
   /** True while saved data is loading (or failed to load), so taps can't overwrite it. */
   disabled?: boolean;
-  onToggle: (id: string) => void;
+  onToggleTick: (habit: Habit) => void;
+  onAdjustCount: (habit: Habit, delta: number) => void;
+  onToggleStep: (habit: Habit, stepId: string) => void;
 };
 
-export function HabitCard({ habit, done, disabled = false, onToggle }: Props) {
+export function HabitCard(props: Props) {
+  switch (props.habit.tracking.type) {
+    case 'tick':
+      return <TickCard {...props} />;
+    case 'count':
+      return <CountCard {...props} />;
+    case 'checklist':
+      return <ChecklistCard {...props} />;
+  }
+}
+
+function HabitIcon({ habit }: { habit: Habit }) {
+  return (
+    <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
+      <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={habit.color} />
+    </View>
+  );
+}
+
+function Check({ done, size = 28 }: { done: boolean; size?: number }) {
+  return (
+    <View style={[styles.checkbox, { width: size, height: size }, done && styles.checkboxDone]}>
+      {done && (
+        <SymbolView
+          name={{ ios: 'checkmark', android: 'check', web: 'check' }}
+          size={size * 0.64}
+          tintColor={Palette.background}
+        />
+      )}
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Tick — tap anywhere to check off.
+// ---------------------------------------------------------------------------
+
+function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
+  const done = isCompleteNow(record, habit);
   return (
     <Pressable
-      onPress={() => onToggle(habit.id)}
+      onPress={() => onToggleTick(habit)}
       disabled={disabled}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: done, disabled }}
       accessibilityLabel={habit.name}
       android_ripple={{ color: 'rgba(255,255,255,0.06)', borderless: false }}
-      style={({ pressed }) => [styles.card, done && styles.cardDone, pressed && styles.pressed]}>
-      <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
-        <SymbolView
-          name={habitIconSymbol(habit.icon)}
-          size={22}
-          tintColor={habit.color}
-        />
-      </View>
-
+      style={({ pressed }) => [styles.card, styles.row, done && styles.cardDone, pressed && styles.pressed]}>
+      <HabitIcon habit={habit} />
       <View style={styles.body}>
         <Text style={[styles.title, done && styles.titleDone]} numberOfLines={1}>
           {habit.name}
         </Text>
-        <View style={styles.metaRow}>
-          <Text style={styles.detail} numberOfLines={1}>
-            {habit.description || describeSchedule(habit.schedule)}
+        <Text style={styles.detail} numberOfLines={1}>
+          {habit.description || describeSchedule(habit.schedule)}
+        </Text>
+      </View>
+      <Check done={done} />
+    </Pressable>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Count — − / + with progress toward the target. The card body isn't tappable.
+// ---------------------------------------------------------------------------
+
+function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
+  if (habit.tracking.type !== 'count') return null;
+  const { target, unit } = habit.tracking;
+  const value = countValue(record, habit);
+  const done = isCompleteNow(record, habit);
+  const ratio = Math.min(value / target, 1);
+  const progressText = `${value} / ${target}${unit ? ` ${unit}` : ''}`;
+
+  return (
+    <View style={[styles.card, done && styles.cardDone]}>
+      <View style={styles.row}>
+        <HabitIcon habit={habit} />
+        <View style={styles.body}>
+          <Text style={[styles.title, done && styles.titleMuted]} numberOfLines={1}>
+            {habit.name}
+          </Text>
+          <View style={styles.metaRow}>
+            <Text style={[styles.progressValue, done && { color: habit.color }]} numberOfLines={1}>
+              {progressText}
+            </Text>
+            {done && (
+              <SymbolView
+                name={{ ios: 'checkmark.circle.fill', android: 'check_circle', web: 'check_circle' }}
+                size={14}
+                tintColor={habit.color}
+              />
+            )}
+          </View>
+        </View>
+        <CountControl
+          value={value}
+          label={`${habit.name}, ${progressText}${done ? ', done' : ''}`}
+          color={habit.color}
+          disabled={disabled}
+          onAdjust={(delta) => onAdjustCount(habit, delta)}
+        />
+      </View>
+      <View style={styles.track}>
+        <View style={[styles.fill, { width: `${ratio * 100}%`, backgroundColor: habit.color }]} />
+      </View>
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Checklist — tap the header to expand; tick steps individually.
+// ---------------------------------------------------------------------------
+
+function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props) {
+  const [expanded, setExpanded] = useState(false);
+  if (habit.tracking.type !== 'checklist') return null;
+  const { steps } = habit.tracking;
+  const done = doneStepIds(record, habit);
+  const complete = isCompleteNow(record, habit);
+  const required = requiredStepIds(habit.tracking);
+  const requiredDone = required.filter((id) => done.has(id)).length;
+  const summary =
+    required.length === steps.length
+      ? `${requiredDone} of ${steps.length} steps`
+      : `${requiredDone} of ${required.length} required · ${done.size} of ${steps.length} total`;
+
+  return (
+    <View style={[styles.card, complete && styles.cardDone]}>
+      <Pressable
+        onPress={() => setExpanded((e) => !e)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        accessibilityLabel={`${habit.name}, ${summary}${complete ? ', done' : ''}`}
+        accessibilityHint={expanded ? 'Hides the steps' : 'Shows the steps'}
+        style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+        <HabitIcon habit={habit} />
+        <View style={styles.body}>
+          <Text style={[styles.title, complete && styles.titleMuted]} numberOfLines={1}>
+            {habit.name}
+          </Text>
+          <Text style={[styles.detail, complete && { color: habit.color }]} numberOfLines={1}>
+            {summary}
           </Text>
         </View>
-      </View>
-
-      <View style={[styles.checkbox, done && styles.checkboxDone]}>
-        {done && (
-          <SymbolView
-            name={{ ios: 'checkmark', android: 'check', web: 'check' }}
-            size={18}
-            tintColor={Palette.background}
-          />
+        {complete ? (
+          <Check done size={24} />
+        ) : (
+          <View style={styles.miniTrack}>
+            <View
+              style={[
+                styles.miniFill,
+                { width: `${(requiredDone / Math.max(required.length, 1)) * 100}%`, backgroundColor: habit.color },
+              ]}
+            />
+          </View>
         )}
-      </View>
-    </Pressable>
+        <SymbolView
+          name={
+            expanded
+              ? { ios: 'chevron.up', android: 'expand_less', web: 'expand_less' }
+              : { ios: 'chevron.down', android: 'expand_more', web: 'expand_more' }
+          }
+          size={20}
+          tintColor={Palette.textMuted}
+        />
+      </Pressable>
+      {expanded && (
+        <ChecklistSteps
+          steps={steps}
+          done={done}
+          color={habit.color}
+          disabled={disabled}
+          onToggle={(stepId) => onToggleStep(habit, stepId)}
+        />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.three,
+    gap: 12,
     padding: Spacing.three,
     borderRadius: Radius.lg,
     backgroundColor: Palette.surface,
     borderWidth: 1,
     borderColor: Palette.border,
     overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
   },
   cardDone: {
     borderColor: 'rgba(139, 124, 246, 0.35)',
@@ -94,19 +243,27 @@ const styles = StyleSheet.create({
     color: Palette.textSecondary,
     textDecorationLine: 'line-through',
   },
+  titleMuted: {
+    color: Palette.textSecondary,
+  },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
   },
   detail: {
     color: Palette.textMuted,
     fontSize: 13,
     flexShrink: 1,
   },
+  progressValue: {
+    color: Palette.textSecondary,
+    fontSize: 13,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    flexShrink: 1,
+  },
   checkbox: {
-    width: 28,
-    height: 28,
     borderRadius: 9,
     borderWidth: 2,
     borderColor: Palette.textMuted,
@@ -116,5 +273,26 @@ const styles = StyleSheet.create({
   checkboxDone: {
     backgroundColor: Palette.accent,
     borderColor: Palette.accent,
+  },
+  track: {
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Palette.ringTrack,
+    overflow: 'hidden',
+  },
+  fill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  miniTrack: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Palette.ringTrack,
+    overflow: 'hidden',
+  },
+  miniFill: {
+    height: '100%',
+    borderRadius: 2,
   },
 });

@@ -1,5 +1,5 @@
 import { SymbolView } from 'expo-symbols';
-import { useState, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -9,15 +9,21 @@ import {
   Text,
   TextInput,
   View,
+  type ScrollViewInstance,
+  type TextInputInstance,
+  type ViewInstance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ChecklistEditor } from '@/components/habits/checklist-editor';
 import { ColorPicker } from '@/components/habits/color-picker';
+import { CountFields } from '@/components/habits/count-fields';
 import { IconPicker } from '@/components/habits/icon-picker';
+import { TrackingTypePicker } from '@/components/habits/tracking-type-picker';
 import { WeekdayPicker } from '@/components/habits/weekday-picker';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
-import type { HabitInput } from '@/data/habit-storage';
+import { createStepId, type HabitInput, type TrackingType } from '@/data/habit-storage';
 import {
   DESCRIPTION_MAX_LENGTH,
   NAME_MAX_LENGTH,
@@ -31,8 +37,11 @@ type Props = {
   title: string;
   initialDraft: HabitDraft;
   submitLabel: string;
-  /** Resolves when saved; throw to keep the form open and show an error. */
-  onSubmit: (input: HabitInput) => Promise<void>;
+  /**
+   * Resolves when saved; throw to keep the form open and show an error.
+   * Resolve `false` when the user cancelled (e.g. a confirmation) — the form stays open, no error.
+   */
+  onSubmit: (input: HabitInput) => Promise<boolean | void>;
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
@@ -58,6 +67,33 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
   const update = <K extends keyof HabitDraft>(key: K, value: HabitDraft[K]) =>
     setDraft((d) => ({ ...d, [key]: value }));
 
+  const changeTrackingType = (trackingType: TrackingType) =>
+    setDraft((d) => ({
+      ...d,
+      trackingType,
+      // Start a new checklist with one empty step to type into.
+      steps:
+        trackingType === 'checklist' && d.steps.length === 0
+          ? [{ id: createStepId([]), label: '', optional: false }]
+          : d.steps,
+    }));
+
+  // Android: keep a focused tracking input above the keyboard. KeyboardAvoidingView
+  // shrinks the scroll area; this scrolls the field into the visible part.
+  const scrollRef = useRef<ScrollViewInstance>(null);
+  const contentRef = useRef<ViewInstance>(null);
+  const revealInput = useCallback((input: TextInputInstance | null) => {
+    setTimeout(() => {
+      const content = contentRef.current;
+      if (!input || !content) return;
+      input.measureLayout(
+        content,
+        (_x, y) => scrollRef.current?.scrollTo({ y: Math.max(0, y - 120), animated: true }),
+        () => undefined,
+      );
+    }, 300); // after the keyboard has opened and the layout has adjusted
+  }, []);
+
   const handleSubmit = async () => {
     if (locked) return;
     if (hasErrors(errors)) {
@@ -67,8 +103,8 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
     setBusy('saving');
     setFailure(null);
     try {
-      await onSubmit(draftToInput(draft));
-      setBusy('done'); // stays locked while the screen closes
+      const saved = await onSubmit(draftToInput(draft));
+      setBusy(saved === false ? 'idle' : 'done'); // 'done' stays locked while the screen closes
     } catch (error) {
       console.warn('[momentum] Failed to save habit', error);
       setFailure(errorMessage(error, "Couldn't save this habit. Your changes are still here — try again."));
@@ -134,86 +170,115 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
 
         <KeyboardAvoidingView behavior="padding" style={styles.flex}>
           <ScrollView
+            ref={scrollRef}
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             showsVerticalScrollIndicator={false}>
-            {/* Preview */}
-            <View style={styles.preview}>
-              <View style={[styles.previewIcon, { backgroundColor: `${draft.color}22` }]}>
-                <SymbolView name={habitIconSymbol(draft.icon)} size={28} tintColor={draft.color} />
+            <View ref={contentRef} style={styles.contentInner}>
+              {/* Preview */}
+              <View style={styles.preview}>
+                <View style={[styles.previewIcon, { backgroundColor: `${draft.color}22` }]}>
+                  <SymbolView name={habitIconSymbol(draft.icon)} size={28} tintColor={draft.color} />
+                </View>
+                <Text style={styles.previewName} numberOfLines={1}>
+                  {draft.name.trim() || 'New habit'}
+                </Text>
               </View>
-              <Text style={styles.previewName} numberOfLines={1}>
-                {draft.name.trim() || 'New habit'}
-              </Text>
-            </View>
 
-            <Field label="Name" error={visibleErrors.name} counter={`${draft.name.length}/${NAME_MAX_LENGTH}`}>
-              <TextInput
-                value={draft.name}
-                onChangeText={(text) => update('name', text)}
-                placeholder="e.g. Morning walk"
-                placeholderTextColor={Palette.textMuted}
-                maxLength={NAME_MAX_LENGTH}
-                autoCapitalize="sentences"
-                returnKeyType="done"
-                editable={!locked}
-                accessibilityLabel="Habit name"
-                style={[styles.input, visibleErrors.name && styles.inputError]}
-              />
-            </Field>
+              <Field label="Name" error={visibleErrors.name} counter={`${draft.name.length}/${NAME_MAX_LENGTH}`}>
+                <TextInput
+                  value={draft.name}
+                  onChangeText={(text) => update('name', text)}
+                  placeholder="e.g. Morning walk"
+                  placeholderTextColor={Palette.textMuted}
+                  maxLength={NAME_MAX_LENGTH}
+                  autoCapitalize="sentences"
+                  returnKeyType="done"
+                  editable={!locked}
+                  accessibilityLabel="Habit name"
+                  style={[styles.input, visibleErrors.name && styles.inputError]}
+                />
+              </Field>
 
-            <Field
-              label="Description"
-              optional
-              error={visibleErrors.description}
-              counter={`${draft.description.length}/${DESCRIPTION_MAX_LENGTH}`}>
-              <TextInput
-                value={draft.description}
-                onChangeText={(text) => update('description', text)}
-                placeholder="When, where or how much"
-                placeholderTextColor={Palette.textMuted}
-                maxLength={DESCRIPTION_MAX_LENGTH}
-                multiline
-                textAlignVertical="top"
-                editable={!locked}
-                accessibilityLabel="Habit description"
-                style={[styles.input, styles.multiline, visibleErrors.description && styles.inputError]}
-              />
-            </Field>
+              <Field
+                label="Description"
+                optional
+                error={visibleErrors.description}
+                counter={`${draft.description.length}/${DESCRIPTION_MAX_LENGTH}`}>
+                <TextInput
+                  value={draft.description}
+                  onChangeText={(text) => update('description', text)}
+                  placeholder="When, where or how much"
+                  placeholderTextColor={Palette.textMuted}
+                  maxLength={DESCRIPTION_MAX_LENGTH}
+                  multiline
+                  textAlignVertical="top"
+                  editable={!locked}
+                  accessibilityLabel="Habit description"
+                  style={[styles.input, styles.multiline, visibleErrors.description && styles.inputError]}
+                />
+              </Field>
 
-            <Field label="Schedule" error={visibleErrors.schedule}>
-              <WeekdayPicker
-                kind={draft.scheduleKind}
-                days={draft.days}
-                color={draft.color}
-                onKindChange={(kind) => update('scheduleKind', kind)}
-                onDaysChange={(days) => update('days', days)}
-              />
-            </Field>
-
-            <Field label="Icon">
-              <IconPicker value={draft.icon} color={draft.color} onChange={(icon) => update('icon', icon)} />
-            </Field>
-
-            <Field label="Color">
-              <ColorPicker value={draft.color} onChange={(color) => update('color', color)} />
-            </Field>
-
-            {onDelete && (
-              <Pressable
-                onPress={handleDelete}
-                disabled={locked}
-                accessibilityRole="button"
-                android_ripple={{ color: 'rgba(248,113,113,0.15)' }}
-                style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
-                {busy === 'deleting' ? (
-                  <ActivityIndicator size="small" color={Palette.danger} />
-                ) : (
-                  <Text style={styles.deleteText}>Delete habit</Text>
+              <Field label="Tracking">
+                <TrackingTypePicker value={draft.trackingType} disabled={locked} onChange={changeTrackingType} />
+                {draft.trackingType === 'count' && (
+                  <CountFields
+                    target={draft.countTarget}
+                    unit={draft.countUnit}
+                    editable={!locked}
+                    targetError={visibleErrors.countTarget}
+                    unitError={visibleErrors.countUnit}
+                    onTargetChange={(text) => update('countTarget', text)}
+                    onUnitChange={(text) => update('countUnit', text)}
+                    onInputFocus={revealInput}
+                  />
                 )}
-              </Pressable>
-            )}
+                {draft.trackingType === 'checklist' && (
+                  <ChecklistEditor
+                    steps={draft.steps}
+                    color={draft.color}
+                    editable={!locked}
+                    error={visibleErrors.steps}
+                    onChange={(steps) => update('steps', steps)}
+                    onInputFocus={revealInput}
+                  />
+                )}
+              </Field>
+
+              <Field label="Schedule" error={visibleErrors.schedule}>
+                <WeekdayPicker
+                  kind={draft.scheduleKind}
+                  days={draft.days}
+                  color={draft.color}
+                  onKindChange={(kind) => update('scheduleKind', kind)}
+                  onDaysChange={(days) => update('days', days)}
+                />
+              </Field>
+
+              <Field label="Icon">
+                <IconPicker value={draft.icon} color={draft.color} onChange={(icon) => update('icon', icon)} />
+              </Field>
+
+              <Field label="Color">
+                <ColorPicker value={draft.color} onChange={(color) => update('color', color)} />
+              </Field>
+
+              {onDelete && (
+                <Pressable
+                  onPress={handleDelete}
+                  disabled={locked}
+                  accessibilityRole="button"
+                  android_ripple={{ color: 'rgba(248,113,113,0.15)' }}
+                  style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
+                  {busy === 'deleting' ? (
+                    <ActivityIndicator size="small" color={Palette.danger} />
+                  ) : (
+                    <Text style={styles.deleteText}>Delete habit</Text>
+                  )}
+                </Pressable>
+              )}
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -330,6 +395,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: Spacing.two,
     paddingBottom: BottomTabInset + Spacing.five,
+  },
+  contentInner: {
     gap: Spacing.four,
   },
   preview: {

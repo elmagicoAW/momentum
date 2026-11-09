@@ -1,7 +1,8 @@
-import type { CompletionHistory } from '@/data/completion-storage';
+import type { CompletionHistory, DayRecord } from '@/data/completion-storage';
 import type { Goal } from '@/data/goal-storage';
 import type { Habit } from '@/data/habit-storage';
 import { addDays, daysBetween, formatShortDate, parseLocalDateKey, toLocalDateKey } from '@/utils/date';
+import { isHabitCompleteOn } from '@/utils/habit-progress';
 import { isScheduledOn } from '@/utils/schedule';
 
 /**
@@ -15,8 +16,12 @@ import { isScheduledOn } from '@/utils/schedule';
  *   endDate = targetDate, or completedAt if the goal is marked completed (whichever is earlier).
  *
  * For each linked habit that still exists and each day in the window on which
- * that habit is scheduled, there is one "scheduled check-in". It is "completed"
- * when that habit's ID is in the saved completions for that day.
+ * that habit is scheduled, there is one "scheduled check-in", whatever the
+ * habit's tracking type, so a habit never contributes more than one unit a day.
+ * It is "completed" per the shared rules in `utils/habit-progress.ts`:
+ * Tick ticked · Count value >= target · Checklist every required step done.
+ * Past days are judged by the rule saved with that day's progress, so later
+ * edits to a target or steps never rewrite history; today uses the current rule.
  *
  * - `finished`: days before today only. Rate = completed / scheduled.
  *   This is the headline "Habit Consistency" number.
@@ -63,6 +68,8 @@ export function computeHabitConsistency(
   habits: readonly Habit[],
   history: CompletionHistory,
   todayKey: string,
+  /** Today's live progress (may include changes still being saved). Used instead of history for today. */
+  todayRecord?: DayRecord,
 ): HabitConsistency {
   const linkedHabits = linkedHabitsFor(goal, habits);
   const endKey = minKey(goal.targetDate, goal.status === 'completed' ? goal.completedAt : undefined);
@@ -72,11 +79,11 @@ export function computeHabitConsistency(
 
   const count = (dateKey: string, into: CheckInCount) => {
     const date = parseLocalDateKey(dateKey);
-    const done = history.days.get(dateKey);
+    const record = dateKey === todayKey && todayRecord ? todayRecord : history.days.get(dateKey);
     for (const habit of linkedHabits) {
       if (!isScheduledOn(habit, date)) continue;
       into.scheduled += 1;
-      if (done?.has(habit.id)) into.completed += 1;
+      if (isHabitCompleteOn(record, habit, dateKey, todayKey)) into.completed += 1;
     }
   };
 

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Palette, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
+import { describeTracking } from '@/utils/habit-progress';
 import { describeSchedule } from '@/utils/schedule';
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 };
 
 export function HabitRow({ habit, onPress }: Props) {
-  const schedule = describeSchedule(habit.schedule);
+  const schedule = `${describeTracking(habit.tracking)} · ${describeSchedule(habit.schedule)}`;
   return (
     <Pressable
       onPress={() => onPress(habit.id)}

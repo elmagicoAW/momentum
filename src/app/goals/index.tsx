@@ -9,10 +9,9 @@ import { EmptyState } from '@/components/habits/empty-state';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
 import type { Goal, GoalStatus } from '@/data/goal-storage';
 import { useCompletionHistory } from '@/hooks/use-completion-history';
-import { useCurrentDate } from '@/hooks/use-current-date';
+import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
-import { toLocalDateKey } from '@/utils/date';
 import { computeHabitConsistency } from '@/utils/goal-progress';
 
 type Filter = 'all' | GoalStatus;
@@ -32,7 +31,10 @@ export default function GoalsScreen() {
   const { goals, status, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
   const history = useCompletionHistory();
-  const todayKey = toLocalDateKey(useCurrentDate());
+  const daily = useDailyProgress();
+  const todayKey = daily.dateKey;
+  // Today's live progress, so the provisional count matches the Today ring even mid-save.
+  const todayRecord = daily.status === 'ready' ? daily.record : undefined;
   const [filter, setFilter] = useState<Filter>('all');
   const ready = status === 'ready';
 
@@ -146,7 +148,7 @@ export default function GoalsScreen() {
                     todayKey={todayKey}
                     consistency={
                       completionHistory
-                        ? computeHabitConsistency(goal, habits, completionHistory, todayKey)
+                        ? computeHabitConsistency(goal, habits, completionHistory, todayKey, todayRecord)
                         : null
                     }
                     historyLoading={historyLoading}
