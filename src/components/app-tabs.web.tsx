@@ -43,7 +43,13 @@ export default function AppTabs() {
   );
 }
 
-export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+// expo-router types the slot ref as `Ref<View>`, but with React Native 0.88 `View` is a
+// component type, not an instance type. Type the ref as what Pressable actually receives.
+type TabButtonProps = Omit<TabTriggerSlotProps, 'ref'> & {
+  ref?: React.Ref<React.ComponentRef<typeof Pressable>>;
+};
+
+export function TabButton({ children, isFocused, ...props }: TabButtonProps) {
   return (
     <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView
