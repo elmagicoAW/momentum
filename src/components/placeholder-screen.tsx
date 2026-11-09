@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { BottomTabInset, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, Radius, Spacing } from '@/constants/theme';
 
 type Props = {
   title: string;
@@ -12,6 +14,7 @@ type Props = {
 
 /** Temporary screen for tabs that are not built yet. */
 export function PlaceholderScreen({ title, description, icon }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.screen}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
@@ -28,7 +31,7 @@ export function PlaceholderScreen({ title, description, icon }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

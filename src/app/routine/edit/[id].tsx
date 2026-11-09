@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -5,13 +7,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { RoutineForm } from '@/components/routines/routine-form';
-import { Palette, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import type { Routine } from '@/data/routine-storage';
 import { useRoutines } from '@/hooks/use-routines';
 import { confirmDestructive } from '@/utils/confirm';
 import { closeAfterRoutineDeleted, closeRoutineEditor } from '@/utils/navigation';
 
 export default function EditRoutineScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { routines, status, updateRoutine, deleteRoutine, reload } = useRoutines();
   // Keep showing the routine while a delete is in flight so the form can show errors.
@@ -86,7 +89,7 @@ export default function EditRoutineScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

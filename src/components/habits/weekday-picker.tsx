@@ -1,6 +1,9 @@
+import type { AppPalette } from '@/constants/palettes';
+import { foregroundOnColor } from '@/utils/theme-color';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { Weekday } from '@/data/habit-storage';
 import { WEEKDAY_DISPLAY_ORDER, WEEKDAY_LONG, WEEKDAY_SHORT } from '@/utils/schedule';
 
@@ -18,6 +21,7 @@ const KINDS = [
 ] as const;
 
 export function WeekdayPicker({ kind, days, color, onKindChange, onDaysChange }: Props) {
+  const { styles } = useAppStyles(createStyles);
   const toggleDay = (day: Weekday) => {
     onDaysChange(days.includes(day) ? days.filter((d) => d !== day) : [...days, day]);
   };
@@ -59,7 +63,7 @@ export function WeekdayPicker({ kind, days, color, onKindChange, onDaysChange }:
                   selected && { backgroundColor: color, borderColor: color },
                   pressed && styles.pressed,
                 ]}>
-                <Text style={[styles.dayText, selected && styles.dayTextSelected]}>
+                <Text style={[styles.dayText, selected && styles.dayTextSelected, selected && { color: foregroundOnColor(color) }]}>
                   {WEEKDAY_SHORT[day].charAt(0)}
                 </Text>
               </Pressable>
@@ -71,7 +75,7 @@ export function WeekdayPicker({ kind, days, color, onKindChange, onDaysChange }:
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: Spacing.three,
   },
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surfaceRaised,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   segment: {
     flex: 1,
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: Radius.pill,
     borderWidth: 1.5,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     backgroundColor: Palette.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',
@@ -122,7 +126,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   dayTextSelected: {
-    color: Palette.background,
+    color: Palette.onAccent,
   },
   pressed: {
     opacity: 0.75,

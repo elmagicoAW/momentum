@@ -1,7 +1,10 @@
+import { foregroundOnColor, readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
 import { describeSchedule } from '@/utils/schedule';
@@ -22,6 +25,7 @@ const DEFAULT_EMPTY_TEXT =
 
 /** Multi-select list of existing habits. Selection order is kept. */
 export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, disabled, emptyText }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (habits.length === 0) {
     return (
       <View style={styles.empty}>
@@ -56,14 +60,14 @@ export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, 
             accessibilityRole="checkbox"
             accessibilityState={{ checked: isOn, disabled }}
             accessibilityLabel={`${habit.name}, ${schedule}`}
-            android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+            android_ripple={{ color: Palette.ripple }}
             style={({ pressed }) => [
               styles.row,
               isOn && { borderColor: habit.color, backgroundColor: `${habit.color}14` },
               pressed && styles.pressed,
             ]}>
             <View style={[styles.icon, { backgroundColor: `${habit.color}22` }]}>
-              <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={habit.color} />
+              <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={readableAccent(habit.color, Palette)} />
             </View>
             <View style={styles.body}>
               <Text style={styles.name} numberOfLines={1}>
@@ -78,7 +82,7 @@ export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, 
                 <SymbolView
                   name={{ ios: 'checkmark', android: 'check', web: 'check' }}
                   size={14}
-                  tintColor={Palette.background}
+                  tintColor={foregroundOnColor(habit.color)}
                 />
               )}
             </View>
@@ -89,7 +93,7 @@ export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   list: {
     gap: 10,
   },

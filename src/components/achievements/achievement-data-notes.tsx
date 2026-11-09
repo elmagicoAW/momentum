@@ -1,9 +1,12 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { useAchievements } from '@/hooks/use-achievements';
 
 export function AchievementDataNotes() {
+  const { styles } = useAppStyles(createStyles);
   const { status, evaluation, retry, acknowledgementError } = useAchievements();
   const notes = evaluation?.notes;
   const message = {
@@ -26,8 +29,8 @@ export function AchievementDataNotes() {
     <Text style={styles.copy}>Finished local days count. Today is provisional. Historical progress uses current schedules; schedules are not versioned. Edits or deletions can reduce locked progress, while saved awards stay earned.</Text>
   </View>;
 }
-const styles = StyleSheet.create({
-  box: { padding: 16, gap: 8, borderRadius: Radius.md, backgroundColor: Palette.surface, borderWidth: 1, borderColor: Palette.border },
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
+  box: { padding: 16, gap: 8, borderRadius: Radius.md, backgroundColor: Palette.surface, borderWidth: 1, borderColor: Palette.controlBorder },
   copy: { color: Palette.textSecondary, fontSize: 13, lineHeight: 20 },
   button: { minHeight: 48, justifyContent: 'center', alignSelf: 'flex-start', paddingHorizontal: 12 },
   link: { color: Palette.accent, fontSize: 14, fontWeight: '600' },

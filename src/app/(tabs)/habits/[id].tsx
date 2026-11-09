@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -5,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { HabitForm } from '@/components/habits/habit-form';
-import { Palette, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import type { Habit, TrackingType } from '@/data/habit-storage';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
@@ -20,6 +22,7 @@ import { routinesContaining } from '@/utils/routine-progress';
 const TYPE_LABEL: Record<TrackingType, string> = { tick: 'Tick', count: 'Count', checklist: 'Checklist' };
 
 export default function EditHabitScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { habits, status, updateHabit, deleteHabit, reload } = useHabits();
   const { goals } = useGoals();
@@ -121,7 +124,7 @@ export default function EditHabitScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

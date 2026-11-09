@@ -1,7 +1,10 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
 import { describeTracking } from '@/utils/habit-progress';
@@ -13,6 +16,7 @@ type Props = {
 };
 
 export function HabitRow({ habit, onPress }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const schedule = `${describeTracking(habit.tracking)} · ${describeSchedule(habit.schedule)}`;
   return (
     <Pressable
@@ -20,10 +24,10 @@ export function HabitRow({ habit, onPress }: Props) {
       accessibilityRole="button"
       accessibilityLabel={`${habit.name}, ${schedule}`}
       accessibilityHint="Opens the habit editor"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
-        <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={habit.color} />
+        <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={readableAccent(habit.color, Palette)} />
       </View>
 
       <View style={styles.body}>
@@ -52,7 +56,7 @@ export function HabitRow({ habit, onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
@@ -6,13 +8,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AchievementCard } from '@/components/achievements/achievement-card';
 import { AchievementDataNotes } from '@/components/achievements/achievement-data-notes';
 import { AchievementCelebration } from '@/components/achievements/achievements-summary-card';
-import { MaxContentWidth, Palette, Radius } from '@/constants/theme';
+import { MaxContentWidth, Radius } from '@/constants/theme';
 import { ACHIEVEMENTS } from '@/data/achievement-definitions';
 import { useAchievements } from '@/hooks/use-achievements';
 import { closeAchievements } from '@/utils/navigation';
 
 const FILTERS = ['All', 'Earned', 'Locked'] as const;
 export default function AchievementsScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { collection, storeReady, status, evaluation } = useAchievements();
   const [filter, setFilter] = useState<typeof FILTERS[number]>('All');
   const { width, fontScale } = useWindowDimensions();
@@ -51,20 +54,20 @@ export default function AchievementsScreen() {
     </SafeAreaView>
   </View>;
 }
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: Palette.background }, flex: { flex: 1 },
   header: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: 20, paddingVertical: 4, backgroundColor: Palette.background, borderBottomWidth: 1, borderBottomColor: Palette.border },
   content: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: 20, paddingTop: 22, paddingBottom: 32, gap: 22 },
   back: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', paddingRight: 16 },
   backText: { color: Palette.text, fontSize: 15 },
-  hero: { paddingVertical: 22, paddingHorizontal: 20, borderRadius: Radius.lg, backgroundColor: '#171329', borderWidth: 1, borderColor: '#37305B', gap: 12 },
-  eyebrow: { color: '#A9BFFB', fontSize: 10, letterSpacing: 1.5, fontWeight: '700' },
+  hero: { paddingVertical: 22, paddingHorizontal: 20, borderRadius: Radius.lg, backgroundColor: Palette.achievementHero, borderWidth: 1, borderColor: Palette.achievementHeroBorder, gap: 12 },
+  eyebrow: { color: Palette.achievementEyebrow, fontSize: 10, letterSpacing: 1.5, fontWeight: '700' },
   title: { color: Palette.text, fontSize: 32, fontWeight: '700', letterSpacing: -0.8 },
-  total: { color: '#B9AAFF', fontSize: 46, fontWeight: '700' },
+  total: { color: Palette.achievementTotal, fontSize: 46, fontWeight: '700' },
   totalSuffix: { color: Palette.textSecondary, fontSize: 16, fontWeight: '500' },
   subtitle: { color: Palette.textSecondary, fontSize: 14, lineHeight: 21 },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  filter: { minHeight: 48, paddingHorizontal: 20, justifyContent: 'center', borderRadius: Radius.pill, borderWidth: 1, borderColor: Palette.border, backgroundColor: Palette.surface },
+  filter: { minHeight: 48, paddingHorizontal: 20, justifyContent: 'center', borderRadius: Radius.pill, borderWidth: 1, borderColor: Palette.controlBorder, backgroundColor: Palette.surface },
   selected: { backgroundColor: Palette.accentSoft, borderColor: Palette.accent },
   filterText: { color: Palette.textSecondary, fontSize: 14, fontWeight: '600' },
   group: { gap: 14 }, groupTitle: { color: Palette.text, fontSize: 19, fontWeight: '600' },

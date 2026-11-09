@@ -1,7 +1,10 @@
+import { foregroundOnColor, readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { plural, withAlpha } from '@/components/insights/format';
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { formatLongDateKey, parseLocalDateKey } from '@/utils/date';
 import { DayStatus, describeProgress, type DayDetail, type HabitDayDetail } from '@/utils/insights';
 
@@ -16,12 +19,12 @@ function scheduleText(d: HabitDayDetail): string {
   return d.scheduled ? 'Scheduled' : 'Not scheduled';
 }
 
-function statusColor(status: HabitDayDetail['status'], color: string): string {
+function statusColor(status: HabitDayDetail['status'], color: string, Palette: AppPalette): string {
   switch (status) {
     case DayStatus.DONE:
       return Palette.success;
     case DayStatus.PARTIAL:
-      return color;
+      return readableAccent(color, Palette);
     case DayStatus.MISSED:
       return Palette.danger;
     case DayStatus.UNKNOWN:
@@ -36,6 +39,7 @@ function statusColor(status: HabitDayDetail['status'], color: string): string {
  * is never estimated. Announced politely to screen readers when it changes.
  */
 export function DayDetailPanel({ detail, single }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const date = parseLocalDateKey(detail.dateKey);
   const title = `${formatLongDateKey(detail.dateKey)}, ${date.getFullYear()}`;
   const habit = single ? detail.habits[0] : undefined;
@@ -57,7 +61,7 @@ export function DayDetailPanel({ detail, single }: Props) {
         habit ? (
           <View style={styles.rows}>
             <Row label="Schedule" value={scheduleText(habit)} />
-            <Row label="Status" value={habit.label} color={statusColor(habit.status, habit.habit.color)} />
+            <Row label="Status" value={habit.label} color={statusColor(habit.status, habit.habit.color, Palette)} />
             {habit.progress ? (
               <Row label="Saved progress" value={describeProgress(habit.progress)} />
             ) : habit.status !== null && habit.status !== DayStatus.UNKNOWN && habit.scheduled ? (
@@ -83,7 +87,7 @@ export function DayDetailPanel({ detail, single }: Props) {
                   <Text style={styles.habitName} numberOfLines={1}>
                     {d.habit.name}
                   </Text>
-                  <Text style={[styles.habitStatus, { color: statusColor(d.status, d.habit.color) }]} numberOfLines={2}>
+                  <Text style={[styles.habitStatus, { color: statusColor(d.status, d.habit.color, Palette) }]} numberOfLines={2}>
                     {d.label}
                     {d.progress && d.progress.kind !== 'tick' ? ` · ${describeProgress(d.progress)}` : ''}
                   </Text>
@@ -120,15 +124,17 @@ function panelLabel(title: string, detail: DayDetail, habit: HabitDayDetail | un
 }
 
 function Row({ label, value, color }: { label: string; value: string; color?: string }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.row}>
       <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={[styles.rowValue, color ? { color } : null]}>{value}</Text>
+      <Text style={[styles.rowValue, color ? { color: readableAccent(color, Palette) } : null]}>{value}</Text>
     </View>
   );
 }
 
 function Steps({ detail }: { detail: HabitDayDetail }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (detail.progress?.kind !== 'checklist') return null;
   return (
     <View style={styles.steps}>
@@ -139,9 +145,9 @@ function Steps({ detail }: { detail: HabitDayDetail }) {
               styles.check,
               s.done
                 ? { backgroundColor: detail.habit.color, borderColor: detail.habit.color }
-                : { borderColor: withAlpha(detail.habit.color, 0.6) },
+                : { borderColor: withAlpha(detail.habit.color, 0.6, Palette.accent) },
             ]}>
-            {s.done ? <Text style={styles.checkMark}>✓</Text> : null}
+            {s.done ? <Text style={[styles.checkMark, { color: foregroundOnColor(detail.habit.color) }]}>✓</Text> : null}
           </View>
           <Text style={styles.stepText} numberOfLines={2}>
             {s.label}
@@ -153,7 +159,7 @@ function Steps({ detail }: { detail: HabitDayDetail }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   panel: {
     gap: 10,
     padding: 14,
@@ -257,7 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkMark: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 12,
     fontWeight: '800',
   },

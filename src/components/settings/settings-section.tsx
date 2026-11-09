@@ -1,7 +1,9 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Children, Fragment, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 
 type Props = {
   title: string;
@@ -12,6 +14,7 @@ type Props = {
 
 /** A labelled group of settings rows in one card, separated by hairlines. */
 export function SettingsSection({ title, footer, children }: Props) {
+  const { styles } = useAppStyles(createStyles);
   const rows = Children.toArray(children).filter(Boolean);
   return (
     <View style={styles.section}>
@@ -31,7 +34,7 @@ export function SettingsSection({ title, footer, children }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   section: {
     gap: 10,
   },

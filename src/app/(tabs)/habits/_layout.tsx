@@ -1,6 +1,5 @@
+import { useAppTheme } from '@/hooks/use-app-theme';
 import { Stack } from 'expo-router';
-
-import { Palette } from '@/constants/theme';
 
 /**
  * Stack inside the Habits tab: list → create / edit, and list → Routines.
@@ -18,6 +17,7 @@ export const unstable_settings = {
 };
 
 export default function HabitsLayout() {
+  const { palette: Palette } = useAppTheme();
   return (
     <Stack
       screenOptions={{

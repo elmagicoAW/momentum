@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Image } from 'expo-image';
 import * as SplashScreen from 'expo-splash-screen';
 import { useState } from 'react';
@@ -9,6 +11,7 @@ const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
 const DURATION = 600;
 
 export function AnimatedSplashOverlay() {
+  const { styles } = useAppStyles(createStyles);
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(true);
 
@@ -96,6 +99,7 @@ const glowKeyframe = new Keyframe({
 });
 
 export function AnimatedIcon() {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.iconContainer}>
       <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
@@ -110,7 +114,7 @@ export function AnimatedIcon() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
   },
   splashOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: '#208AEF',
+    backgroundColor: Palette.splashBackground,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,

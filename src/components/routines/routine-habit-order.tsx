@@ -1,8 +1,11 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import type { ComponentProps } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
 import { moveId } from '@/utils/routine-list';
@@ -17,6 +20,7 @@ type Props = {
 
 /** The routine's habits in order, with ↑ / ↓ / remove. No drag library needed. */
 export function RoutineHabitOrder({ habitIds, habits, onChange, disabled = false }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const byId = new Map(habits.map((h) => [h.id, h]));
   const ordered = habitIds.filter((id) => byId.has(id));
   if (ordered.length === 0) return null;
@@ -31,7 +35,7 @@ export function RoutineHabitOrder({ habitIds, habits, onChange, disabled = false
           <View key={id} style={styles.row}>
             <Text style={styles.position}>{index + 1}</Text>
             <View style={[styles.icon, { backgroundColor: `${habit.color}22` }]}>
-              <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={habit.color} />
+              <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={readableAccent(habit.color, Palette)} />
             </View>
             <Text style={styles.name} numberOfLines={1}>
               {habit.name}
@@ -72,6 +76,7 @@ export function IconButton({
   disabled?: boolean;
   onPress: () => void;
 }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <Pressable
       onPress={onPress}
@@ -80,14 +85,14 @@ export function IconButton({
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!disabled }}
       hitSlop={4}
-      android_ripple={{ color: 'rgba(255,255,255,0.1)', borderless: true }}
+      android_ripple={{ color: Palette.rippleMedium, borderless: true }}
       style={({ pressed }) => [styles.iconButton, disabled && styles.disabled, pressed && styles.pressed]}>
       <SymbolView name={symbol} size={20} tintColor={Palette.textSecondary} />
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   list: {
     gap: 8,
   },

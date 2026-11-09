@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { usePreventRemove } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useCallback, useRef, useState, type ReactNode } from 'react';
@@ -19,7 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ColorPicker } from '@/components/habits/color-picker';
 import { IconPicker } from '@/components/habits/icon-picker';
 import { ProfileAvatar } from '@/components/profile/profile-avatar';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
 import { draftToProfileInput, profileToDraft, type Profile, type ProfileInput } from '@/data/profile-storage';
 import { useCurrentDate } from '@/hooks/use-current-date';
@@ -62,6 +64,7 @@ function errorMessage(error: unknown, fallback: string) {
 }
 
 export function ProfileForm({ profile, onSave, onClose }: Props) {
+  const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const [initialDraft] = useState<ProfileDraft>(() =>
     profileToDraft(profile, { icon: DEFAULT_HABIT_ICON, color: DEFAULT_HABIT_COLOR }),
   );
@@ -188,10 +191,10 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
             accessibilityRole="button"
             accessibilityLabel="Save profile"
             accessibilityState={{ disabled: locked, busy: busy === 'saving' }}
-            android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+            android_ripple={{ color: Palette.rippleStrong }}
             style={({ pressed }) => [styles.saveButton, locked && styles.saveDisabled, pressed && styles.pressed]}>
             {busy === 'saving' ? (
-              <ActivityIndicator size="small" color={Palette.background} />
+              <ActivityIndicator size="small" color={Palette.onAccent} />
             ) : (
               <Text style={styles.saveText}>Save</Text>
             )}
@@ -239,6 +242,8 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                 counter={`${draft.name.length}/${PROFILE_NAME_MAX_LENGTH}`}>
                 <View>
                   <TextInput
+                    selectionColor={Palette.accent}
+                    keyboardAppearance={scheme}
                     ref={nameRef}
                     value={draft.name}
                     onChangeText={(text) => update('name', text)}
@@ -286,7 +291,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                         accessibilityRole="radio"
                         accessibilityState={{ checked: selected, disabled: locked }}
                         accessibilityLabel={`${option.label}, ${option.hint}`}
-                        android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+                        android_ripple={{ color: Palette.ripple }}
                         style={({ pressed }) => [styles.option, selected && styles.optionSelected, pressed && styles.pressed]}>
                         <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{option.label}</Text>
                         <Text style={styles.optionHint}>{option.hint}</Text>
@@ -341,6 +346,7 @@ function Field({
   counter?: string;
   children: ReactNode;
 }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.field}>
       <View style={styles.fieldHeader}>
@@ -360,7 +366,7 @@ function Field({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -384,7 +390,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -409,7 +415,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -423,7 +429,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   failureText: {
     color: Palette.text,
@@ -504,7 +510,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   inputWithClear: {
     paddingRight: 48,
@@ -544,7 +550,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     overflow: 'hidden',
   },
   optionSelected: {

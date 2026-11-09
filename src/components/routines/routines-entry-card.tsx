@@ -1,13 +1,16 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useRoutines } from '@/hooks/use-routines';
 import { ROUTINES_HREF } from '@/utils/navigation';
 
 /** Entry point to Habits › Routines, shown above the habit list. */
 export function RoutinesEntryCard() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { routines, status } = useRoutines();
 
   let detail: string;
@@ -24,7 +27,7 @@ export function RoutinesEntryCard() {
       accessibilityRole="button"
       accessibilityLabel={`Routines${count ? `, ${count}` : ''}. ${detail}`}
       accessibilityHint="Opens your routines"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.icon}>
         <SymbolView
@@ -55,7 +58,7 @@ export function RoutinesEntryCard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     backgroundColor: Palette.accentBlueSoft,
     borderWidth: 1,
-    borderColor: 'rgba(91, 141, 239, 0.25)',
+    borderColor: Palette.blueBorder,
     overflow: 'hidden',
   },
   pressed: {
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: Radius.md,
-    backgroundColor: 'rgba(91, 141, 239, 0.18)',
+    backgroundColor: Palette.blueFill,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: Radius.pill,
-    backgroundColor: 'rgba(91, 141, 239, 0.25)',
+    backgroundColor: Palette.blueBorder,
     alignItems: 'center',
   },
   badgeText: {

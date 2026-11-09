@@ -1,8 +1,11 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatRate, withAlpha } from '@/components/insights/format';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import { formatMonthDay } from '@/utils/date';
 import { DayStatus, type HabitSummary } from '@/utils/insights';
@@ -20,6 +23,7 @@ export function streakText(summary: HabitSummary): string {
 }
 
 export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { habit, current, longest, last30 } = summary;
   const label =
     `${habit.name}. ${describeSchedule(habit.schedule)}. Current streak ${streakText(summary)}` +
@@ -32,11 +36,11 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint="Opens this habit's history"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.top}>
-        <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14) }]}>
-          <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={habit.color} />
+        <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14, Palette.accent) }]}>
+          <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={readableAccent(habit.color, Palette)} />
         </View>
         <View style={styles.body}>
           <Text style={styles.title} numberOfLines={1}>
@@ -63,7 +67,7 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
       <View style={styles.dots} importantForAccessibility="no-hide-descendants">
         {summary.last7.map((d) => (
           <View key={d.dateKey} style={styles.dotWrap}>
-            <View style={[styles.dot, dotStyle(d.status, habit.color, d.dateKey === todayKey)]} />
+            <View style={[styles.dot, dotStyle(d.status, readableAccent(habit.color, Palette), d.dateKey === todayKey, Palette)]} />
             <Text style={styles.dotLabel}>{formatMonthDay(d.dateKey).split(' ')[1]}</Text>
           </View>
         ))}
@@ -72,12 +76,12 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
   );
 }
 
-function dotStyle(status: number, color: string, isToday: boolean) {
+function dotStyle(status: number, color: string, isToday: boolean, Palette: AppPalette) {
   switch (status) {
     case DayStatus.DONE:
       return { backgroundColor: color, borderColor: color };
     case DayStatus.PARTIAL:
-      return { backgroundColor: withAlpha(color, 0.3), borderColor: withAlpha(color, 0.7), borderStyle: 'dashed' as const };
+      return { backgroundColor: withAlpha(color, 0.3, Palette.accent), borderColor: withAlpha(color, 0.7, Palette.accent), borderStyle: 'dashed' as const };
     case DayStatus.MISSED:
       return { backgroundColor: Palette.ringTrack, borderColor: Palette.ringTrack };
     case DayStatus.PENDING:
@@ -91,6 +95,7 @@ function dotStyle(status: number, color: string, isToday: boolean) {
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.metric}>
       <Text style={styles.metricValue} numberOfLines={1}>
@@ -103,7 +108,7 @@ function Metric({ value, label }: { value: string; label: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     gap: 12,
     padding: Spacing.three,

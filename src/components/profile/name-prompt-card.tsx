@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 
 type Props = {
   onAdd: () => void;
@@ -16,6 +18,7 @@ type Props = {
  * dismissal is on disk, so it doesn't come back on the next launch.
  */
 export function NamePromptCard({ onAdd, onDismiss }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -64,7 +67,7 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
           accessibilityLabel="Not now"
           accessibilityHint="Hides this card. You can still add a name in Settings."
           accessibilityState={{ disabled: busy, busy }}
-          android_ripple={{ color: 'rgba(255,255,255,0.08)' }}
+          android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.button, styles.secondary, pressed && styles.pressed]}>
           {busy ? (
             <ActivityIndicator size="small" color={Palette.textSecondary} />
@@ -77,7 +80,7 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
           disabled={busy}
           accessibilityRole="button"
           accessibilityState={{ disabled: busy }}
-          android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+          android_ripple={{ color: Palette.rippleStrong }}
           style={({ pressed }) => [styles.button, styles.primary, pressed && styles.pressed]}>
           <Text style={styles.primaryText}>Add your name</Text>
         </Pressable>
@@ -86,14 +89,14 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     padding: 20,
     gap: Spacing.three,
     borderRadius: Radius.lg,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: 'rgba(139, 124, 246, 0.3)',
+    borderColor: Palette.accentBorderSubtle,
   },
   row: {
     flexDirection: 'row',
@@ -158,7 +161,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   primaryText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },

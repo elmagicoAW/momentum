@@ -1,6 +1,9 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import type { HabitConsistency } from '@/utils/goal-progress';
 
 type Props = {
@@ -19,6 +22,7 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
  * today are never presented as missed.
  */
 export function ConsistencySummary({ consistency, loading, color }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (loading) {
     return (
       <View style={styles.container}>
@@ -54,7 +58,7 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
       <View style={styles.headline}>
         <Text style={styles.label}>Habit Consistency</Text>
         {percent !== null && (
-          <Text style={[styles.percent, { color }]} accessibilityLabel={`Habit consistency ${percent} percent`}>
+          <Text style={[styles.percent, { color: readableAccent(color, Palette) }]} accessibilityLabel={`Habit consistency ${percent} percent`}>
             {percent}%
           </Text>
         )}
@@ -68,7 +72,7 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
             accessibilityRole="progressbar"
             accessibilityLabel="Habit consistency on completed days"
             accessibilityValue={{ min: 0, max: 100, now: percent }}>
-            <View style={[styles.fill, { width: `${percent}%`, backgroundColor: color }]} />
+            <View style={[styles.fill, { width: `${percent}%`, backgroundColor: readableAccent(color, Palette) }]} />
           </View>
           <Text style={styles.detail}>
             {finished.completed} of {plural(finished.scheduled, 'scheduled check-in', 'scheduled check-ins')} completed
@@ -102,7 +106,7 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 8,
   },

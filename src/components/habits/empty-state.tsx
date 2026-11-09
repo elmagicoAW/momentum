@@ -1,7 +1,9 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 
 type Props = {
   title: string;
@@ -18,6 +20,7 @@ export function EmptyState({
   actionLabel,
   onAction,
 }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
@@ -29,7 +32,7 @@ export function EmptyState({
         <Pressable
           onPress={onAction}
           accessibilityRole="button"
-          android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+          android_ripple={{ color: Palette.rippleStrong }}
           style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
           <Text style={styles.buttonText}>{actionLabel}</Text>
         </Pressable>
@@ -38,7 +41,7 @@ export function EmptyState({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     alignItems: 'center',
     gap: Spacing.two,
@@ -81,7 +84,7 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   buttonText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },

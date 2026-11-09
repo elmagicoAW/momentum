@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState, type ReactNode } from 'react';
@@ -16,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { DatePicker } from '@/components/goals/date-picker';
 import { HabitLinkPicker } from '@/components/goals/habit-link-picker';
 import { StatusPicker } from '@/components/goals/status-picker';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import type { GoalInput } from '@/data/goal-storage';
 import { useHabits } from '@/hooks/use-habits';
 import { formatShortDate } from '@/utils/date';
@@ -63,6 +65,7 @@ export function GoalForm({
   onCancel,
   onDelete,
 }: Props) {
+  const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const { habits, status: habitsStatus } = useHabits();
   const [draft, setDraft] = useState<GoalDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
@@ -145,10 +148,10 @@ export function GoalForm({
             disabled={locked}
             accessibilityRole="button"
             accessibilityState={{ disabled: locked, busy: busy === 'saving' }}
-            android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+            android_ripple={{ color: Palette.rippleStrong }}
             style={({ pressed }) => [styles.saveButton, locked && styles.saveDisabled, pressed && styles.pressed]}>
             {busy === 'saving' ? (
-              <ActivityIndicator size="small" color={Palette.background} />
+              <ActivityIndicator size="small" color={Palette.onAccent} />
             ) : (
               <Text style={styles.saveText}>{submitLabel}</Text>
             )}
@@ -169,6 +172,8 @@ export function GoalForm({
             showsVerticalScrollIndicator={false}>
             <Field label="Title" error={visibleErrors.title} counter={`${draft.title.length}/${GOAL_TITLE_MAX_LENGTH}`}>
               <TextInput
+                selectionColor={Palette.accent}
+                keyboardAppearance={scheme}
                 value={draft.title}
                 onChangeText={(text) => update('title', text)}
                 placeholder="e.g. Run a half marathon"
@@ -188,6 +193,8 @@ export function GoalForm({
               error={visibleErrors.description}
               counter={`${draft.description.length}/${GOAL_DESCRIPTION_MAX_LENGTH}`}>
               <TextInput
+                selectionColor={Palette.accent}
+                keyboardAppearance={scheme}
                 value={draft.description}
                 onChangeText={(text) => update('description', text)}
                 placeholder="Why it matters to you"
@@ -244,7 +251,7 @@ export function GoalForm({
                 onPress={handleDelete}
                 disabled={locked}
                 accessibilityRole="button"
-                android_ripple={{ color: 'rgba(248,113,113,0.15)' }}
+                android_ripple={{ color: Palette.rippleDanger }}
                 style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
                 {busy === 'deleting' ? (
                   <ActivityIndicator size="small" color={Palette.danger} />
@@ -275,6 +282,7 @@ function Field({
   hint?: string;
   children: ReactNode;
 }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.field}>
       <View style={styles.fieldHeader}>
@@ -295,7 +303,7 @@ function Field({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -319,7 +327,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -344,7 +352,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -358,7 +366,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   failureText: {
     color: Palette.text,
@@ -411,7 +419,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   multiline: {
     minHeight: 88,
@@ -428,7 +436,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
     backgroundColor: Palette.dangerSoft,
     alignItems: 'center',
     justifyContent: 'center',

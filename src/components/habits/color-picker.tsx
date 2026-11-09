@@ -1,7 +1,7 @@
+import { foregroundOnColor } from '@/utils/theme-color';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Palette } from '@/constants/theme';
 import { HABIT_COLORS } from '@/data/habit-options';
 
 type Props = {
@@ -32,7 +32,7 @@ export function ColorPicker({ value, onChange }: Props) {
                 <SymbolView
                   name={{ ios: 'checkmark', android: 'check', web: 'check' }}
                   size={16}
-                  tintColor={Palette.background}
+                  tintColor={foregroundOnColor(color)}
                 />
               )}
             </View>

@@ -1,10 +1,12 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { ProfileForm } from '@/components/profile/profile-form';
-import { MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useProfile } from '@/hooks/use-profile';
 import { closeProfileEditor } from '@/utils/navigation';
 
@@ -15,6 +17,7 @@ import { closeProfileEditor } from '@/utils/navigation';
  * failed to load can't be edited, so it can never be overwritten.
  */
 export default function ProfileEditScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { profile, status, reload, updateProfile } = useProfile();
 
   if (status === 'ready') {
@@ -55,7 +58,7 @@ export default function ProfileEditScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },

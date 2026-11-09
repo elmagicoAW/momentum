@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -5,10 +7,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { EmptyState } from '@/components/habits/empty-state';
 import { HabitRow } from '@/components/habits/habit-row';
 import { RoutinesEntryCard } from '@/components/routines/routines-entry-card';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useHabits } from '@/hooks/use-habits';
 
 export default function HabitsScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { habits, status, reload } = useHabits();
   const ready = status === 'ready';
 
@@ -41,7 +44,7 @@ export default function HabitsScreen() {
               accessibilityHint="Opens the form to create a new habit"
               accessibilityState={{ disabled: !ready }}
               hitSlop={8}
-              android_ripple={{ color: 'rgba(255,255,255,0.18)' }}
+              android_ripple={{ color: Palette.rippleOnAccent }}
               style={({ pressed }) => [
                 styles.addButton,
                 !ready && styles.addButtonDisabled,
@@ -96,7 +99,7 @@ export default function HabitsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   addButtonText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },

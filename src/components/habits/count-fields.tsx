@@ -1,7 +1,9 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useRef } from 'react';
 import { StyleSheet, Text, TextInput, View, type TextInputInstance } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { UNIT_MAX_LENGTH } from '@/utils/habit-validation';
 
 type Props = {
@@ -25,6 +27,7 @@ export function CountFields({
   onUnitChange,
   onInputFocus,
 }: Props) {
+  const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const targetRef = useRef<TextInputInstance>(null);
   const unitRef = useRef<TextInputInstance>(null);
   return (
@@ -33,6 +36,8 @@ export function CountFields({
         <View style={styles.targetCol}>
           <Text style={styles.subLabel}>Daily target</Text>
           <TextInput
+            selectionColor={Palette.accent}
+            keyboardAppearance={scheme}
             value={target}
             // Digits only, so pasted text can't sneak in letters or decimals.
             onChangeText={(text) => onTargetChange(text.replace(/\D/g, '').slice(0, 4))}
@@ -52,6 +57,8 @@ export function CountFields({
         <View style={styles.unitCol}>
           <Text style={styles.subLabel}>Unit · optional</Text>
           <TextInput
+            selectionColor={Palette.accent}
+            keyboardAppearance={scheme}
             value={unit}
             onChangeText={onUnitChange}
             ref={unitRef}
@@ -76,7 +83,7 @@ export function CountFields({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 8,
   },
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   targetInput: {
     fontWeight: '700',

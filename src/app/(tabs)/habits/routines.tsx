@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -5,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { RoutineCard } from '@/components/routines/routine-card';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { MAX_ROUTINES } from '@/data/routine-storage';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
@@ -16,6 +18,7 @@ import { indexHabits, routineDay } from '@/utils/routine-progress';
 
 /** Habits › Routines: the user's routines in their order, with reordering. */
 export default function RoutinesScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { routines, status, reload, moveRoutine } = useRoutines();
   const { habits, status: habitsStatus } = useHabits();
   const daily = useDailyProgress();
@@ -73,7 +76,7 @@ export default function RoutinesScreen() {
                 accessibilityRole="button"
                 accessibilityState={{ selected: reordering }}
                 accessibilityLabel={reordering ? 'Done reordering' : 'Reorder routines'}
-                android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
+                android_ripple={{ color: Palette.rippleMedium }}
                 style={({ pressed }) => [styles.secondaryButton, reordering && styles.secondaryActive, pressed && styles.pressed]}>
                 <Text style={[styles.secondaryText, reordering && styles.secondaryActiveText]}>
                   {reordering ? 'Done' : 'Reorder'}
@@ -88,7 +91,7 @@ export default function RoutinesScreen() {
                 accessibilityLabel="New routine"
                 accessibilityState={{ disabled: !ready || atLimit }}
                 hitSlop={4}
-                android_ripple={{ color: 'rgba(255,255,255,0.18)' }}
+                android_ripple={{ color: Palette.rippleOnAccent }}
                 style={({ pressed }) => [
                   styles.addButton,
                   (!ready || atLimit) && styles.addDisabled,
@@ -166,7 +169,7 @@ export default function RoutinesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -194,7 +197,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: Radius.pill,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     backgroundColor: Palette.surface,
     alignItems: 'center',
     justifyContent: 'center',
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   addText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 14,
     fontWeight: '700',
   },
@@ -281,7 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   failureText: {
     color: Palette.text,

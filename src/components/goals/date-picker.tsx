@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { addMonths, formatMonthYear, parseLocalDateKey, toLocalDateKey } from '@/utils/date';
 import { WEEKDAY_DISPLAY_ORDER, WEEKDAY_LONG, WEEKDAY_SHORT } from '@/utils/schedule';
 
@@ -25,6 +27,7 @@ const PRESETS = [
 
 /** Dependency-free calendar: quick presets plus a Monday-first month grid. */
 export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const today = parseLocalDateKey(todayKey);
   const initial = value ? parseLocalDateKey(value) : addMonths(today, 1);
   const [month, setMonth] = useState(() => new Date(initial.getFullYear(), initial.getMonth(), 1));
@@ -155,7 +158,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 12,
   },
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
   },
   today: {
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   daySelected: {
     backgroundColor: Palette.accent,
@@ -259,7 +262,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   dayTextSelected: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontWeight: '700',
   },
   pressed: {

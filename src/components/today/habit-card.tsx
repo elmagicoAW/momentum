@@ -1,10 +1,13 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ChecklistSteps } from '@/components/today/checklist-steps';
 import { CountControl } from '@/components/today/count-control';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { DayRecord } from '@/data/completion-storage';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
@@ -34,21 +37,23 @@ export function HabitCard(props: Props) {
 }
 
 function HabitIcon({ habit }: { habit: Habit }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
-      <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={habit.color} />
+      <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={readableAccent(habit.color, Palette)} />
     </View>
   );
 }
 
 function Check({ done, size = 28 }: { done: boolean; size?: number }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={[styles.checkbox, { width: size, height: size }, done && styles.checkboxDone]}>
       {done && (
         <SymbolView
           name={{ ios: 'checkmark', android: 'check', web: 'check' }}
           size={size * 0.64}
-          tintColor={Palette.background}
+          tintColor={Palette.onAccent}
         />
       )}
     </View>
@@ -60,6 +65,7 @@ function Check({ done, size = 28 }: { done: boolean; size?: number }) {
 // ---------------------------------------------------------------------------
 
 function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const done = isCompleteNow(record, habit);
   return (
     <Pressable
@@ -68,7 +74,7 @@ function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
       accessibilityRole="checkbox"
       accessibilityState={{ checked: done, disabled }}
       accessibilityLabel={habit.name}
-      android_ripple={{ color: 'rgba(255,255,255,0.06)', borderless: false }}
+      android_ripple={{ color: Palette.ripple, borderless: false }}
       style={({ pressed }) => [styles.card, styles.row, done && styles.cardDone, pressed && styles.pressed]}>
       <HabitIcon habit={habit} />
       <View style={styles.body}>
@@ -89,6 +95,7 @@ function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
 // ---------------------------------------------------------------------------
 
 function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (habit.tracking.type !== 'count') return null;
   const { target, unit } = habit.tracking;
   const value = countValue(record, habit);
@@ -105,14 +112,14 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
             {habit.name}
           </Text>
           <View style={styles.metaRow}>
-            <Text style={[styles.progressValue, done && { color: habit.color }]} numberOfLines={1}>
+            <Text style={[styles.progressValue, done && { color: readableAccent(habit.color, Palette) }]} numberOfLines={1}>
               {progressText}
             </Text>
             {done && (
               <SymbolView
                 name={{ ios: 'checkmark.circle.fill', android: 'check_circle', web: 'check_circle' }}
                 size={14}
-                tintColor={habit.color}
+                tintColor={readableAccent(habit.color, Palette)}
               />
             )}
           </View>
@@ -126,7 +133,7 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
         />
       </View>
       <View style={styles.track}>
-        <View style={[styles.fill, { width: `${ratio * 100}%`, backgroundColor: habit.color }]} />
+        <View style={[styles.fill, { width: `${ratio * 100}%`, backgroundColor: readableAccent(habit.color, Palette) }]} />
       </View>
     </View>
   );
@@ -137,6 +144,7 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
 // ---------------------------------------------------------------------------
 
 function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const [expanded, setExpanded] = useState(false);
   if (habit.tracking.type !== 'checklist') return null;
   const { steps } = habit.tracking;
@@ -163,7 +171,7 @@ function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props)
           <Text style={[styles.title, complete && styles.titleMuted]} numberOfLines={1}>
             {habit.name}
           </Text>
-          <Text style={[styles.detail, complete && { color: habit.color }]} numberOfLines={1}>
+          <Text style={[styles.detail, complete && { color: readableAccent(habit.color, Palette) }]} numberOfLines={1}>
             {summary}
           </Text>
         </View>
@@ -174,7 +182,7 @@ function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props)
             <View
               style={[
                 styles.miniFill,
-                { width: `${(requiredDone / Math.max(required.length, 1)) * 100}%`, backgroundColor: habit.color },
+                { width: `${(requiredDone / Math.max(required.length, 1)) * 100}%`, backgroundColor: readableAccent(habit.color, Palette) },
               ]}
             />
           </View>
@@ -202,7 +210,7 @@ function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props)
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     gap: 12,
     padding: Spacing.three,
@@ -218,7 +226,7 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
   },
   cardDone: {
-    borderColor: 'rgba(139, 124, 246, 0.35)',
+    borderColor: Palette.accentBorder,
   },
   pressed: {
     opacity: 0.85,

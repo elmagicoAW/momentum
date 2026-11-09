@@ -1,6 +1,8 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import type { TrackingType } from '@/data/habit-storage';
 
 const OPTIONS: { value: TrackingType; label: string; hint: string }[] = [
@@ -16,6 +18,7 @@ type Props = {
 };
 
 export function TrackingTypePicker({ value, disabled = false, onChange }: Props) {
+  const { styles } = useAppStyles(createStyles);
   const hint = OPTIONS.find((o) => o.value === value)?.hint;
   return (
     <View style={styles.container}>
@@ -41,7 +44,7 @@ export function TrackingTypePicker({ value, disabled = false, onChange }: Props)
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 8,
   },
@@ -51,7 +54,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surfaceRaised,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   segment: {
     flex: 1,

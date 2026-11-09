@@ -1,7 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { foregroundOnColor } from '@/utils/theme-color';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import type { ChecklistStep } from '@/data/habit-storage';
 
 type Props = {
@@ -14,6 +17,7 @@ type Props = {
 
 /** The expanded step list inside a Checklist habit card. */
 export function ChecklistSteps({ steps, done, color, disabled, onToggle }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.list}>
       {steps.map((step) => {
@@ -26,14 +30,14 @@ export function ChecklistSteps({ steps, done, color, disabled, onToggle }: Props
             accessibilityRole="checkbox"
             accessibilityState={{ checked, disabled }}
             accessibilityLabel={step.optional ? `${step.label}, optional` : step.label}
-            android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+            android_ripple={{ color: Palette.ripple }}
             style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
             <View style={[styles.box, checked && { backgroundColor: color, borderColor: color }]}>
               {checked && (
                 <SymbolView
                   name={{ ios: 'checkmark', android: 'check', web: 'check' }}
                   size={14}
-                  tintColor={Palette.background}
+                  tintColor={foregroundOnColor(color)}
                 />
               )}
             </View>
@@ -48,7 +52,7 @@ export function ChecklistSteps({ steps, done, color, disabled, onToggle }: Props
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   list: {
     marginTop: 4,
     paddingTop: 8,

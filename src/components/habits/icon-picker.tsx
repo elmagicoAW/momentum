@@ -1,7 +1,10 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { HABIT_ICON_KEYS, HABIT_ICONS } from '@/data/habit-options';
 
 type Props = {
@@ -11,6 +14,7 @@ type Props = {
 };
 
 export function IconPicker({ value, color, onChange }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.grid} accessibilityRole="radiogroup">
       {HABIT_ICON_KEYS.map((key) => {
@@ -31,7 +35,7 @@ export function IconPicker({ value, color, onChange }: Props) {
             <SymbolView
               name={HABIT_ICONS[key].symbol}
               size={22}
-              tintColor={selected ? color : Palette.textSecondary}
+              tintColor={readableAccent(selected ? color : Palette.textSecondary, Palette)}
             />
           </Pressable>
         );
@@ -40,7 +44,7 @@ export function IconPicker({ value, color, onChange }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: Radius.sm + 4,
     borderWidth: 1.5,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     backgroundColor: Palette.surfaceRaised,
     alignItems: 'center',
     justifyContent: 'center',

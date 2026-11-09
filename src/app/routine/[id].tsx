@@ -1,3 +1,6 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
@@ -9,7 +12,7 @@ import { RoutineIcon, TimeChip } from '@/components/routines/routine-badges';
 import { HabitCard } from '@/components/today/habit-card';
 import { ProgressNotices, saveLabel } from '@/components/today/progress-notices';
 import { ProgressRing } from '@/components/today/progress-ring';
-import { MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
@@ -43,6 +46,7 @@ function progressMessage(day: RoutineDay, weekday: string): string {
  * matter how many routines contain it.
  */
 export default function RoutineDetailScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { routines, status: routinesStatus, reload: reloadRoutines } = useRoutines();
   const { habits, status: habitsStatus, reload: reloadHabits } = useHabits();
@@ -220,7 +224,7 @@ export default function RoutineDetailScreen() {
                       accessible
                       accessibilityLabel={`${habit.name}, not scheduled today, ${describeSchedule(habit.schedule)}`}>
                       <View style={[styles.notDueIcon, { backgroundColor: `${habit.color}18` }]}>
-                        <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={habit.color} />
+                        <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={readableAccent(habit.color, Palette)} />
                       </View>
                       <View style={styles.flex}>
                         <Text style={styles.notDueName} numberOfLines={1}>
@@ -243,6 +247,7 @@ export default function RoutineDetailScreen() {
 }
 
 function Header({ onBack, onEdit }: { onBack: () => void; onEdit?: () => void }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.header}>
       <Pressable
@@ -263,7 +268,7 @@ function Header({ onBack, onEdit }: { onBack: () => void; onEdit?: () => void })
           onPress={onEdit}
           accessibilityRole="button"
           accessibilityLabel="Edit routine"
-          android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
+          android_ripple={{ color: Palette.rippleMedium }}
           style={({ pressed }) => [styles.editButton, pressed && styles.pressed]}>
           <Text style={styles.editText}>Edit</Text>
         </Pressable>
@@ -272,7 +277,7 @@ function Header({ onBack, onEdit }: { onBack: () => void; onEdit?: () => void })
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -305,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -372,7 +377,7 @@ const styles = StyleSheet.create({
     borderColor: Palette.border,
   },
   progressCardDone: {
-    borderColor: 'rgba(139, 124, 246, 0.35)',
+    borderColor: Palette.accentBorder,
   },
   progressText: {
     flex: 1,
@@ -401,7 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.accentBlueSoft,
     borderWidth: 1,
-    borderColor: 'rgba(91, 141, 239, 0.25)',
+    borderColor: Palette.blueBorder,
   },
   infoText: {
     color: Palette.text,

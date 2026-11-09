@@ -1,9 +1,12 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MiniBar, RoutineIcon, TimeChip } from '@/components/routines/routine-badges';
 import { IconButton } from '@/components/routines/routine-habit-order';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { describeRoutineDay, type RoutineDay } from '@/utils/routine-progress';
 
 type Props = {
@@ -20,6 +23,7 @@ type Props = {
 
 /** One routine in the Habits › Routines list. */
 export function RoutineCard({ day, onPress, reorder }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { routine } = day;
   const habitCount = day.members.length;
   const summary = `${habitCount === 1 ? '1 habit' : `${habitCount} habits`} · ${describeRoutineDay(day)}`;
@@ -35,7 +39,7 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
           </Text>
           <TimeChip timeOfDay={routine.timeOfDay} />
         </View>
-        <Text style={[styles.detail, complete && { color: routine.color }]} numberOfLines={1}>
+        <Text style={[styles.detail, complete && { color: readableAccent(routine.color, Palette) }]} numberOfLines={1}>
           {summary}
         </Text>
         {day.total > 0 && <MiniBar ratio={day.done / day.total} color={routine.color} width={96} />}
@@ -69,7 +73,7 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
       accessibilityRole="button"
       accessibilityLabel={`${routine.title}, ${summary}`}
       accessibilityHint="Opens the routine"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, styles.row, complete && styles.cardDone, pressed && styles.pressed]}>
       {body}
       <SymbolView
@@ -81,7 +85,7 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     minHeight: 76,
     padding: Spacing.three,
@@ -97,7 +101,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardDone: {
-    borderColor: 'rgba(139, 124, 246, 0.35)',
+    borderColor: Palette.accentBorder,
   },
   pressed: {
     opacity: 0.85,

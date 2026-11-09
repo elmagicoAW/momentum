@@ -1,9 +1,11 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { plural } from '@/components/insights/format';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { DataNotes } from '@/utils/insights';
 
 type Props = {
@@ -17,6 +19,7 @@ type Props = {
  * explanation (collapsible). Wording never claims more accuracy than the data has.
  */
 export function DataNotesCard({ notes, habitName }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const [open, setOpen] = useState(false);
   const warnings: string[] = [];
   if (notes.unreadableDays > 0) {
@@ -115,7 +118,7 @@ const ABOUT = [
   'A scheduled day without a saved check-in counts as missed, even if you did the habit but didn’t log it.',
 ];
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 10,
   },

@@ -1,6 +1,8 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { SaveState } from '@/hooks/use-daily-progress';
 
 /** Saving status shown next to "N left". Never says "Saved" before the data is on disk. */
@@ -50,6 +52,7 @@ export function Notice({
   actionLabel: string;
   onAction: () => void;
 }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.notice} accessibilityRole="alert" accessibilityLiveRegion="polite">
       <Text style={styles.noticeText}>{message}</Text>
@@ -64,7 +67,7 @@ export function Notice({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   notice: {
     marginTop: -Spacing.two,
     gap: 10,
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   noticeText: {
     color: Palette.text,
@@ -86,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surfaceRaised,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   noticePressed: {
     opacity: 0.75,

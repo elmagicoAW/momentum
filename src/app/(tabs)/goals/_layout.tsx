@@ -1,9 +1,9 @@
+import { useAppTheme } from '@/hooks/use-app-theme';
 import { Stack } from 'expo-router';
-
-import { Palette } from '@/constants/theme';
 
 /** Stack inside the Goals tab: list → create / edit. Screens draw their own headers. */
 export default function GoalsLayout() {
+  const { palette: Palette } = useAppTheme();
   return (
     <Stack
       screenOptions={{

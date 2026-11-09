@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -6,8 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-
-import { Palette } from '@/constants/theme';
 
 type Props = {
   completed: number;
@@ -21,6 +21,7 @@ type Props = {
  * Two half-ring clips are rotated to reveal the arc clockwise from 12 o'clock.
  */
 export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const ratio = total === 0 ? 0 : Math.min(completed / total, 1);
   const progress = useSharedValue(ratio);
 
@@ -99,7 +100,7 @@ export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }:
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   track: {
     position: 'absolute',
     borderColor: Palette.ringTrack,

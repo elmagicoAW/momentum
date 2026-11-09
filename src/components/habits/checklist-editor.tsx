@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View, type TextInputInstance } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { CHECKLIST_MAX_STEPS, createStepId } from '@/data/habit-storage';
 import { STEP_LABEL_MAX_LENGTH, type StepDraft } from '@/utils/habit-validation';
 
@@ -20,6 +22,7 @@ type Props = {
  * renamed, so today's progress on a renamed step is preserved.
  */
 export function ChecklistEditor({ steps, color, editable, error, onChange, onInputFocus }: Props) {
+  const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const inputs = useRef(new Map<string, TextInputInstance>());
   const pendingFocus = useRef<string | null>(null);
   const canAdd = editable && steps.length < CHECKLIST_MAX_STEPS;
@@ -56,6 +59,8 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
         <View key={step.id} style={styles.row}>
           <View style={[styles.bullet, { borderColor: step.optional ? Palette.textMuted : color }]} />
           <TextInput
+            selectionColor={Palette.accent}
+            keyboardAppearance={scheme}
             ref={(node) => {
               if (node) inputs.current.set(step.id, node);
               else inputs.current.delete(step.id);
@@ -113,7 +118,7 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
         disabled={!canAdd}
         accessibilityRole="button"
         accessibilityState={{ disabled: !canAdd }}
-        android_ripple={{ color: 'rgba(255,255,255,0.08)' }}
+        android_ripple={{ color: Palette.rippleSubtle }}
         style={({ pressed }) => [styles.addButton, !canAdd && styles.disabled, pressed && styles.pressed]}>
         <SymbolView name={{ ios: 'plus', android: 'add', web: 'add' }} size={16} tintColor={Palette.accent} />
         <Text style={styles.addText}>
@@ -127,7 +132,7 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 10,
   },
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   chip: {
     paddingHorizontal: 10,
@@ -162,7 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: Palette.surfaceRaised,
   },
   chipOn: {
-    borderColor: 'rgba(139, 124, 246, 0.4)',
+    borderColor: Palette.accentBorderStrong,
     backgroundColor: Palette.accentSoft,
   },
   chipText: {
@@ -190,7 +195,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     overflow: 'hidden',
   },
   addText: {

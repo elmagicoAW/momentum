@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
@@ -5,13 +7,14 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { pickBackup, saveBackup, shareBackup } from '@/data/backup-files';
 import { inspectRecords } from '@/data/backup-format';
 import { Action, backupService, useDataBackup } from '@/hooks/use-data-backup';
 
 type ImportPreview = Awaited<ReturnType<typeof backupService.preview>>;
 export default function DataBackupScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { restore, result, busy: globalBusy, available, unavailableReason } = useDataBackup();
   const [working, setWorking] = useState(false); const [message, setMessage] = useState('');
   const [exportText, setExportText] = useState<string | null>(null);
@@ -104,7 +107,7 @@ export default function DataBackupScreen() {
     </ScrollView>
   </SafeAreaView></View>;
 }
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: Palette.background }, safe: { flex: 1 },
   header: { width: '100%', maxWidth: MaxContentWidth, alignSelf: 'center', paddingHorizontal: 20, paddingVertical: 4, backgroundColor: Palette.background, borderBottomWidth: 1, borderBottomColor: Palette.border },
   back: { minHeight: 48, minWidth: 48, flexDirection: 'row', alignItems: 'center', gap: 8, alignSelf: 'flex-start', paddingRight: 16 },

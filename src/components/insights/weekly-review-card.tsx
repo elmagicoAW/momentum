@@ -1,9 +1,12 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { PeriodNav } from '@/components/insights/period-nav';
 import { formatRate, plural } from '@/components/insights/format';
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import {
   clampWeek,
   describeWeek,
@@ -19,6 +22,7 @@ import {
  * today's habits are "still to come", never missed.
  */
 export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const bounds = weekBounds(index);
   const [chosen, setChosen] = useState(bounds.maxStartKey);
   // Clamp (e.g. after midnight rolls into a new week).
@@ -119,19 +123,21 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
 }
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.stat} accessible accessibilityLabel={`${label}: ${value}`}>
-      <Text style={[styles.statValue, color ? { color } : null]}>{value}</Text>
+      <Text style={[styles.statValue, color ? { color: readableAccent(color, Palette) } : null]}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
     </View>
   );
 }
 
 function Line({ children }: { children: React.ReactNode }) {
+  const { styles } = useAppStyles(createStyles);
   return <Text style={styles.line}>{children}</Text>;
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 12,
   },

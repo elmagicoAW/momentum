@@ -1,7 +1,9 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { ACHIEVEMENTS } from '@/data/achievement-definitions';
 import { habitIconSymbol } from '@/data/habit-options';
 import { useAchievements } from '@/hooks/use-achievements';
@@ -12,6 +14,7 @@ import { openAchievements } from '@/utils/navigation';
 import { achievementProgress } from './achievement-card';
 
 export function AchievementCelebration() {
+  const { styles } = useAppStyles(createStyles);
   const { collection, storeReady, acknowledge } = useAchievements();
   const unseen = ACHIEVEMENTS.filter((badge) => collection.awards[badge.id] && !collection.seenBadgeIds.includes(badge.id));
   if (!storeReady || unseen.length === 0) return null;
@@ -24,6 +27,7 @@ export function AchievementCelebration() {
 }
 
 export function AchievementsSummaryCard({ today = false }: { today?: boolean }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { collection, storeReady, status, evaluation, acknowledge } = useAchievements();
   const daily = useDailyProgress();
   const { habits, status: habitsStatus } = useHabits();
@@ -54,8 +58,8 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
     {today && <AchievementCelebration />}
   </View>;
 }
-const styles = StyleSheet.create({
-  card: { backgroundColor: '#141322', borderWidth: 1, borderColor: '#343052', borderRadius: Radius.lg, overflow: 'hidden' },
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
+  card: { backgroundColor: Palette.achievementSummary, borderWidth: 1, borderColor: Palette.achievementSummaryBorder, borderRadius: Radius.lg, overflow: 'hidden' },
   body: { padding: 18, gap: 10, minHeight: 48 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' },
   eyebrow: { color: Palette.accentBlue, fontSize: 10, letterSpacing: 1.8, fontWeight: '700' },
@@ -64,7 +68,7 @@ const styles = StyleSheet.create({
   copy: { color: Palette.textSecondary, fontSize: 13, lineHeight: 20 },
   link: { color: Palette.accent, fontSize: 14, fontWeight: '600' },
   symbols: { flexDirection: 'row', gap: 10 },
-  encouragement: { color: '#C5BCFF', fontSize: 13, lineHeight: 20, padding: 18, paddingTop: 0 },
+  encouragement: { color: Palette.achievementEncouragement, fontSize: 13, lineHeight: 20, padding: 18, paddingTop: 0 },
   celebration: { borderTopWidth: 1, borderColor: Palette.border, padding: 16, gap: 6 },
   celebrationTitle: { color: Palette.success, fontSize: 15, fontWeight: '600' },
   action: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 12, alignSelf: 'flex-start' },

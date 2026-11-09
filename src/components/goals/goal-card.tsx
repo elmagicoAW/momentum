@@ -1,9 +1,12 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ConsistencySummary } from '@/components/goals/consistency-summary';
 import { StatusPill } from '@/components/goals/status-picker';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Goal } from '@/data/goal-storage';
 import { describeTimeline, type HabitConsistency } from '@/utils/goal-progress';
@@ -17,6 +20,7 @@ type Props = {
 };
 
 export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const linked = consistency?.linkedHabits ?? [];
   const color = linked[0]?.color ?? Palette.accent;
   const timeline = describeTimeline(goal, todayKey);
@@ -27,7 +31,7 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
       onPress={() => onPress(goal.id)}
       accessibilityRole="button"
       accessibilityHint="Opens the goal editor"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.header}>
         <View style={styles.headerText}>
@@ -52,7 +56,7 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
           <View style={styles.habitIcons}>
             {linked.slice(0, 5).map((habit) => (
               <View key={habit.id} style={[styles.habitIcon, { backgroundColor: `${habit.color}22` }]}>
-                <SymbolView name={habitIconSymbol(habit.icon)} size={14} tintColor={habit.color} />
+                <SymbolView name={habitIconSymbol(habit.icon)} size={14} tintColor={readableAccent(habit.color, Palette)} />
               </View>
             ))}
             {linked.length > 5 && <Text style={styles.more}>+{linked.length - 5}</Text>}
@@ -66,7 +70,7 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     gap: Spacing.three,
     padding: Spacing.three + 4,

@@ -1,12 +1,13 @@
+import { useAppTheme } from '@/hooks/use-app-theme';
 import { NativeTabs } from 'expo-router/native-tabs';
 
-import { Palette } from '@/constants/theme';
-
 export default function AppTabs() {
+  const { palette: Palette, scheme } = useAppTheme();
   return (
     <NativeTabs
       backgroundColor={Palette.surface}
       indicatorColor={Palette.accentSoft}
+      rippleColor={scheme === 'dark' ? undefined : Palette.ripple}
       iconColor={{ default: Palette.textMuted, selected: Palette.accent }}
       labelStyle={{
         default: { color: Palette.textMuted },

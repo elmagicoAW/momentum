@@ -1,10 +1,13 @@
+import type { AppPalette } from '@/constants/palettes';
+import { heatmapForeground, readableAccent } from '@/utils/theme-color';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { DayDetailPanel } from '@/components/insights/day-detail-panel';
 import { PeriodNav } from '@/components/insights/period-nav';
 import { plural, withAlpha } from '@/components/insights/format';
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { formatLongDateKey, formatMonthYear, monthGrid, parseLocalDateKey } from '@/utils/date';
 import {
   canStepMonth,
@@ -40,7 +43,9 @@ const LEVEL_ALPHA = [0, 0.3, 0.6, 1];
  *   shows that habit's status. Future days are never shaded; today is outlined
  *   and provisional; unreadable days get a red dot.
  */
-export function HeatmapCalendar({ index, habitId, color = Palette.accent }: Props) {
+export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const color = readableAccent(suppliedColor ?? Palette.accent, Palette);
   const habitMode = habitId !== undefined;
   const bounds = monthBounds(index);
   const [chosen, setChosen] = useState<MonthRef>(bounds.max);
@@ -157,6 +162,7 @@ function DayCell({
   selected: boolean;
   onPress: () => void;
 }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (!cell.inMonth) return <View style={styles.cellWrap} />;
 
   let backgroundColor: string = 'transparent';
@@ -175,12 +181,12 @@ function DayCell({
   } else if (habitMode) {
     if (cell.status === DayStatus.DONE) {
       backgroundColor = color;
-      textColor = Palette.background;
+      textColor = heatmapForeground(color, 1, Palette, Palette.background);
     } else if (cell.status === DayStatus.PARTIAL) {
-      backgroundColor = withAlpha(color, 0.25);
-      borderColor = withAlpha(color, 0.7);
+      backgroundColor = withAlpha(color, 0.25, Palette.accent);
+      borderColor = withAlpha(color, 0.7, Palette.accent);
       borderStyle = 'dashed';
-      textColor = Palette.text;
+      textColor = heatmapForeground(color, 0.25, Palette, Palette.text);
     } else if (cell.status === DayStatus.MISSED) {
       backgroundColor = Palette.ringTrack;
     } else {
@@ -189,8 +195,8 @@ function DayCell({
   } else if (cell.level === 0) {
     backgroundColor = Palette.ringTrack;
   } else {
-    backgroundColor = withAlpha(color, LEVEL_ALPHA[cell.level]);
-    textColor = cell.level === 3 ? Palette.background : Palette.text;
+    backgroundColor = withAlpha(color, LEVEL_ALPHA[cell.level], Palette.accent);
+    textColor = heatmapForeground(color, LEVEL_ALPHA[cell.level], Palette, cell.level === 3 ? Palette.background : Palette.text);
   }
   if (cell.isToday) {
     borderColor = Palette.text;
@@ -220,20 +226,21 @@ function DayCell({
 }
 
 function Legend({ color, habitMode }: { color: string; habitMode: boolean }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const items: { label: string; style: object }[] = habitMode
     ? [
         { label: 'Done', style: { backgroundColor: color } },
         {
           label: 'Partial',
-          style: { backgroundColor: withAlpha(color, 0.25), borderColor: withAlpha(color, 0.7), borderStyle: 'dashed' },
+          style: { backgroundColor: withAlpha(color, 0.25, Palette.accent), borderColor: withAlpha(color, 0.7, Palette.accent), borderStyle: 'dashed' },
         },
         { label: 'Not checked in', style: { backgroundColor: Palette.ringTrack } },
         { label: 'Not scheduled', style: { borderColor: Palette.border } },
       ]
     : [
         { label: 'None', style: { backgroundColor: Palette.ringTrack } },
-        { label: 'Some', style: { backgroundColor: withAlpha(color, 0.3) } },
-        { label: 'Most', style: { backgroundColor: withAlpha(color, 0.6) } },
+        { label: 'Some', style: { backgroundColor: withAlpha(color, 0.3, Palette.accent) } },
+        { label: 'Most', style: { backgroundColor: withAlpha(color, 0.6, Palette.accent) } },
         { label: 'All', style: { backgroundColor: color } },
         { label: 'Rest day', style: { borderColor: Palette.border } },
       ];
@@ -263,7 +270,7 @@ function Legend({ color, habitMode }: { color: string; habitMode: boolean }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 12,
   },

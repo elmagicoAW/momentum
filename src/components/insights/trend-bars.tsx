@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatRate } from '@/components/insights/format';
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { trend, type InsightsIndex } from '@/utils/insights';
 
 type Kind = 'week' | 'month';
@@ -11,6 +13,7 @@ const BAR_HEIGHT = 120;
 
 /** Consistency per week (last 8) or month (last 6), drawn with plain Views. */
 export function TrendBars({ index }: { index: InsightsIndex }) {
+  const { styles } = useAppStyles(createStyles);
   const [kind, setKind] = useState<Kind>('week');
   const data = useMemo(() => trend(index, kind), [index, kind]);
 
@@ -73,7 +76,7 @@ export function TrendBars({ index }: { index: InsightsIndex }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 12,
   },

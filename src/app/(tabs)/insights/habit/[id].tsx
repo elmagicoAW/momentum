@@ -1,3 +1,6 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useMemo, type ReactNode } from 'react';
@@ -9,7 +12,7 @@ import { DataNotesCard } from '@/components/insights/data-notes';
 import { formatRate, plural, withAlpha } from '@/components/insights/format';
 import { HeatmapCalendar } from '@/components/insights/heatmap-calendar';
 import { StatTile } from '@/components/insights/stat-tile';
-import { MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import { useInsights } from '@/hooks/use-insights';
 import { formatShortDate } from '@/utils/date';
@@ -20,6 +23,7 @@ import { describeSchedule } from '@/utils/schedule';
 
 /** Read-only history of one habit. */
 export default function HabitHistoryScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { status, index, retry } = useInsights();
   const habitIndex = index ? findHabit(index, id) : undefined;
@@ -70,8 +74,8 @@ export default function HabitHistoryScreen() {
     body = (
       <>
         <View style={styles.hero}>
-          <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14) }]}>
-            <SymbolView name={habitIconSymbol(habit.icon)} size={28} tintColor={habit.color} />
+          <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14, Palette.accent) }]}>
+            <SymbolView name={habitIconSymbol(habit.icon)} size={28} tintColor={readableAccent(habit.color, Palette)} />
           </View>
           <View style={styles.heroText}>
             <Text style={styles.title} numberOfLines={2} accessibilityRole="header">
@@ -136,7 +140,7 @@ export default function HabitHistoryScreen() {
         <Pressable
           onPress={() => openHabitEditor(habit.id)}
           accessibilityRole="button"
-          android_ripple={{ color: 'rgba(255,255,255,0.08)' }}
+          android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.editButton, pressed && styles.pressed]}>
           <Text style={styles.editText}>Edit habit</Text>
         </Pressable>
@@ -153,7 +157,7 @@ export default function HabitHistoryScreen() {
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel="Back"
-            android_ripple={{ color: 'rgba(255,255,255,0.08)', borderless: true }}
+            android_ripple={{ color: Palette.rippleSubtle, borderless: true }}
             style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}>
             <SymbolView
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }}
@@ -171,7 +175,7 @@ export default function HabitHistoryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -268,7 +272,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: Radius.pill,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     overflow: 'hidden',
   },
   editText: {

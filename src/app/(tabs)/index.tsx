@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,7 +12,7 @@ import { TodaysPlan } from '@/components/routines/todays-plan';
 import { HabitCard } from '@/components/today/habit-card';
 import { ProgressNotices, saveLabel } from '@/components/today/progress-notices';
 import { ProgressRing } from '@/components/today/progress-ring';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { getDailyMotivation } from '@/data/demo-habits';
 import { shouldShowNamePrompt } from '@/data/profile-storage';
 import { useCurrentDate } from '@/hooks/use-current-date';
@@ -34,6 +36,7 @@ function progressMessage(done: number, total: number) {
 }
 
 export default function TodayScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const now = useCurrentDate();
   const daily = useDailyProgress();
   const { record, status, saveState, canEdit } = daily;
@@ -207,7 +210,7 @@ export default function TodayScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -319,7 +322,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.lg,
     backgroundColor: Palette.accentBlueSoft,
     borderWidth: 1,
-    borderColor: 'rgba(91, 141, 239, 0.25)',
+    borderColor: Palette.blueBorder,
   },
   quote: {
     color: Palette.text,

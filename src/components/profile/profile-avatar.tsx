@@ -1,7 +1,10 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { ProfileAvatar as Avatar } from '@/data/profile-storage';
 import { initialsFor } from '@/utils/profile-validation';
@@ -20,6 +23,7 @@ const PERSON_SYMBOL = { ios: 'person.fill', android: 'person', web: 'person' } a
  * accessibility label. Shared by Today, Settings and the editor so they always match.
  */
 export function ProfileAvatar({ avatar, displayName, size = 48 }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const box = { width: size, height: size };
 
   if (avatar.kind === 'icon') {
@@ -28,7 +32,7 @@ export function ProfileAvatar({ avatar, displayName, size = 48 }: Props) {
         style={[styles.base, box, { backgroundColor: `${avatar.color}22`, borderColor: `${avatar.color}66` }]}
         accessible={false}
         importantForAccessibility="no-hide-descendants">
-        <SymbolView name={habitIconSymbol(avatar.icon)} size={size * 0.46} tintColor={avatar.color} />
+        <SymbolView name={habitIconSymbol(avatar.icon)} size={size * 0.46} tintColor={readableAccent(avatar.color, Palette)} />
       </View>
     );
   }
@@ -50,7 +54,7 @@ export function ProfileAvatar({ avatar, displayName, size = 48 }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   base: {
     borderRadius: Radius.pill,
     borderWidth: 1,
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   },
   accent: {
     backgroundColor: Palette.accentSoft,
-    borderColor: 'rgba(139, 124, 246, 0.4)',
+    borderColor: Palette.accentBorderStrong,
   },
   initials: {
     color: Palette.accent,

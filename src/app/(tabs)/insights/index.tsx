@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { useMemo, type ReactNode } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -11,13 +13,14 @@ import { HeatmapCalendar } from '@/components/insights/heatmap-calendar';
 import { StatTile } from '@/components/insights/stat-tile';
 import { TrendBars } from '@/components/insights/trend-bars';
 import { WeeklyReviewCard } from '@/components/insights/weekly-review-card';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { useInsights } from '@/hooks/use-insights';
 import { dataNotes, hasFinishedHistory, overview, OVERVIEW_DAYS, summarizeHabit } from '@/utils/insights';
 import { HABITS_HREF, openHabitHistory } from '@/utils/navigation';
 
 /** Insights tab — strictly read-only. */
 export default function InsightsScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { status, index, todayKey, retry } = useInsights();
 
   const derived = useMemo(() => {
@@ -146,6 +149,7 @@ export default function InsightsScreen() {
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.sectionWrap}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -154,7 +158,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

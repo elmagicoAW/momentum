@@ -1,7 +1,10 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 
 type Props = {
   label: string;
@@ -24,6 +27,7 @@ type Props = {
  * hollow and dimmed, announce themselves as disabled, and explain why.
  */
 export function PeriodNav({ label, caption, onPrev, onNext, canPrev, canNext, unit, resetLabel, onReset }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -58,7 +62,7 @@ export function PeriodNav({ label, caption, onPrev, onNext, canPrev, canNext, un
           hitSlop={6}
           accessibilityRole="button"
           accessibilityLabel={`Jump to ${resetLabel.toLowerCase()}`}
-          android_ripple={{ color: 'rgba(255,255,255,0.08)' }}
+          android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.reset, pressed && styles.pressed]}>
           <Text style={styles.resetText}>{resetLabel} ›</Text>
         </Pressable>
@@ -80,6 +84,7 @@ function NavButton({
   label: string;
   disabledHint: string;
 }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const name =
     direction === 'prev'
       ? ({ ios: 'chevron.left', android: 'chevron_left', web: 'chevron_left' } as const)
@@ -92,14 +97,14 @@ function NavButton({
       accessibilityLabel={label}
       accessibilityHint={disabled ? disabledHint : undefined}
       accessibilityState={{ disabled }}
-      android_ripple={disabled ? undefined : { color: 'rgba(255,255,255,0.12)', borderless: true }}
+      android_ripple={disabled ? undefined : { color: Palette.rippleStrong, borderless: true }}
       style={({ pressed }) => [styles.button, disabled ? styles.buttonDisabled : styles.buttonEnabled, pressed && styles.pressed]}>
-      <SymbolView name={name} size={22} weight="bold" tintColor={disabled ? Palette.textMuted : Palette.text} />
+      <SymbolView name={name} size={22} weight="bold" tintColor={readableAccent(disabled ? Palette.textMuted : Palette.text, Palette)} />
     </Pressable>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   container: {
     gap: 8,
   },
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     backgroundColor: 'transparent',
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     borderStyle: 'dashed',
     opacity: 0.45,
   },

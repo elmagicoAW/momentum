@@ -1,12 +1,14 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GoalCard } from '@/components/goals/goal-card';
-import { GOAL_STATUS_META } from '@/components/goals/status-picker';
+import { goalStatusMeta } from '@/components/goals/status-picker';
 import { EmptyState } from '@/components/habits/empty-state';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import type { Goal, GoalStatus } from '@/data/goal-storage';
 import { useCompletionHistory } from '@/hooks/use-completion-history';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
@@ -28,6 +30,8 @@ function sortGoals(goals: readonly Goal[]): Goal[] {
 }
 
 export default function GoalsScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const GOAL_STATUS_META = goalStatusMeta(Palette);
   const { goals, status, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
   const history = useCompletionHistory();
@@ -69,7 +73,7 @@ export default function GoalsScreen() {
               accessibilityHint="Opens the form to create a new goal"
               accessibilityState={{ disabled: !ready }}
               hitSlop={8}
-              android_ripple={{ color: 'rgba(255,255,255,0.18)' }}
+              android_ripple={{ color: Palette.rippleOnAccent }}
               style={({ pressed }) => [styles.addButton, !ready && styles.addButtonDisabled, pressed && styles.pressed]}>
               <Text style={styles.addButtonText}>+ New Goal</Text>
             </Pressable>
@@ -169,7 +173,7 @@ export default function GoalsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -225,7 +229,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   addButtonText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -287,7 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   noticeText: {
     color: Palette.text,

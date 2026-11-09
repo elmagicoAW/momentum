@@ -1,8 +1,11 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import type { AchievementDefinition } from '@/data/achievement-definitions';
 import type { AchievementAward } from '@/data/achievement-storage';
 import { habitIconSymbol } from '@/data/habit-options';
@@ -18,6 +21,7 @@ export function achievementProgress(badge: AchievementDefinition, evaluation: Ac
 export function AchievementCard({ badge, award, evaluation, wide }: {
   badge: AchievementDefinition; award?: AchievementAward; evaluation: AchievementEvaluation | null; wide: boolean;
 }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const [expanded, setExpanded] = useState(false);
   const progress = evaluation ? achievementProgress(badge, evaluation) : 'Progress unavailable';
   const value = award ? badge.target : evaluation ? Math.min(evaluation.metrics[badge.metric], badge.target) : null;
@@ -28,7 +32,7 @@ export function AchievementCard({ badge, award, evaluation, wide }: {
         style={({ pressed }) => [styles.body, pressed && { opacity: 0.75 }]}>
         <View style={styles.top}>
           <View style={[styles.icon, award && styles.earnedIcon]} accessible={false} importantForAccessibility="no-hide-descendants">
-            <SymbolView name={habitIconSymbol(badge.icon)} size={27} tintColor={award ? Palette.accent : Palette.textSecondary} />
+            <SymbolView name={habitIconSymbol(badge.icon)} size={27} tintColor={readableAccent(award ? Palette.accent : Palette.textSecondary, Palette)} />
           </View>
           <Text style={[styles.state, award && styles.success]}>{award ? '✓ Earned' : 'Locked'}</Text>
         </View>
@@ -52,10 +56,10 @@ export function AchievementCard({ badge, award, evaluation, wide }: {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: { width: '100%', backgroundColor: Palette.surface, borderRadius: Radius.lg, borderWidth: 1, borderColor: Palette.border, overflow: 'hidden' },
   wide: { width: '48.5%' },
-  earned: { borderColor: '#47406C', backgroundColor: '#171424' },
+  earned: { borderColor: Palette.achievementEarnedBorder, backgroundColor: Palette.achievementEarned },
   body: { padding: 18, gap: 10, minHeight: 240 },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   icon: { width: 54, height: 54, borderRadius: Radius.md, backgroundColor: Palette.surfaceRaised, alignItems: 'center', justifyContent: 'center' },

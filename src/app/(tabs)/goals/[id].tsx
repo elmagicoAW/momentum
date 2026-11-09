@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
@@ -6,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ConsistencySummary } from '@/components/goals/consistency-summary';
 import { GoalForm } from '@/components/goals/goal-form';
 import { EmptyState } from '@/components/habits/empty-state';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { Goal } from '@/data/goal-storage';
 import { useCompletionHistory } from '@/hooks/use-completion-history';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
@@ -18,6 +20,7 @@ import { computeHabitConsistency } from '@/utils/goal-progress';
 import { closeGoalEditor } from '@/utils/navigation';
 
 export default function EditGoalScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { id } = useLocalSearchParams<{ id: string }>();
   const { goals, status, updateGoal, deleteGoal, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
@@ -118,7 +121,7 @@ export default function EditGoalScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

@@ -7,44 +7,15 @@ import '@/global.css';
 
 import { Platform } from 'react-native';
 
-export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
-} as const;
+import { Palettes } from '@/constants/palettes';
+export { Palettes, type AppPalette, type AppScheme } from '@/constants/palettes';
 
-/**
- * MOMENTUM brand palette — premium dark mode. The app is dark-only for now.
- */
-export const Palette = {
-  background: '#08080D',
-  surface: '#12121A',
-  surfaceRaised: '#1A1A25',
-  border: '#24243A',
-  text: '#F4F4F8',
-  textSecondary: '#9A9AB0',
-  textMuted: '#5E5E75',
-  accent: '#8B7CF6', // violet
-  accentSoft: 'rgba(139, 124, 246, 0.14)',
-  accentBlue: '#5B8DEF',
-  accentBlueSoft: 'rgba(91, 141, 239, 0.14)',
-  success: '#4ADE9B',
-  danger: '#F87171',
-  dangerSoft: 'rgba(248, 113, 113, 0.12)',
-  ring: '#8B7CF6',
-  ringTrack: '#1F1F2E',
-} as const;
+// Compatibility names for shared starter primitives, derived from the same palette authority.
+const sharedColors = (palette: typeof Palettes.dark) => ({
+  text: palette.text, background: palette.background, backgroundElement: palette.surfaceRaised,
+  backgroundSelected: palette.ringTrack, textSecondary: palette.textSecondary,
+});
+export const Colors = { light: sharedColors(Palettes.light), dark: sharedColors(Palettes.dark) };
 
 export const Radius = {
   sm: 10,

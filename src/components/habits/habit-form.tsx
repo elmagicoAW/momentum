@@ -1,3 +1,6 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { useCallback, useRef, useState, type ReactNode } from 'react';
 import {
@@ -21,7 +24,7 @@ import { CountFields } from '@/components/habits/count-fields';
 import { IconPicker } from '@/components/habits/icon-picker';
 import { TrackingTypePicker } from '@/components/habits/tracking-type-picker';
 import { WeekdayPicker } from '@/components/habits/weekday-picker';
-import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import { createStepId, type HabitInput, type TrackingType } from '@/data/habit-storage';
 import {
@@ -55,6 +58,7 @@ function errorMessage(error: unknown, fallback: string) {
 }
 
 export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
+  const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const [draft, setDraft] = useState<HabitDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState<Busy>('idle');
@@ -152,10 +156,10 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
             disabled={locked}
             accessibilityRole="button"
             accessibilityState={{ disabled: locked, busy: busy === 'saving' }}
-            android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+            android_ripple={{ color: Palette.rippleStrong }}
             style={({ pressed }) => [styles.saveButton, locked && styles.saveDisabled, pressed && styles.pressed]}>
             {busy === 'saving' ? (
-              <ActivityIndicator size="small" color={Palette.background} />
+              <ActivityIndicator size="small" color={Palette.onAccent} />
             ) : (
               <Text style={styles.saveText}>{submitLabel}</Text>
             )}
@@ -179,7 +183,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
               {/* Preview */}
               <View style={styles.preview}>
                 <View style={[styles.previewIcon, { backgroundColor: `${draft.color}22` }]}>
-                  <SymbolView name={habitIconSymbol(draft.icon)} size={28} tintColor={draft.color} />
+                  <SymbolView name={habitIconSymbol(draft.icon)} size={28} tintColor={readableAccent(draft.color, Palette)} />
                 </View>
                 <Text style={styles.previewName} numberOfLines={1}>
                   {draft.name.trim() || 'New habit'}
@@ -188,6 +192,8 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
 
               <Field label="Name" error={visibleErrors.name} counter={`${draft.name.length}/${NAME_MAX_LENGTH}`}>
                 <TextInput
+                  selectionColor={Palette.accent}
+                  keyboardAppearance={scheme}
                   value={draft.name}
                   onChangeText={(text) => update('name', text)}
                   placeholder="e.g. Morning walk"
@@ -207,6 +213,8 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                 error={visibleErrors.description}
                 counter={`${draft.description.length}/${DESCRIPTION_MAX_LENGTH}`}>
                 <TextInput
+                  selectionColor={Palette.accent}
+                  keyboardAppearance={scheme}
                   value={draft.description}
                   onChangeText={(text) => update('description', text)}
                   placeholder="When, where or how much"
@@ -269,7 +277,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                   onPress={handleDelete}
                   disabled={locked}
                   accessibilityRole="button"
-                  android_ripple={{ color: 'rgba(248,113,113,0.15)' }}
+                  android_ripple={{ color: Palette.rippleDanger }}
                   style={({ pressed }) => [styles.deleteButton, pressed && styles.pressed]}>
                   {busy === 'deleting' ? (
                     <ActivityIndicator size="small" color={Palette.danger} />
@@ -299,6 +307,7 @@ function Field({
   counter?: string;
   children: ReactNode;
 }) {
+  const { styles } = useAppStyles(createStyles);
   return (
     <View style={styles.field}>
       <View style={styles.fieldHeader}>
@@ -318,7 +327,7 @@ function Field({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,
@@ -342,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.pill,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -367,7 +376,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   saveText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -381,7 +390,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.dangerSoft,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
   },
   failureText: {
     color: Palette.text,
@@ -448,7 +457,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.md,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   multiline: {
     minHeight: 88,
@@ -465,7 +474,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: 'rgba(248, 113, 113, 0.35)',
+    borderColor: Palette.dangerBorder,
     backgroundColor: Palette.dangerSoft,
     alignItems: 'center',
     justifyContent: 'center',

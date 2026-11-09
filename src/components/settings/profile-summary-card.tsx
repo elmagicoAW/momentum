@@ -1,8 +1,10 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ProfileAvatar } from '@/components/profile/profile-avatar';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { Profile } from '@/data/profile-storage';
 import type { ProfileStatus } from '@/hooks/use-profile';
 
@@ -15,6 +17,7 @@ type Props = {
 
 /** Hero card at the top of Settings. Loading and load errors stay inside the card. */
 export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   if (status === 'loading') {
     return (
       <View style={[styles.card, styles.center]}>
@@ -42,7 +45,7 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
         <Pressable
           onPress={onRetry}
           accessibilityRole="button"
-          android_ripple={{ color: 'rgba(255,255,255,0.12)' }}
+          android_ripple={{ color: Palette.rippleStrong }}
           style={({ pressed }) => [styles.retry, pressed && styles.pressed]}>
           <Text style={styles.retryText}>Try again</Text>
         </Pressable>
@@ -56,7 +59,7 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
       onPress={onEdit}
       accessibilityRole="button"
       accessibilityLabel={name ? `Profile: ${name}. Edit name and avatar` : 'Add your name. Edit name and avatar'}
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, styles.row, pressed && styles.pressed]}>
       <ProfileAvatar avatar={profile.avatar} displayName={name} size={56} />
       <View style={styles.text}>
@@ -74,14 +77,14 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   card: {
     padding: 20,
     gap: Spacing.three,
     borderRadius: Radius.lg,
     backgroundColor: Palette.surface,
     borderWidth: 1,
-    borderColor: 'rgba(139, 124, 246, 0.3)',
+    borderColor: Palette.accentBorderSubtle,
     overflow: 'hidden',
   },
   center: {
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   retryText: {
-    color: Palette.background,
+    color: Palette.onAccent,
     fontSize: 15,
     fontWeight: '700',
   },

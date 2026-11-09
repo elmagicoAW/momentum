@@ -1,8 +1,11 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MiniBar, NowChip, RoutineIcon, TimeChip } from '@/components/routines/routine-badges';
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import type { RoutinesStatus } from '@/hooks/use-routines';
 import { describeRoutineDay, type DailyPlan, type RoutineDay } from '@/utils/routine-progress';
 
@@ -21,6 +24,7 @@ type Props = {
  * no routine has habits due, so Today looks exactly as before for those users.
  */
 export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: Props) {
+  const { styles } = useAppStyles(createStyles);
   if (routinesStatus === 'load-error') {
     return (
       <Pressable
@@ -82,6 +86,7 @@ export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: 
 }
 
 function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOpen: (id: string) => void }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { routine } = day;
   const complete = day.state === 'complete';
   const summary = describeRoutineDay(day);
@@ -91,7 +96,7 @@ function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOp
       accessibilityRole="button"
       accessibilityLabel={`${routine.title}${isNow ? ', suggested now' : ''}, ${summary}`}
       accessibilityHint="Opens the routine"
-      android_ripple={{ color: 'rgba(255,255,255,0.06)' }}
+      android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [
         styles.row,
         isNow && styles.rowNow,
@@ -108,7 +113,7 @@ function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOp
         </View>
         <View style={styles.progressRow}>
           <MiniBar ratio={day.done / day.total} color={routine.color} width={72} />
-          <Text style={[styles.count, complete && { color: routine.color }]}>
+          <Text style={[styles.count, complete && { color: readableAccent(routine.color, Palette) }]}>
             {day.done}/{day.total}
           </Text>
         </View>
@@ -118,7 +123,7 @@ function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOp
           <SymbolView
             name={{ ios: 'checkmark', android: 'check', web: 'check' }}
             size={14}
-            tintColor={Palette.background}
+            tintColor={Palette.onAccent}
           />
         </View>
       ) : (
@@ -132,7 +137,7 @@ function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOp
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   section: {
     gap: 12,
   },
@@ -180,11 +185,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   rowNow: {
-    borderColor: 'rgba(139, 124, 246, 0.55)',
-    backgroundColor: '#15142A',
+    borderColor: Palette.accentBorderFocus,
+    backgroundColor: Palette.planHighlight,
   },
   rowDone: {
-    borderColor: 'rgba(139, 124, 246, 0.35)',
+    borderColor: Palette.accentBorder,
   },
   pressed: {
     opacity: 0.85,

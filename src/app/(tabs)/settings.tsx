@@ -1,3 +1,5 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { useDataBackup } from '@/hooks/use-data-backup';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
@@ -8,7 +10,7 @@ import { ProfileSummaryCard } from '@/components/settings/profile-summary-card';
 import { AchievementsSummaryCard } from '@/components/achievements/achievements-summary-card';
 import { SettingsRow } from '@/components/settings/settings-row';
 import { SettingsSection } from '@/components/settings/settings-section';
-import { BottomTabInset, MaxContentWidth, Palette, Spacing } from '@/constants/theme';
+import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
 import { useProfile } from '@/hooks/use-profile';
@@ -32,6 +34,7 @@ const APP_VERSION = Constants.expoConfig?.version;
  * Habits, routines and reminders are managed in their own tabs, not here.
  */
 export default function SettingsScreen() {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { result } = useDataBackup();
   const { profile, status: profileStatus, reload: reloadProfile } = useProfile();
   const { habits, status: habitsStatus } = useHabits();
@@ -150,7 +153,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: Palette.background,

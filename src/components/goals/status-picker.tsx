@@ -1,13 +1,16 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { GOAL_STATUSES, type GoalStatus } from '@/data/goal-storage';
 
-export const GOAL_STATUS_META: Record<GoalStatus, { label: string; color: string; soft: string }> = {
+export const goalStatusMeta = (Palette: AppPalette): Record<GoalStatus, { label: string; color: string; soft: string }> => ({
   active: { label: 'Active', color: Palette.accent, soft: Palette.accentSoft },
-  paused: { label: 'Paused', color: Palette.textSecondary, soft: 'rgba(154, 154, 176, 0.14)' },
-  completed: { label: 'Completed', color: Palette.success, soft: 'rgba(74, 222, 155, 0.14)' },
-};
+  paused: { label: 'Paused', color: Palette.textSecondary, soft: Palette.pausedSoft },
+  completed: { label: 'Completed', color: Palette.success, soft: Palette.successSoft },
+});
 
 type Props = {
   value: GoalStatus;
@@ -16,6 +19,8 @@ type Props = {
 };
 
 export function StatusPicker({ value, onChange, disabled }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const GOAL_STATUS_META = goalStatusMeta(Palette);
   return (
     <View style={styles.track} accessibilityRole="radiogroup">
       {GOAL_STATUSES.map((status) => {
@@ -30,7 +35,7 @@ export function StatusPicker({ value, onChange, disabled }: Props) {
             accessibilityState={{ selected, disabled }}
             accessibilityLabel={meta.label}
             style={[styles.segment, selected && { backgroundColor: meta.soft, borderColor: meta.color }]}>
-            <Text style={[styles.label, selected && { color: meta.color }]}>{meta.label}</Text>
+            <Text style={[styles.label, selected && { color: readableAccent(meta.color, Palette) }]}>{meta.label}</Text>
           </Pressable>
         );
       })}
@@ -40,15 +45,17 @@ export function StatusPicker({ value, onChange, disabled }: Props) {
 
 /** Small read-only pill used on cards. */
 export function StatusPill({ status }: { status: GoalStatus }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const GOAL_STATUS_META = goalStatusMeta(Palette);
   const meta = GOAL_STATUS_META[status];
   return (
     <View style={[styles.pill, { backgroundColor: meta.soft }]}>
-      <Text style={[styles.pillText, { color: meta.color }]}>{meta.label}</Text>
+      <Text style={[styles.pillText, { color: readableAccent(meta.color, Palette) }]}>{meta.label}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   track: {
     flexDirection: 'row',
     gap: 8,
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
     minHeight: 48,
     borderRadius: Radius.md,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
     backgroundColor: Palette.surface,
     alignItems: 'center',
     justifyContent: 'center',

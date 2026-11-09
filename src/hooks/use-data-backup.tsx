@@ -1,10 +1,12 @@
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, Fragment, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import { ActivityIndicator, BackHandler, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { backupSupported, hashBackup, journalFiles, saveBackup, shareBackup } from '@/data/backup-files';
 import { createBackupService, RecoveryBlocked } from '@/data/backup-service';
 import type { RawRecord } from '@/data/backup-keys';
@@ -35,6 +37,7 @@ const boot = () => {
 };
 
 export function DataBackupProvider({ children }: { children: ReactNode }) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const [phase, setPhase] = useState<'loading' | 'ready' | 'applying' | 'blocked'>(backupSupported ? 'loading' : 'ready');
   const [epoch, setEpoch] = useState(() => persistence.generation());
   const [unavailableReason, setUnavailableReason] = useState(backupSupported ? '' : 'Manual Data & Backup is available in the Android/iOS app.');
@@ -113,9 +116,10 @@ export function useDataBackup() {
   const value = useContext(BackupContext); if (!value) throw new Error('Missing DataBackupProvider'); return value;
 }
 export function Action({ label, onPress, disabled = false, danger = false }: { label: string; onPress: () => void; disabled?: boolean; danger?: boolean }) {
+  const { styles } = useAppStyles(createStyles);
   return <Pressable accessibilityRole="button" accessibilityState={{ disabled }} disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.button, danger && styles.danger, (disabled || pressed) && { opacity: 0.6 }]}><Text style={styles.buttonText}>{label}</Text></Pressable>;
 }
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   overlay: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: Palette.background, zIndex: 1000 }, safe: { flex: 1 },
   content: { padding: Spacing.four, gap: Spacing.three, flexGrow: 1, justifyContent: 'center', width: '100%', maxWidth: 800, alignSelf: 'center' },
   title: { color: Palette.text, fontWeight: '700', fontSize: 25 }, text: { color: Palette.textSecondary, fontSize: 16, lineHeight: 24 },

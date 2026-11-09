@@ -1,6 +1,9 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Palette, Radius, Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 
 type Props = {
   label: string;
@@ -13,12 +16,13 @@ type Props = {
 };
 
 export function StatTile({ label, value, caption, color, badge }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
     <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}${caption ? `, ${caption}` : ''}${badge ? `, ${badge}` : ''}`}>
       <Text style={styles.label} numberOfLines={1}>
         {label}
       </Text>
-      <Text style={[styles.value, color ? { color } : null]} numberOfLines={1} adjustsFontSizeToFit>
+      <Text style={[styles.value, color ? { color: readableAccent(color, Palette) } : null]} numberOfLines={1} adjustsFontSizeToFit>
         {value}
       </Text>
       {caption ? (
@@ -35,7 +39,7 @@ export function StatTile({ label, value, caption, color, badge }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   tile: {
     flexGrow: 1,
     flexBasis: '45%',

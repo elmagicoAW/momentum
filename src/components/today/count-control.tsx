@@ -1,7 +1,10 @@
+import { readableAccent } from '@/utils/theme-color';
+import type { AppPalette } from '@/constants/palettes';
+import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Palette, Radius } from '@/constants/theme';
+import { Radius } from '@/constants/theme';
 import { COUNT_VALUE_MAX } from '@/data/completion-storage';
 
 type Props = {
@@ -14,6 +17,7 @@ type Props = {
 
 /** − / + buttons for a Count habit. 44 dp targets, plus a screen-reader "adjustable" action. */
 export function CountControl({ value, label, color, disabled, onAdjust }: Props) {
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const canDecrease = !disabled && value > 0;
   const canIncrease = !disabled && value < COUNT_VALUE_MAX;
 
@@ -33,7 +37,7 @@ export function CountControl({ value, label, color, disabled, onAdjust }: Props)
         onPress={() => onAdjust(-1)}
         disabled={!canDecrease}
         hitSlop={4}
-        android_ripple={{ color: 'rgba(255,255,255,0.12)', borderless: true }}
+        android_ripple={{ color: Palette.rippleStrong, borderless: true }}
         style={({ pressed }) => [styles.button, !canDecrease && styles.buttonDisabled, pressed && styles.pressed]}>
         <SymbolView name={{ ios: 'minus', android: 'remove', web: 'remove' }} size={18} tintColor={Palette.text} />
       </Pressable>
@@ -41,20 +45,20 @@ export function CountControl({ value, label, color, disabled, onAdjust }: Props)
         onPress={() => onAdjust(1)}
         disabled={!canIncrease}
         hitSlop={4}
-        android_ripple={{ color: 'rgba(255,255,255,0.18)', borderless: true }}
+        android_ripple={{ color: Palette.rippleOnAccent, borderless: true }}
         style={({ pressed }) => [
           styles.button,
           { backgroundColor: `${color}33`, borderColor: `${color}66` },
           !canIncrease && styles.buttonDisabled,
           pressed && styles.pressed,
         ]}>
-        <SymbolView name={{ ios: 'plus', android: 'add', web: 'add' }} size={18} tintColor={color} />
+        <SymbolView name={{ ios: 'plus', android: 'add', web: 'add' }} size={18} tintColor={readableAccent(color, Palette)} />
       </Pressable>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (Palette: AppPalette) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Palette.surfaceRaised,
     borderWidth: 1,
-    borderColor: Palette.border,
+    borderColor: Palette.controlBorder,
   },
   buttonDisabled: {
     opacity: 0.35,
