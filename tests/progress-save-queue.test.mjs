@@ -10,6 +10,21 @@ import { deferred } from './support/fixtures.mjs';
 const tick = () => new Promise((r) => setTimeout(r, 0));
 
 describe('daily progress save queue (shared by Today and routines)', () => {
+  test('synchronous revisions invalidate in-flight evaluations even when React has not rendered', async () => {
+    const gate = deferred();
+    const queue = createSaveQueue(async () => gate.promise, () => {});
+    assert.equal(queue.revision(), 0);
+    queue.enqueue('2026-11-08', { entries: {} });
+    assert.equal(queue.revision(), 1);
+    queue.enqueue('2026-11-08', { entries: { a: { type: 'tick', done: true } } });
+    assert.equal(queue.revision(), 2);
+    assert.equal(queue.finishedRevision('2026-11-09'), 0, 'pending writes are never successful evidence');
+    gate.resolve(); await tick();
+    assert.equal(queue.hasPending(), false);
+    assert.equal(queue.revision(), 4, 'both the interim and latest write succeeded');
+    assert.equal(queue.finishedRevision('2026-11-08'), 0, 'same-day saves do not dirty finished history');
+    assert.equal(queue.finishedRevision('2026-11-09'), 2, 'previous-day saves dirty finished history');
+  });
   test('reports saving → saved only after the write is on disk', async () => {
     const states = [];
     const gate = deferred();

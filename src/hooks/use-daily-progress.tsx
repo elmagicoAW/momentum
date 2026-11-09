@@ -34,6 +34,9 @@ type DailyProgressValue = {
   record: DayRecord;
   status: DayLoadStatus;
   saveState: SaveState;
+  /** Stable synchronous persistence guard; includes every queued local date. */
+  persistence: { snapshot: (today: string) => { pending: boolean; revision: number; finishedRevision: number } };
+  drainRevision: number;
   /** False while loading or after a failed load — taps are ignored then. */
   canEdit: boolean;
   toggleTick: (habit: Habit) => void;
@@ -76,6 +79,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
   // until that date's data arrives (so nothing is reset synchronously in an effect).
   const [day, setDay] = useState<DayState>({ dateKey: null, record: EMPTY, status: 'loading' });
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [drainRevision, setDrainRevision] = useState(0);
   const [loadAttempt, setLoadAttempt] = useState(0);
   const current = day.dateKey === dateKey ? day : { dateKey, record: EMPTY, status: 'loading' as const };
   const { record, status } = current;
@@ -84,12 +88,18 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
   // Date whose data is loaded and safe to write; null while loading or after an error.
   const loadedDateRef = useRef<string | null>(null);
   // Serialized, coalescing, retrying writer (see save-queue.ts). One per provider.
-  const [queue] = useState(() => createSaveQueue<DayRecord>(saveDay, setSaveState));
+  const [queue] = useState(() => createSaveQueue<DayRecord>(saveDay, (state) => {
+    setSaveState(state);
+    if (state === 'saved') setDrainRevision((n) => n + 1);
+  }));
+  const persistence = useMemo(() => ({ snapshot: (today: string) => ({
+    pending: queue.hasPending(), revision: queue.revision(), finishedRevision: queue.finishedRevision(today),
+  }) }), [queue]);
 
   /** Applies a change to today's record, shows it, and queues it for saving. */
   const mutate = useCallback(
     (change: (current: DayRecord) => DayRecord) => {
-      if (loadedDateRef.current !== dateKey) return;
+      if (loadedDateRef.current !== dateKey || toLocalDateKey(new Date()) !== dateKey) return;
       const next = change(recordRef.current);
       if (next === recordRef.current) return;
       recordRef.current = next;
@@ -161,6 +171,8 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
       record,
       status,
       saveState,
+      persistence,
+      drainRevision,
       canEdit: status === 'ready',
       toggleTick,
       adjustCount,
@@ -168,7 +180,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
       retrySave,
       reloadDay,
     }),
-    [dateKey, record, status, saveState, toggleTick, adjustCount, toggleStep, retrySave, reloadDay],
+    [dateKey, record, status, saveState, persistence, drainRevision, toggleTick, adjustCount, toggleStep, retrySave, reloadDay],
   );
 
   return <DailyProgressContext.Provider value={value}>{children}</DailyProgressContext.Provider>;

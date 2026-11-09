@@ -24,6 +24,8 @@ type HabitsContextValue = {
   status: HabitsStatus;
   /** Retry loading after a failure. */
   reload: () => void;
+  /** Last successfully persisted list, for synchronous stale-evaluation guards. */
+  savedSnapshot: () => { habits: readonly Habit[]; ready: boolean };
   /** Each mutation resolves only after the change is saved, and throws if saving fails. */
   createHabit: (input: HabitInput) => Promise<Habit>;
   updateHabit: (id: string, input: HabitInput) => Promise<void>;
@@ -75,6 +77,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
   }, [loadAttempt]);
 
   const reload = useCallback(() => {
+    loadedRef.current = false;
     setStatus('loading');
     setLoadAttempt((n) => n + 1);
   }, []);
@@ -131,9 +134,10 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     [commit],
   );
 
+  const savedSnapshot = useCallback(() => ({ habits: habitsRef.current, ready: loadedRef.current }), []);
   const value = useMemo(
-    () => ({ habits, status, reload, createHabit, updateHabit, deleteHabit }),
-    [habits, status, reload, createHabit, updateHabit, deleteHabit],
+    () => ({ habits, status, reload, savedSnapshot, createHabit, updateHabit, deleteHabit }),
+    [habits, status, reload, savedSnapshot, createHabit, updateHabit, deleteHabit],
   );
 
   return <HabitsContext.Provider value={value}>{children}</HabitsContext.Provider>;

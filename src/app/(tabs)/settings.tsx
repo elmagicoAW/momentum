@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProfileSummaryCard } from '@/components/settings/profile-summary-card';
+import { AchievementsSummaryCard } from '@/components/achievements/achievements-summary-card';
 import { SettingsRow } from '@/components/settings/settings-row';
 import { SettingsSection } from '@/components/settings/settings-section';
 import { BottomTabInset, MaxContentWidth, Palette, Spacing } from '@/constants/theme';
@@ -54,6 +55,8 @@ export default function SettingsScreen() {
             onEdit={openProfileEditor}
             onRetry={reloadProfile}
           />
+
+          <AchievementsSummaryCard />
 
           <SettingsSection title="Appearance" footer="Momentum is designed for dark mode.">
             <SettingsRow
@@ -107,7 +110,7 @@ export default function SettingsScreen() {
               icon={{ ios: 'lock.fill', android: 'lock', web: 'lock' }}
               tint={Palette.success}
               label="Stored locally"
-              text="Your habits, goals, routines, check-ins and profile are stored locally on this device. Momentum has no account and no in-app cloud sync."
+              text="Your habits, goals, routines, check-ins, profile and achievements are stored locally on this device. Momentum has no account and no in-app cloud sync."
             />
             <SettingsRow
               variant="text"

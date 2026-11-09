@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { Palette } from '@/constants/theme';
+import { AchievementsProvider } from '@/hooks/use-achievements';
 import { DailyProgressProvider } from '@/hooks/use-daily-progress';
 import { GoalsProvider } from '@/hooks/use-goals';
 import { HabitsProvider } from '@/hooks/use-habits';
@@ -45,23 +46,26 @@ export default function RootLayout() {
       <ProfileProvider>
         <HabitsProvider>
           <DailyProgressProvider>
-            <GoalsProvider>
-              <RoutinesProvider>
-                <StatusBar style="light" />
-                <AnimatedSplashOverlay />
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: Palette.background },
-                  }}>
-                  <Stack.Screen name="(tabs)" />
-                  <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
-                  <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
-                  <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
-                  <Stack.Screen name="profile/edit" options={{ animation: 'slide_from_bottom' }} />
-                </Stack>
-              </RoutinesProvider>
-            </GoalsProvider>
+            <AchievementsProvider>
+              <GoalsProvider>
+                <RoutinesProvider>
+                  <StatusBar style="light" />
+                  <AnimatedSplashOverlay />
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      contentStyle: { backgroundColor: Palette.background },
+                    }}>
+                    <Stack.Screen name="(tabs)" />
+                    <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
+                    <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
+                    <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
+                    <Stack.Screen name="profile/edit" options={{ animation: 'slide_from_bottom' }} />
+                    <Stack.Screen name="achievements" options={{ animation: 'slide_from_right' }} />
+                  </Stack>
+                </RoutinesProvider>
+              </GoalsProvider>
+            </AchievementsProvider>
           </DailyProgressProvider>
         </HabitsProvider>
       </ProfileProvider>

@@ -104,6 +104,15 @@ export const PROFILE_EDIT_HREF = '/profile/edit' as Href;
 /** The Settings tab (`src/app/(tabs)/settings.tsx`). */
 export const SETTINGS_HREF = '/settings' as Href;
 
+export function openAchievements() {
+  router.push('/achievements' as Href);
+}
+
+export function closeAchievements() {
+  if (router.canGoBack()) router.back();
+  else router.replace(SETTINGS_HREF);
+}
+
 export function openProfileEditor() {
   router.push(PROFILE_EDIT_HREF);
 }

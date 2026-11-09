@@ -6,6 +6,8 @@ export type SaveQueue<T> = {
   /** Latest value for a key that is not on disk yet. */
   pendingValue: (key: string) => T | undefined;
   hasPending: () => boolean;
+  revision: () => number;
+  finishedRevision: (today: string) => number;
   /** Retries now (ends a backoff wait early). */
   retry: () => void;
 };
@@ -33,6 +35,8 @@ export function createSaveQueue<T>(
   let running = false;
   let failing = false;
   let wake: (() => void) | null = null;
+  let revision = 0;
+  const writtenDates = new Map<string, number>();
 
   const waitBeforeRetry = (ms: number) =>
     new Promise<void>((resolve) => {
@@ -57,6 +61,8 @@ export function createSaveQueue<T>(
         const [key, value] = pending.entries().next().value as [string, T];
         try {
           await save(key, value);
+          revision += 1;
+          writtenDates.set(key, (writtenDates.get(key) ?? 0) + 1);
           if (pending.get(key) === value) pending.delete(key);
           failures = 0;
         } catch (error) {
@@ -76,12 +82,19 @@ export function createSaveQueue<T>(
 
   return {
     enqueue(key, value) {
+      revision += 1;
       pending.set(key, value);
       if (!failing) onState('saving');
       void run();
     },
     pendingValue: (key) => pending.get(key),
     hasPending: () => pending.size > 0,
+    revision: () => revision,
+    finishedRevision: (today) => {
+      let total = 0;
+      for (const [date, count] of writtenDates) if (date < today) total += count;
+      return total;
+    },
     retry() {
       if (pending.size === 0) return;
       onState('saving');

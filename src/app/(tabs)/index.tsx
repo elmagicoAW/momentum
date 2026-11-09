@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
+import { AchievementsSummaryCard } from '@/components/achievements/achievements-summary-card';
 import { NamePromptCard } from '@/components/profile/name-prompt-card';
 import { ProfileAvatar } from '@/components/profile/profile-avatar';
 import { TodaysPlan } from '@/components/routines/todays-plan';
@@ -111,6 +112,8 @@ export default function TodayScreen() {
 
           {/* Optional first-run name card — below the progress, so habits stay in view */}
           {showNamePrompt && <NamePromptCard onAdd={openProfileEditor} onDismiss={dismissNamePrompt} />}
+
+          <AchievementsSummaryCard today />
 
           {/* Today's plan — only when a routine has habits due today */}
           {habitsReady && (
