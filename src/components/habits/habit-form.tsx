@@ -45,6 +45,8 @@ type Props = {
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
+  /** Optional reminder control, rendered with the live draft (saved separately by the screen). */
+  renderReminder?: (draft: HabitDraft, locked: boolean) => ReactNode;
 };
 
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
@@ -54,7 +56,7 @@ function errorMessage(error: unknown, fallback: string) {
   return `${fallback}${detail}`;
 }
 
-export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
+export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete, renderReminder }: Props) {
   const [draft, setDraft] = useState<HabitDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState<Busy>('idle');
@@ -263,6 +265,12 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
               <Field label="Color">
                 <ColorPicker value={draft.color} onChange={(color) => update('color', color)} />
               </Field>
+
+              {renderReminder && (
+                <Field label="Reminder" optional>
+                  {renderReminder(draft, locked)}
+                </Field>
+              )}
 
               {onDelete && (
                 <Pressable

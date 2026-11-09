@@ -43,6 +43,8 @@ type Props = {
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
+  /** Optional reminder control, rendered with the live draft (saved separately by the screen). */
+  renderReminder?: (draft: RoutineDraft, locked: boolean) => ReactNode;
 };
 
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
@@ -52,7 +54,7 @@ function errorMessage(error: unknown, fallback: string) {
   return `${fallback}${detail}`;
 }
 
-export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
+export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete, renderReminder }: Props) {
   const { habits, status: habitsStatus } = useHabits();
   const [draft, setDraft] = useState<RoutineDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
@@ -255,6 +257,12 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
                 <Text style={styles.hint}>Couldn’t load your habits. This routine can’t be saved right now.</Text>
               )}
             </Field>
+
+            {renderReminder && (
+              <Field label="Reminder" optional hint="Sent only on days when at least one of its habits is due.">
+                {renderReminder(draft, locked)}
+              </Field>
+            )}
 
             {onDelete && (
               <Pressable

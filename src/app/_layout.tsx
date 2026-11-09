@@ -7,6 +7,7 @@ import { Palette } from '@/constants/theme';
 import { DailyProgressProvider } from '@/hooks/use-daily-progress';
 import { GoalsProvider } from '@/hooks/use-goals';
 import { HabitsProvider } from '@/hooks/use-habits';
+import { RemindersProvider } from '@/hooks/use-reminders';
 import { RoutinesProvider } from '@/hooks/use-routines';
 
 SplashScreen.preventAutoHideAsync();
@@ -45,18 +46,21 @@ export default function RootLayout() {
         <DailyProgressProvider>
           <GoalsProvider>
             <RoutinesProvider>
-              <StatusBar style="light" />
-              <AnimatedSplashOverlay />
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: Palette.background },
-                }}>
-                <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
-                <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
-                <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
-              </Stack>
+              {/* Reads habits, routines and today's progress; never writes them. */}
+              <RemindersProvider>
+                <StatusBar style="light" />
+                <AnimatedSplashOverlay />
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: Palette.background },
+                  }}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
+                  <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
+                  <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
+                </Stack>
+              </RemindersProvider>
             </RoutinesProvider>
           </GoalsProvider>
         </DailyProgressProvider>

@@ -5,16 +5,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { HabitForm } from '@/components/habits/habit-form';
+import { HabitReminderSection, reportReminderOutcome } from '@/components/reminders/editor-reminders';
 import { Palette, Spacing } from '@/constants/theme';
 import type { Habit, TrackingType } from '@/data/habit-storage';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
+import { useReminderDraft } from '@/hooks/use-reminder-draft';
 import { useRoutines } from '@/hooks/use-routines';
 import { confirmDestructive } from '@/utils/confirm';
 import { hasAnyProgress } from '@/utils/habit-progress';
 import { habitToDraft } from '@/utils/habit-validation';
 import { closeHabitEditor } from '@/utils/navigation';
+import { DEFAULT_HABIT_REMINDER_TIME } from '@/utils/reminder-time';
 import { routinesContaining } from '@/utils/routine-progress';
 
 const TYPE_LABEL: Record<TrackingType, string> = { tick: 'Tick', count: 'Count', checklist: 'Checklist' };
@@ -25,6 +28,7 @@ export default function EditHabitScreen() {
   const { goals } = useGoals();
   const { routines } = useRoutines();
   const daily = useDailyProgress();
+  const reminder = useReminderDraft('habit', typeof id === 'string' ? id : null);
   // While a delete is in flight (and after it succeeds, until the screen closes),
   // keep showing the habit so the form stays mounted and can show errors.
   const [deleting, setDeleting] = useState<Habit | null>(null);
@@ -87,8 +91,20 @@ export default function EditHabitScreen() {
           }
         }
         await updateHabit(habit.id, input); // throws on failure → form stays open
+        // The habit is saved from here on; a reminder failure is reported, not thrown.
+        const outcome = await reminder.saveFor(habit.id);
         closeHabitEditor();
+        reportReminderOutcome('habit', outcome);
       }}
+      renderReminder={(draft, locked) => (
+        <HabitReminderSection
+          habitId={habit.id}
+          draft={draft}
+          value={reminder.valueFor(DEFAULT_HABIT_REMINDER_TIME)}
+          onChange={reminder.setDraft}
+          locked={locked}
+        />
+      )}
       onDelete={async () => {
         const linkedGoals = goals.filter((g) => g.habitIds.includes(habit.id)).length;
         const goalNote =

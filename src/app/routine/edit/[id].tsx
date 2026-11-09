@@ -4,16 +4,20 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
+import { reportReminderOutcome, RoutineReminderSection } from '@/components/reminders/editor-reminders';
 import { RoutineForm } from '@/components/routines/routine-form';
 import { Palette, Spacing } from '@/constants/theme';
 import type { Routine } from '@/data/routine-storage';
+import { useReminderDraft } from '@/hooks/use-reminder-draft';
 import { useRoutines } from '@/hooks/use-routines';
 import { confirmDestructive } from '@/utils/confirm';
 import { closeAfterRoutineDeleted, closeRoutineEditor } from '@/utils/navigation';
+import { ROUTINE_DEFAULT_TIMES } from '@/utils/reminder-time';
 
 export default function EditRoutineScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { routines, status, updateRoutine, deleteRoutine, reload } = useRoutines();
+  const reminder = useReminderDraft('routine', typeof id === 'string' ? id : null);
   // Keep showing the routine while a delete is in flight so the form can show errors.
   const [deleting, setDeleting] = useState<Routine | null>(null);
   const routine = routines.find((r) => r.id === id) ?? (deleting?.id === id ? deleting : undefined);
@@ -62,8 +66,19 @@ export default function EditRoutineScreen() {
       onCancel={closeRoutineEditor}
       onSubmit={async (input) => {
         await updateRoutine(routine.id, input); // throws on failure → form stays open
+        // The routine is saved from here on; a reminder failure is reported, not thrown.
+        const outcome = await reminder.saveFor(routine.id);
         closeRoutineEditor();
+        reportReminderOutcome('routine', outcome);
       }}
+      renderReminder={(draft, locked) => (
+        <RoutineReminderSection
+          draft={draft}
+          value={reminder.valueFor(ROUTINE_DEFAULT_TIMES[draft.timeOfDay])}
+          onChange={reminder.setDraft}
+          locked={locked}
+        />
+      )}
       onDelete={async () => {
         const confirmed = await confirmDestructive({
           title: `Delete “${routine.title}”?`,
