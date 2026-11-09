@@ -14,3 +14,12 @@ export function closeHabitEditor() {
   if (router.canGoBack()) router.back();
   else router.replace(HABITS_HREF);
 }
+
+/** The Goals tab route (`src/app/goals/index.tsx`). Same typed-routes cast as `HABITS_HREF`. */
+export const GOALS_HREF = '/goals' as Href;
+
+/** Leaves a goal editor: back if possible, otherwise to the goal list. */
+export function closeGoalEditor() {
+  if (router.canGoBack()) router.back();
+  else router.replace(GOALS_HREF);
+}

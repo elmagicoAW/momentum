@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
 import { Palette } from '@/constants/theme';
+import { GoalsProvider } from '@/hooks/use-goals';
 import { HabitsProvider } from '@/hooks/use-habits';
 
 SplashScreen.preventAutoHideAsync();
@@ -26,9 +27,11 @@ export default function TabLayout() {
   return (
     <ThemeProvider value={MomentumTheme}>
       <HabitsProvider>
-        <StatusBar style="light" />
-        <AnimatedSplashOverlay />
-        <AppTabs />
+        <GoalsProvider>
+          <StatusBar style="light" />
+          <AnimatedSplashOverlay />
+          <AppTabs />
+        </GoalsProvider>
       </HabitsProvider>
     </ThemeProvider>
   );

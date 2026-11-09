@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/habits/empty-state';
 import { HabitForm } from '@/components/habits/habit-form';
 import { Palette, Spacing } from '@/constants/theme';
 import type { Habit } from '@/data/habit-storage';
+import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
 import { confirmDestructive } from '@/utils/confirm';
 import { closeHabitEditor } from '@/utils/navigation';
@@ -14,6 +15,7 @@ import { closeHabitEditor } from '@/utils/navigation';
 export default function EditHabitScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { habits, status, updateHabit, deleteHabit, reload } = useHabits();
+  const { goals } = useGoals();
   // While a delete is in flight (and after it succeeds, until the screen closes),
   // keep showing the habit so the form stays mounted and can show errors.
   const [deleting, setDeleting] = useState<Habit | null>(null);
@@ -66,9 +68,14 @@ export default function EditHabitScreen() {
         closeHabitEditor();
       }}
       onDelete={async () => {
+        const linkedGoals = goals.filter((g) => g.habitIds.includes(habit.id)).length;
+        const goalNote =
+          linkedGoals > 0
+            ? ` It’s linked to ${linkedGoals === 1 ? '1 goal' : `${linkedGoals} goals`} and will be unlinked; the goals themselves are kept.`
+            : '';
         const confirmed = await confirmDestructive({
           title: `Delete “${habit.name}”?`,
-          message: 'It will be removed from your habits and from Today. This can’t be undone.',
+          message: `It will be removed from your habits and from Today.${goalNote} This can’t be undone.`,
           confirmLabel: 'Delete',
         });
         if (!confirmed) return false;
