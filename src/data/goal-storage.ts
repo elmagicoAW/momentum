@@ -77,7 +77,7 @@ function parseGoal(value: unknown): Goal | null {
   };
 }
 
-function parseGoalStore(raw: string): Goal[] {
+export function parseGoalStore(raw: string): Goal[] {
   const data: unknown = JSON.parse(raw);
   if (!isRecord(data) || !Array.isArray(data.goals)) {
     throw new Error('Saved goals have an unexpected format');

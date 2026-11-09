@@ -1,17 +1,18 @@
 {
   "expo": {
-    "name": "momentum",
+    "name": "MOMENTUM Dev",
     "slug": "momentum",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "momentum",
+    "scheme": "momentum-dev",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#08080D",
     "ios": {
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.beeviro1.momentum.dev",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,6 +39,17 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "38bb19b4-9b46-444e-b928-2618fcc66e31"
+      }
+    },
+    "owner": "elmagico_aw"
   }
 }

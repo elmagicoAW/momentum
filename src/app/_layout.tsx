@@ -1,3 +1,4 @@
+import { DataBackupProvider } from '@/hooks/use-data-backup';
 import { DarkTheme, Stack, ThemeProvider, type Theme } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -43,6 +44,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <ThemeProvider value={MomentumTheme}>
+      <DataBackupProvider>
       <ProfileProvider>
         <HabitsProvider>
           <DailyProgressProvider>
@@ -61,6 +63,7 @@ export default function RootLayout() {
                     <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
                     <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
                     <Stack.Screen name="profile/edit" options={{ animation: 'slide_from_bottom' }} />
+                    <Stack.Screen name="data-backup" options={{ animation: 'slide_from_right' }} />
                     <Stack.Screen name="achievements" options={{ animation: 'slide_from_right' }} />
                   </Stack>
                 </RoutinesProvider>
@@ -69,6 +72,7 @@ export default function RootLayout() {
           </DailyProgressProvider>
         </HabitsProvider>
       </ProfileProvider>
+      </DataBackupProvider>
     </ThemeProvider>
   );
 }

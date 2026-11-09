@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 export type SaveQueueState = 'saving' | 'saved' | 'error';
 
 export type SaveQueue<T> = {
@@ -31,6 +32,8 @@ export function createSaveQueue<T>(
   onState: (state: SaveQueueState) => void,
   retryDelaysMs: readonly number[] = DEFAULT_RETRY_DELAYS_MS,
 ): SaveQueue<T> {
+  const epoch = persistence.generation();
+  let finish: (() => void) | null = null;
   const pending = new Map<string, T>();
   let running = false;
   let failing = false;
@@ -77,11 +80,14 @@ export function createSaveQueue<T>(
       onState('saved');
     } finally {
       running = false;
+      if (pending.size === 0) { finish?.(); finish = null; }
     }
   }
 
   return {
     enqueue(key, value) {
+      if (!persistence.available() || epoch !== persistence.generation()) return;
+      if (!finish) finish = persistence.accept(epoch);
       revision += 1;
       pending.set(key, value);
       if (!failing) onState('saving');

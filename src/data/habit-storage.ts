@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { listCompletionKeys } from '@/data/completion-storage';
@@ -151,7 +152,7 @@ function parseHabitV1(value: unknown): Habit | null {
   return { ...base, tracking: { type: 'tick' } };
 }
 
-function parseStore(raw: string, version: 1 | 2): Habit[] {
+export function parseStore(raw: string, version: 1 | 2): Habit[] {
   const data: unknown = JSON.parse(raw);
   if (!isRecord(data) || !Array.isArray(data.habits)) {
     throw new Error('Saved habits have an unexpected format');
@@ -221,7 +222,7 @@ export async function loadHabits(): Promise<Habit[]> {
   if (raw != null) return parseStore(raw, 2);
 
   const rawV1 = await AsyncStorage.getItem(HABITS_V1_KEY);
-  if (rawV1 != null) return migrateV1ToV2(rawV1);
+  if (rawV1 != null) return persistence.automaticNormalization() ? migrateV1ToV2(rawV1) : parseStore(rawV1, 1);
 
   const completionKeys = await listCompletionKeys();
   if (completionKeys.length === 0) return [];

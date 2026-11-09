@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 import type { CompletionHistory } from '@/data/completion-storage';
 import type { Habit } from '@/data/habit-storage';
 import {
@@ -40,13 +41,15 @@ export function createAchievementCoordinator(options: {
 }) {
   let state = initialAchievementState();
   const publish = (change: Partial<AchievementState>) => { state = { ...state, ...change }; options.onChange(state); };
-  const store = createValueStore({ initial: emptyAchievements(), load: options.load, save: options.save,
+  const epoch = persistence.generation();
+  const store = createValueStore({ externallyManaged: true, initial: emptyAchievements(), load: options.load, save: options.save,
     onChange: (collection) => publish({ collection, storeReady: true }) });
   let serial: Promise<unknown> = Promise.resolve();
   let generation = 0;
   let cached: AchievementInputs | null = null;
   const enqueue = <T,>(task: () => Promise<T>): Promise<T> => {
-    const next = serial.then(task);
+    if (!persistence.available() || epoch !== persistence.generation()) return Promise.resolve(undefined as T);
+    const next = persistence.run(() => serial.then(task), epoch);
     serial = next.catch(() => undefined);
     return next;
   };
@@ -79,6 +82,7 @@ export function createAchievementCoordinator(options: {
         try { history = await options.history(); }
         catch { if (valid(input, token)) publish({ status: 'history-error' }); return; }
         if (!valid(input, token)) return;
+        if (!persistence.automaticAwards()) { publish({ status: 'ready', evaluation: evaluateAchievements(input.habits, history, input.today) }); return; }
         const evaluation = evaluateAchievements(input.habits, history, input.today);
         try {
           let committed = false;

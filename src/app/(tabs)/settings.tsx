@@ -1,3 +1,5 @@
+import { useDataBackup } from '@/hooks/use-data-backup';
+import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,6 +32,7 @@ const APP_VERSION = Constants.expoConfig?.version;
  * Habits, routines and reminders are managed in their own tabs, not here.
  */
 export default function SettingsScreen() {
+  const { result } = useDataBackup();
   const { profile, status: profileStatus, reload: reloadProfile } = useProfile();
   const { habits, status: habitsStatus } = useHabits();
   const { goals, status: goalsStatus } = useGoals();
@@ -48,6 +51,8 @@ export default function SettingsScreen() {
           <Text style={styles.title} accessibilityRole="header">
             Settings
           </Text>
+
+          {!!result && <Text style={{ color: Palette.text, fontSize: 16, lineHeight: 24 }} accessibilityLiveRegion="polite">{result}</Text>}
 
           <ProfileSummaryCard
             profile={profile}
@@ -98,10 +103,12 @@ export default function SettingsScreen() {
               value={dataSummary}
             />
             <SettingsRow
-              variant="soon"
+              variant="link"
+              onPress={() => router.push('/data-backup')}
               icon={{ ios: 'square.and.arrow.up', android: 'ios_share', web: 'ios_share' }}
-              label="Export & backup"
+              label="Export Backup"
             />
+            <SettingsRow variant="link" icon={{ ios: 'square.and.arrow.down', android: 'file_download', web: 'file_download' }} label="Import Backup" onPress={() => router.push('/data-backup')} />
           </SettingsSection>
 
           <SettingsSection title="Privacy">

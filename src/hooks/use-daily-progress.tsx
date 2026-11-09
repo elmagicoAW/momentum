@@ -1,3 +1,4 @@
+import { persistence as persistenceBarrier } from '@/data/persistence-coordinator';
 import {
   createContext,
   useCallback,
@@ -99,7 +100,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
   /** Applies a change to today's record, shows it, and queues it for saving. */
   const mutate = useCallback(
     (change: (current: DayRecord) => DayRecord) => {
-      if (loadedDateRef.current !== dateKey || toLocalDateKey(new Date()) !== dateKey) return;
+      if (!persistenceBarrier.available() || loadedDateRef.current !== dateKey || toLocalDateKey(new Date()) !== dateKey) return;
       const next = change(recordRef.current);
       if (next === recordRef.current) return;
       recordRef.current = next;
@@ -138,7 +139,7 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
 
   // Keep today's snapshots in line with edited habit definitions (see habit-progress.ts).
   useEffect(() => {
-    if (habitsStatus !== 'ready' || status !== 'ready') return;
+    if (!persistenceBarrier.automaticNormalization() || habitsStatus !== 'ready' || status !== 'ready') return;
     mutate((r) => normalizeTodayRecord(r, habits));
   }, [habits, habitsStatus, status, record, mutate]);
 
@@ -150,13 +151,13 @@ export function DailyProgressProvider({ children }: { children: ReactNode }) {
     return () => sub.remove();
   }, [queue]);
 
-  const toggleTick = useCallback((habit: Habit) => mutate((r) => applyTick(r, habit)), [mutate]);
+  const toggleTick = useCallback((habit: Habit) => { persistenceBarrier.enableUserChanges(); mutate((r) => applyTick(r, habit)); }, [mutate]);
   const adjustCount = useCallback(
-    (habit: Habit, delta: number) => mutate((r) => applyCount(r, habit, delta)),
+    (habit: Habit, delta: number) => { persistenceBarrier.enableUserChanges(); mutate((r) => applyCount(r, habit, delta)); },
     [mutate],
   );
   const toggleStep = useCallback(
-    (habit: Habit, stepId: string) => mutate((r) => applyStep(r, habit, stepId)),
+    (habit: Habit, stepId: string) => { persistenceBarrier.enableUserChanges(); mutate((r) => applyStep(r, habit, stepId)); },
     [mutate],
   );
   const retrySave = useCallback(() => queue.retry(), [queue]);

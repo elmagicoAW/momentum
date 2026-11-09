@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 /**
  * Save-first, serialized store for a list persisted as ONE value (e.g. routines).
  * Same rules as `useHabits` / `useGoals`, extracted so they can be tested without React:
@@ -24,14 +25,18 @@ export function createListStore<T>(options: {
   onChange: (list: T[]) => void;
   /** Error message when a change is attempted before a successful load. */
   notLoadedMessage?: string;
+  /** Outer owner (achievement coordinator) already holds an admission lease. */
+  externallyManaged?: boolean;
 }): ListStore<T> {
   let current: T[] = [];
   let loaded = false;
   let loadToken = 0;
   let queue: Promise<unknown> = Promise.resolve();
 
+  const epoch = persistence.generation();
+  const admitted = <R,>(fn: () => Promise<R>) => options.externallyManaged ? fn() : persistence.run(fn, epoch);
   return {
-    async load() {
+    load() { return admitted(async () => {
       const token = ++loadToken;
       loaded = false;
       const list = await options.load();
@@ -39,8 +44,9 @@ export function createListStore<T>(options: {
       current = list;
       loaded = true;
       return list;
-    },
-    commit(change) {
+    }); },
+    commit(change) { return admitted(() => {
+      if (!options.externallyManaged) persistence.enableUserChanges();
       const task = queue.then(async () => {
         if (!loaded) throw new Error(options.notLoadedMessage ?? "Data hasn't loaded yet");
         const { next, result } = change(current);
@@ -54,7 +60,7 @@ export function createListStore<T>(options: {
       // Keep the queue alive after a failure; the caller still sees the error.
       queue = task.catch(() => undefined);
       return task;
-    },
+    }); },
     current: () => current,
     isLoaded: () => loaded,
   };

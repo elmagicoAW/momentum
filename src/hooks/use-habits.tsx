@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 import {
   createContext,
   useCallback,
@@ -51,13 +52,14 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
   // Last successfully saved/loaded list, readable synchronously inside the write queue.
   const habitsRef = useRef<Habit[]>([]);
   const loadedRef = useRef(false);
+  const [epoch] = useState(() => persistence.generation());
   const writeQueueRef = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     let cancelled = false;
     loadedRef.current = false;
 
-    loadHabits()
+    persistence.run(() => loadHabits(), epoch)
       .then((loaded) => {
         if (cancelled) return;
         habitsRef.current = loaded;
@@ -74,7 +76,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [loadAttempt]);
+  }, [loadAttempt, epoch]);
 
   const reload = useCallback(() => {
     loadedRef.current = false;
@@ -83,7 +85,8 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   /** Queues a change: computes the next list from the last saved one, saves it, then commits it. */
-  const commit = useCallback(<T,>(change: (current: Habit[]) => { next: Habit[]; result: T }) => {
+  const commit = useCallback(<T,>(change: (current: Habit[]) => { next: Habit[]; result: T }) => persistence.run(() => {
+    persistence.enableUserChanges();
     const task = writeQueueRef.current.then(async () => {
       if (!loadedRef.current) {
         throw new Error("Habits haven't loaded yet");
@@ -97,7 +100,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     // Keep the queue alive after a failure; the caller still sees the error.
     writeQueueRef.current = task.catch(() => undefined);
     return task;
-  }, []);
+  }, epoch), [epoch]);
 
   const createHabit = useCallback(
     (input: HabitInput) =>

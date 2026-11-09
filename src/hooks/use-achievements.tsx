@@ -1,3 +1,4 @@
+import { persistence as persistenceBarrier } from '@/data/persistence-coordinator';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AppState } from 'react-native';
 
@@ -33,12 +34,13 @@ export function AchievementsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (next) => {
-      if (next === 'active') void coordinator.request(true);
+      if (next === 'active' && persistenceBarrier.available()) { persistenceBarrier.enableAwards(); void coordinator.request(true); }
     });
     return () => subscription.remove();
   }, [coordinator]);
 
   const retry = useCallback(() => {
+    persistenceBarrier.enableAwards();
     if (habitsStatus === 'load-error') reloadHabits();
     retrySave();
     void coordinator.request(true);

@@ -1,0 +1,82 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+example
+
+# generated native folders
+/ios
+/android
+
+# Keep local repository/editor/agent metadata out of the EAS upload.
+/.git
+/.claude/
+/.vscode/
+/.codex/
+/.agents/
+/.aws/
+
+# Local generated build/inspection outputs (source and tests remain included).
+/.backup-*-check/
+/eas-archive*/
+*.apk
+*.aab
+
+# Local environment/signing/service credentials; none are required for this APK.
+.env
+.env.*
+.npmrc
+credentials.json
+google-services.json
+*service-account*.json
+*serviceAccount*.json
+*.keystore
+*.pfx
+
+# User-controlled backup exports/recovery files and generated manual-test JSON.
+/backups/
+/backup-exports/
+/momentum-backup-recovery/
+momentum-backup-*.json
+momentum-recovery-*.json
+TEST-*.json
+restore-*.before
+restore-*.after
+restore-*.prepared
+restore-*.committed
+restore-*.settled
+restore-*.removed

@@ -41,3 +41,45 @@ example
 # generated native folders
 /ios
 /android
+
+# Private environment files (public templates may be committed intentionally).
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Private package-manager, build and service credentials.
+.npmrc
+credentials.json
+google-services.json
+*service-account*.json
+*serviceAccount*.json
+
+# Additional Android signing material (existing key/certificate rules above apply).
+*.keystore
+*.pfx
+keystore.properties
+key.properties
+
+# User exports and private restore journals; source/test fixtures stay visible.
+/backups/
+/backup-exports/
+/momentum-backup-recovery/
+momentum-backup-*.json
+momentum-recovery-*.json
+restore-*.before
+restore-*.after
+restore-*.prepared
+restore-*.committed
+restore-*.settled
+restore-*.removed
+
+# Generated Android builds and local EAS inspection output.
+*.apk
+*.aab
+/.backup-*-check/
+/eas-archive*/
+
+# Local developer metadata; already tracked files remain tracked.
+/.claude/
+/.vscode/

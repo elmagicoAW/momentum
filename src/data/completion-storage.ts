@@ -66,7 +66,7 @@ function parseEntry(value: unknown): HabitEntry {
   throw new Error('Unexpected progress entry');
 }
 
-function parseV2(raw: string): DayRecord {
+export function parseV2(raw: string): DayRecord {
   const data: unknown = JSON.parse(raw);
   if (!isRecord(data) || data.version !== RECORD_VERSION || !isRecord(data.entries)) {
     throw new Error('Unexpected daily progress format');
@@ -79,7 +79,7 @@ function parseV2(raw: string): DayRecord {
 }
 
 /** Legacy list of completed habit IDs → Tick entries. */
-function parseV1(raw: string): DayRecord {
+export function parseV1(raw: string): DayRecord {
   const parsed: unknown = JSON.parse(raw);
   if (!isStringArray(parsed)) throw new Error('Unexpected saved completions');
   const entries: Record<string, HabitEntry> = {};

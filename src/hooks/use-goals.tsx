@@ -1,3 +1,4 @@
+import { persistence } from '@/data/persistence-coordinator';
 import {
   createContext,
   useCallback,
@@ -53,13 +54,14 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
 
   const goalsRef = useRef<Goal[]>([]);
   const loadedRef = useRef(false);
+  const [epoch] = useState(() => persistence.generation());
   const writeQueueRef = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     let cancelled = false;
     loadedRef.current = false;
 
-    loadGoals()
+    persistence.run(() => loadGoals(), epoch)
       .then((loaded) => {
         if (cancelled) return;
         goalsRef.current = loaded;
@@ -76,14 +78,15 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [loadAttempt]);
+  }, [loadAttempt, epoch]);
 
   const reload = useCallback(() => {
     setStatus('loading');
     setLoadAttempt((n) => n + 1);
   }, []);
 
-  const commit = useCallback(<T,>(change: (current: Goal[]) => { next: Goal[]; result: T }) => {
+  const commit = useCallback(<T,>(change: (current: Goal[]) => { next: Goal[]; result: T }) => persistence.run(() => {
+    persistence.enableUserChanges();
     const task = writeQueueRef.current.then(async () => {
       if (!loadedRef.current) {
         throw new Error("Goals haven't loaded yet");
@@ -97,7 +100,7 @@ export function GoalsProvider({ children }: { children: ReactNode }) {
     // Keep the queue alive after a failure; the caller still sees the error.
     writeQueueRef.current = task.catch(() => undefined);
     return task;
-  }, []);
+  }, epoch), [epoch]);
 
   const createGoal = useCallback(
     (input: GoalInput) =>
