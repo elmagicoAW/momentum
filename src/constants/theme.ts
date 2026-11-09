@@ -40,6 +40,8 @@ export const Palette = {
   accentBlue: '#5B8DEF',
   accentBlueSoft: 'rgba(91, 141, 239, 0.14)',
   success: '#4ADE9B',
+  danger: '#F87171',
+  dangerSoft: 'rgba(248, 113, 113, 0.12)',
   ring: '#8B7CF6',
   ringTrack: '#1F1F2E',
 } as const;

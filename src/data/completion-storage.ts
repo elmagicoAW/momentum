@@ -25,6 +25,15 @@ export async function loadCompletions(dateKey: string): Promise<string[]> {
   return parsed;
 }
 
+/**
+ * Lists every saved per-day completion key. Read-only — used to detect users
+ * who already have saved progress before habits were stored.
+ */
+export async function listCompletionKeys(): Promise<string[]> {
+  const keys = await AsyncStorage.getAllKeys();
+  return keys.filter((key) => key.startsWith(KEY_PREFIX));
+}
+
 export async function saveCompletions(dateKey: string, habitIds: Iterable<string>) {
   await AsyncStorage.setItem(keyFor(dateKey), JSON.stringify([...habitIds]));
 }

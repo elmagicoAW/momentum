@@ -2,7 +2,9 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Palette, Radius, Spacing } from '@/constants/theme';
-import type { Habit } from '@/data/demo-habits';
+import { habitIconSymbol } from '@/data/habit-options';
+import type { Habit } from '@/data/habit-storage';
+import { describeSchedule } from '@/utils/schedule';
 
 type Props = {
   habit: Habit;
@@ -19,26 +21,25 @@ export function HabitCard({ habit, done, disabled = false, onToggle }: Props) {
       disabled={disabled}
       accessibilityRole="checkbox"
       accessibilityState={{ checked: done, disabled }}
-      accessibilityLabel={habit.title}
+      accessibilityLabel={habit.name}
       android_ripple={{ color: 'rgba(255,255,255,0.06)', borderless: false }}
       style={({ pressed }) => [styles.card, done && styles.cardDone, pressed && styles.pressed]}>
-      <View style={[styles.iconWrap, { backgroundColor: `${habit.tint}22` }]}>
+      <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
         <SymbolView
-          name={habit.icon}
+          name={habitIconSymbol(habit.icon)}
           size={22}
-          tintColor={habit.tint}
+          tintColor={habit.color}
         />
       </View>
 
       <View style={styles.body}>
         <Text style={[styles.title, done && styles.titleDone]} numberOfLines={1}>
-          {habit.title}
+          {habit.name}
         </Text>
         <View style={styles.metaRow}>
           <Text style={styles.detail} numberOfLines={1}>
-            {habit.detail}
+            {habit.description || describeSchedule(habit.schedule)}
           </Text>
-          <Text style={styles.streak}>· 🔥 {habit.streak + (done ? 1 : 0)}</Text>
         </View>
       </View>
 
@@ -102,10 +103,6 @@ const styles = StyleSheet.create({
     color: Palette.textMuted,
     fontSize: 13,
     flexShrink: 1,
-  },
-  streak: {
-    color: Palette.textMuted,
-    fontSize: 13,
   },
   checkbox: {
     width: 28,

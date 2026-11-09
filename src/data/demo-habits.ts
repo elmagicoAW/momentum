@@ -1,52 +1,23 @@
-import type { SymbolViewProps } from 'expo-symbols';
-
-/** Local demo data — will be replaced by persisted user data later. */
-
-export type Habit = {
-  id: string;
-  title: string;
-  detail: string;
-  /** SF Symbol on iOS, Material Symbol on Android/web. */
-  icon: SymbolViewProps['name'];
-  tint: string;
-  streak: number;
-};
+import type { HabitIconKey } from '@/data/habit-options';
 
 export const DEMO_USER_NAME = 'Alex';
 
-export const DEMO_HABITS: Habit[] = [
-  {
-    id: 'water',
-    title: 'Drink Water',
-    detail: '8 glasses · All day',
-    icon: { ios: 'drop.fill', android: 'water_drop', web: 'water_drop' },
-    tint: '#5B8DEF',
-    streak: 5,
-  },
-  {
-    id: 'read',
-    title: 'Read 20 Minutes',
-    detail: 'Before bed',
-    icon: { ios: 'book.fill', android: 'menu_book', web: 'menu_book' },
-    tint: '#C084FC',
-    streak: 21,
-  },
-  {
-    id: 'exercise',
-    title: 'Exercise',
-    detail: '30 min · After work',
-    icon: { ios: 'figure.run', android: 'directions_run', web: 'directions_run' },
-    tint: '#60A5FA',
-    streak: 3,
-  },
-  {
-    id: 'meditate',
-    title: 'Meditate',
-    detail: '10 min · Morning',
-    icon: { ios: 'figure.mind.and.body', android: 'self_improvement', web: 'self_improvement' },
-    tint: '#8B7CF6',
-    streak: 12,
-  },
+/**
+ * The four habits the app shipped with before habits were user-editable.
+ * Saved completions reference these exact IDs, so the one-time migration in
+ * `habit-storage.ts` recreates them with the same IDs. Never change the IDs.
+ */
+export const LEGACY_DEMO_HABITS: {
+  id: string;
+  name: string;
+  description: string;
+  icon: HabitIconKey;
+  color: string;
+}[] = [
+  { id: 'water', name: 'Drink Water', description: '8 glasses · All day', icon: 'water', color: '#5B8DEF' },
+  { id: 'read', name: 'Read 20 Minutes', description: 'Before bed', icon: 'book', color: '#C084FC' },
+  { id: 'exercise', name: 'Exercise', description: '30 min · After work', icon: 'run', color: '#60A5FA' },
+  { id: 'meditate', name: 'Meditate', description: '10 min · Morning', icon: 'mind', color: '#8B7CF6' },
 ];
 
 const MOTIVATION = [

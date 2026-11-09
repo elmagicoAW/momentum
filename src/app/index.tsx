@@ -1,15 +1,21 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { EmptyState } from '@/components/habits/empty-state';
 import { HabitCard } from '@/components/today/habit-card';
 import { ProgressRing } from '@/components/today/progress-ring';
 import { BottomTabInset, MaxContentWidth, Palette, Radius, Spacing } from '@/constants/theme';
-import { DEMO_HABITS, DEMO_USER_NAME, getDailyMotivation } from '@/data/demo-habits';
+import { DEMO_USER_NAME, getDailyMotivation } from '@/data/demo-habits';
 import { useCurrentDate } from '@/hooks/use-current-date';
 import { useDailyCompletions, type CompletionStatus } from '@/hooks/use-daily-completions';
+import { useHabits } from '@/hooks/use-habits';
 import { formatLongDate, getGreeting, toLocalDateKey } from '@/utils/date';
+import { HABITS_HREF } from '@/utils/navigation';
+import { isScheduledOn, WEEKDAY_LONG } from '@/utils/schedule';
 
 function progressMessage(done: number, total: number) {
+  if (total === 0) return 'Nothing scheduled — enjoy the rest day.';
   if (done === 0) return "Let's build some momentum today.";
   if (done === total) return 'All done. You showed up for yourself today.';
   if (done / total >= 0.5) return 'Over halfway there — keep it rolling.';
@@ -32,10 +38,16 @@ export default function TodayScreen() {
   const canToggle = status === 'ready' || status === 'save-error';
   const notice = storageNotice(status);
 
-  const total = DEMO_HABITS.length;
-  // Count only habits that still exist, in case saved data has stale IDs.
-  const doneCount = DEMO_HABITS.filter((habit) => completed.has(habit.id)).length;
+  const { habits, status: habitsStatus, reload } = useHabits();
+  const habitsReady = habitsStatus === 'ready';
+
+  // Only habits scheduled for the current local date. Completions are matched by
+  // habit ID, so saved IDs for deleted or unscheduled habits are simply ignored.
+  const todayHabits = habits.filter((habit) => isScheduledOn(habit, now));
+  const total = todayHabits.length;
+  const doneCount = todayHabits.filter((habit) => completed.has(habit.id)).length;
   const motivation = getDailyMotivation(now);
+  const openHabits = () => router.navigate(HABITS_HREF);
 
   return (
     <View style={styles.screen}>
@@ -72,19 +84,59 @@ export default function TodayScreen() {
           {/* Habits */}
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Today&apos;s Habits</Text>
-            <Text style={styles.sectionMeta}>{total - doneCount} left</Text>
+            {habitsReady && total > 0 && (
+              <Text style={styles.sectionMeta}>{total - doneCount} left</Text>
+            )}
           </View>
-          <View style={styles.habitList}>
-            {DEMO_HABITS.map((habit) => (
-              <HabitCard
-                key={habit.id}
-                habit={habit}
-                done={completed.has(habit.id)}
-                disabled={!canToggle}
-                onToggle={toggle}
-              />
-            ))}
-          </View>
+
+          {habitsStatus === 'loading' && (
+            <View style={styles.loading}>
+              <ActivityIndicator color={Palette.accent} />
+            </View>
+          )}
+
+          {habitsStatus === 'load-error' && (
+            <EmptyState
+              title="Couldn't load your habits"
+              description="Your saved data hasn't been changed. Try again, or restart the app."
+              icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
+              actionLabel="Try again"
+              onAction={reload}
+            />
+          )}
+
+          {habitsReady && habits.length === 0 && (
+            <EmptyState
+              title="No habits yet"
+              description="Create your first habit and it will show up here on the days you schedule it."
+              actionLabel="Create a habit"
+              onAction={openHabits}
+            />
+          )}
+
+          {habitsReady && habits.length > 0 && total === 0 && (
+            <EmptyState
+              title="Nothing scheduled today"
+              description={`None of your habits are scheduled for ${WEEKDAY_LONG[now.getDay()]}. Enjoy the rest, or adjust a schedule.`}
+              icon={{ ios: 'moon.stars.fill', android: 'bedtime', web: 'bedtime' }}
+              actionLabel="Manage habits"
+              onAction={openHabits}
+            />
+          )}
+
+          {habitsReady && total > 0 && (
+            <View style={styles.habitList}>
+              {todayHabits.map((habit) => (
+                <HabitCard
+                  key={habit.id}
+                  habit={habit}
+                  done={completed.has(habit.id)}
+                  disabled={!canToggle}
+                  onToggle={toggle}
+                />
+              ))}
+            </View>
+          )}
           {notice && <Text style={styles.notice}>{notice}</Text>}
 
           {/* Motivation */}
@@ -208,6 +260,10 @@ const styles = StyleSheet.create({
   },
   habitList: {
     gap: 12,
+  },
+  loading: {
+    paddingVertical: Spacing.five,
+    alignItems: 'center',
   },
   notice: {
     marginTop: -Spacing.two,
