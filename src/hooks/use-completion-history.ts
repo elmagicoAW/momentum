@@ -10,11 +10,16 @@ export type CompletionHistoryState =
 
 /**
  * All saved completion days, read-only. Reloaded every time the screen gains
- * focus, so check-ins made on Today show up when returning to Goals.
+ * focus, so check-ins made on Today show up when returning to Goals or Insights.
  * While reloading, the previous history stays visible (no flicker).
+ *
+ * `reloadKey` (e.g. today's date key) also triggers a reload when it changes
+ * while the screen stays focused — so a day that rolls over at midnight is
+ * picked up. `reload()` retries on demand (e.g. after an error).
  */
-export function useCompletionHistory(): CompletionHistoryState {
+export function useCompletionHistory(reloadKey?: string): CompletionHistoryState & { reload: () => void } {
   const [state, setState] = useState<CompletionHistoryState>({ status: 'loading', history: null });
+  const [attempt, setAttempt] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -31,8 +36,15 @@ export function useCompletionHistory(): CompletionHistoryState {
       return () => {
         cancelled = true;
       };
-    }, []),
+      // reloadKey / attempt are intentional reload triggers.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [reloadKey, attempt]),
   );
 
-  return state;
+  const reload = useCallback(() => {
+    setState({ status: 'loading', history: null });
+    setAttempt((n) => n + 1);
+  }, []);
+
+  return { ...state, reload } as CompletionHistoryState & { reload: () => void };
 }

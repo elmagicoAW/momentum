@@ -94,7 +94,8 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
 
       {unreadableDays > 0 && (
         <Text style={styles.warning}>
-          {plural(unreadableDays, 'day', 'days')} of saved check-ins couldn’t be read and may show as not completed.
+          {plural(unreadableDays, 'day', 'days')} of saved check-ins couldn’t be read and{' '}
+          {unreadableDays === 1 ? 'is' : 'are'} left out, so this may be incomplete. Nothing was changed.
         </Text>
       )}
     </View>

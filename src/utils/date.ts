@@ -79,3 +79,56 @@ export function formatShortDate(key: string): string {
 export function formatMonthYear(date: Date): string {
   return `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
 }
+
+/** Monday of the week containing `date` (local time). Weeks run Monday–Sunday. */
+export function startOfWeek(date: Date): Date {
+  return addDays(date, -((date.getDay() + 6) % 7));
+}
+
+/** e.g. "Nov 2 – 8", "Oct 26 – Nov 1", "Dec 28, 2026 – Jan 3, 2027". */
+export function formatWeekRange(startKey: string): string {
+  const start = parseLocalDateKey(startKey);
+  const end = addDays(start, 6);
+  const sm = SHORT_MONTHS[start.getMonth()];
+  const em = SHORT_MONTHS[end.getMonth()];
+  if (start.getFullYear() !== end.getFullYear()) {
+    return `${sm} ${start.getDate()}, ${start.getFullYear()} – ${em} ${end.getDate()}, ${end.getFullYear()}`;
+  }
+  if (start.getMonth() === end.getMonth()) return `${sm} ${start.getDate()} – ${end.getDate()}`;
+  return `${sm} ${start.getDate()} – ${em} ${end.getDate()}`;
+}
+
+/** e.g. "Nov 3" */
+export function formatMonthDay(key: string): string {
+  const date = parseLocalDateKey(key);
+  return `${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}`;
+}
+
+/** e.g. "Tuesday, November 3" */
+export function formatLongDateKey(key: string): string {
+  return formatLongDate(parseLocalDateKey(key));
+}
+
+/** e.g. "Nov" */
+export function shortMonthName(month: number): string {
+  return SHORT_MONTHS[month];
+}
+
+export type MonthGridCell = { dateKey: string; day: number; inMonth: boolean };
+
+/**
+ * Calendar grid for a month, Monday-first, padded with the adjacent months'
+ * days to whole weeks (28–42 cells). `month` is 0-based.
+ */
+export function monthGrid(year: number, month: number): MonthGridCell[] {
+  const first = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7;
+  const total = Math.ceil((lead + daysInMonth) / 7) * 7;
+  const cells: MonthGridCell[] = [];
+  for (let i = 0; i < total; i += 1) {
+    const date = addDays(first, i - lead);
+    cells.push({ dateKey: toLocalDateKey(date), day: date.getDate(), inMonth: date.getMonth() === month });
+  }
+  return cells;
+}

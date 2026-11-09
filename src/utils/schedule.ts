@@ -26,3 +26,8 @@ export function describeSchedule(schedule: HabitSchedule): string {
     .map((d) => WEEKDAY_SHORT[d])
     .join(' · ');
 }
+
+/** Same as `isScheduledOn`, for a weekday number (0 = Sunday … 6 = Saturday). */
+export function isScheduledOnWeekday(schedule: HabitSchedule, weekday: number): boolean {
+  return schedule.kind === 'daily' || schedule.days.includes(weekday as Weekday);
+}

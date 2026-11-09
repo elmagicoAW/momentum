@@ -28,6 +28,12 @@ import { isScheduledOn } from '@/utils/schedule';
  * - `today`: reported separately and labelled provisional. Today's unfinished
  *   habits are never counted as missed — the day isn't over.
  *
+ * Unreadable days (saved progress that couldn't be parsed) are left out of
+ * BOTH completed and scheduled counts — the same rule as Insights — and are
+ * reported in `unreadableDays` so the UI can warn that the number may be
+ * incomplete. Today is skipped only when it is unreadable AND no live record
+ * is available.
+ *
  * Only real saved completions count. Completions on unscheduled days, for
  * habits that aren't linked or no longer exist, or outside the window are
  * ignored. No streaks are derived.
@@ -50,7 +56,7 @@ export type HabitConsistency = {
   };
   /** Today's check-ins — provisional. null when today is outside the window. */
   today: CheckInCount | null;
-  /** Days in the finished window whose saved completions couldn't be read. */
+  /** Days in the finished window whose saved completions couldn't be read (left out of the counts). */
   unreadableDays: number;
 };
 
@@ -91,13 +97,17 @@ export function computeHabitConsistency(
   let unreadableDays = 0;
   if (linkedHabits.length > 0) {
     for (let key = goal.startDate; key <= finishedEndKey; key = toLocalDateKey(addDays(parseLocalDateKey(key), 1))) {
-      if (unreadable.has(key)) unreadableDays += 1;
+      if (unreadable.has(key)) {
+        unreadableDays += 1;
+        continue; // excluded from both completed and scheduled
+      }
       count(key, finished);
     }
   }
 
   let today: CheckInCount | null = null;
-  if (linkedHabits.length > 0 && goal.startDate <= todayKey && todayKey <= endKey) {
+  const todayReadable = todayRecord !== undefined || !unreadable.has(todayKey);
+  if (linkedHabits.length > 0 && goal.startDate <= todayKey && todayKey <= endKey && todayReadable) {
     today = { completed: 0, scheduled: 0 };
     count(todayKey, today);
   }

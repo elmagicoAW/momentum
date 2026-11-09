@@ -10,7 +10,7 @@ import { SymbolView } from 'expo-symbols';
 import { Pressable, useColorScheme, View, StyleSheet } from 'react-native';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
-import { GOALS_HREF, HABITS_HREF } from '@/utils/navigation';
+import { GOALS_HREF, HABITS_HREF, INSIGHTS_HREF } from '@/utils/navigation';
 
 import { ExternalLink } from './external-link';
 import { ThemedText } from './themed-text';
@@ -31,7 +31,7 @@ export default function AppTabs() {
           <TabTrigger name="goals" href={GOALS_HREF} asChild>
             <TabButton>Goals</TabButton>
           </TabTrigger>
-          <TabTrigger name="insights" href="/insights" asChild>
+          <TabTrigger name="insights" href={INSIGHTS_HREF} asChild>
             <TabButton>Insights</TabButton>
           </TabTrigger>
           <TabTrigger name="settings" href="/settings" asChild>
