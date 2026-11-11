@@ -1,8 +1,10 @@
+import {SymbolView, Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+import { useLanguage } from '@/hooks/use-language';
+
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 
@@ -19,6 +21,7 @@ type Props = {
  */
 export function NamePromptCard({ onAdd, onDismiss }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { t } = useLanguage();
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -47,15 +50,15 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
         </View>
         <View style={styles.text}>
           <Text style={styles.title} accessibilityRole="header">
-            Make Momentum yours
+            {t('today.prompt.title')}
           </Text>
-          <Text style={styles.body}>Add the name you&apos;d like to see here. You can change it any time in Settings.</Text>
+          <Text style={styles.body}>{t('today.prompt.body')}</Text>
         </View>
       </View>
 
       {failed && (
         <Text style={styles.error} accessibilityRole="alert" accessibilityLiveRegion="polite">
-          Couldn&apos;t save that. Try again.
+          {t('today.prompt.failed')}
         </Text>
       )}
 
@@ -64,15 +67,15 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
           onPress={dismiss}
           disabled={busy}
           accessibilityRole="button"
-          accessibilityLabel="Not now"
-          accessibilityHint="Hides this card. You can still add a name in Settings."
+          accessibilityLabel={t('today.prompt.notNow')}
+          accessibilityHint={t('today.prompt.hideHint')}
           accessibilityState={{ disabled: busy, busy }}
           android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.button, styles.secondary, pressed && styles.pressed]}>
           {busy ? (
             <ActivityIndicator size="small" color={Palette.textSecondary} />
           ) : (
-            <Text style={styles.secondaryText}>Not now</Text>
+            <Text style={styles.secondaryText}>{t('today.prompt.notNow')}</Text>
           )}
         </Pressable>
         <Pressable
@@ -82,7 +85,7 @@ export function NamePromptCard({ onAdd, onDismiss }: Props) {
           accessibilityState={{ disabled: busy }}
           android_ripple={{ color: Palette.rippleStrong }}
           style={({ pressed }) => [styles.button, styles.primary, pressed && styles.pressed]}>
-          <Text style={styles.primaryText}>Add your name</Text>
+          <Text style={styles.primaryText}>{t('today.prompt.add')}</Text>
         </Pressable>
       </View>
     </View>

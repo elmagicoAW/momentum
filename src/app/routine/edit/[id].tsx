@@ -1,3 +1,5 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
@@ -29,18 +31,18 @@ export default function EditRoutineScreen() {
             <ActivityIndicator color={Palette.accent} />
           ) : status === 'load-error' ? (
             <EmptyState
-              title="Couldn't load your routines"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("routine.edit.detail.couldnTLoadYourRoutines")}
+              description={appLabel("routine.edit.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("routine.edit.detail.tryAgain")}
               onAction={reload}
             />
           ) : (
             <EmptyState
-              title="Routine not found"
-              description="It may have been deleted."
+              title={appLabel("routine.edit.detail.routineNotFound")}
+              description={appLabel("routine.edit.detail.itMayHaveBeenDeleted")}
               icon={{ ios: 'questionmark.circle.fill', android: 'help', web: 'help' }}
-              actionLabel="Go back"
+              actionLabel={appLabel("routine.edit.detail.goBack")}
               onAction={closeRoutineEditor}
             />
           )}
@@ -52,8 +54,8 @@ export default function EditRoutineScreen() {
   return (
     <RoutineForm
       key={routine.id}
-      title="Edit routine"
-      submitLabel="Save"
+      title={appLabel("routine.edit.detail.editRoutine")}
+      submitLabel={appLabel("routine.edit.detail.save")}
       initialDraft={{
         title: routine.title,
         description: routine.description ?? '',
@@ -69,10 +71,9 @@ export default function EditRoutineScreen() {
       }}
       onDelete={async () => {
         const confirmed = await confirmDestructive({
-          title: `Delete “${routine.title}”?`,
-          message:
-            'Only the routine is removed. Your habits, today’s progress, history, goals and insights are not affected.',
-          confirmLabel: 'Delete',
+          title: appMessage("routines.delete.title", { name: (routine.title) }),
+          get message(){return appLabel("routine.edit.detail.onlyTheRoutineIsRemovedYourHabitsTodaySProgressHistoryGoalsAndInsightsAreNotAffected");},
+          get confirmLabel(){return appLabel("routine.edit.detail.delete");},
         });
         if (!confirmed) return false;
         setDeleting(routine);

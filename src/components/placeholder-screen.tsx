@@ -1,7 +1,8 @@
+import {SymbolView, Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView, type SymbolViewProps } from 'expo-symbols';
-import { StyleSheet, Text, View } from 'react-native';
+import { type SymbolViewProps } from 'expo-symbols';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BottomTabInset, Radius, Spacing } from '@/constants/theme';

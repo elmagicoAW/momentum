@@ -1,11 +1,14 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import { foregroundOnColor, readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { plural, withAlpha } from '@/components/insights/format';
+import { withAlpha } from '@/components/insights/format';
 import { Radius } from '@/constants/theme';
-import { formatLongDateKey, parseLocalDateKey } from '@/utils/date';
+import { formatLongDateKey, parseLocalDateKey } from '@/i18n/presentation-date';
 import { DayStatus, describeProgress, type DayDetail, type HabitDayDetail } from '@/utils/insights';
 
 type Props = {
@@ -15,8 +18,8 @@ type Props = {
 };
 
 function scheduleText(d: HabitDayDetail): string {
-  if (d.scheduled === null) return 'Not started — the habit didn’t exist yet';
-  return d.scheduled ? 'Scheduled' : 'Not scheduled';
+  if (d.scheduled === null) return appLabel("insights.day-detail-panel.notStartedTheHabitDidnTExistYet");
+  return d.scheduled ? appLabel("insights.day-detail-panel.scheduled") : appLabel("insights.day-detail-panel.notScheduled");
 }
 
 function statusColor(status: HabitDayDetail['status'], color: string, Palette: AppPalette): string {
@@ -41,7 +44,7 @@ function statusColor(status: HabitDayDetail['status'], color: string, Palette: A
 export function DayDetailPanel({ detail, single }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const date = parseLocalDateKey(detail.dateKey);
-  const title = `${formatLongDateKey(detail.dateKey)}, ${date.getFullYear()}`;
+  const title = appMessage("display.labelValue", { label: String(formatLongDateKey(detail.dateKey)), textValue: appNumber(date.getFullYear()) });
   const habit = single ? detail.habits[0] : undefined;
 
   return (
@@ -52,7 +55,7 @@ export function DayDetailPanel({ detail, single }: Props) {
         </Text>
         {detail.isToday ? (
           <View style={styles.pill}>
-            <Text style={styles.pillText}>Today · provisional</Text>
+            <Text style={styles.pillText}>{appLabel("insights.day-detail-panel.todayProvisional")}</Text>
           </View>
         ) : null}
       </View>
@@ -60,17 +63,17 @@ export function DayDetailPanel({ detail, single }: Props) {
       {single ? (
         habit ? (
           <View style={styles.rows}>
-            <Row label="Schedule" value={scheduleText(habit)} />
-            <Row label="Status" value={habit.label} color={statusColor(habit.status, habit.habit.color, Palette)} />
+            <Row label={appLabel("insights.day-detail-panel.schedule")} value={scheduleText(habit)} />
+            <Row label={appLabel("insights.day-detail-panel.status")} value={habit.label} color={statusColor(habit.status, habit.habit.color, Palette)} />
             {habit.progress ? (
-              <Row label="Saved progress" value={describeProgress(habit.progress)} />
+              <Row label={appLabel("insights.day-detail-panel.savedProgress")} value={describeProgress(habit.progress)} />
             ) : habit.status !== null && habit.status !== DayStatus.UNKNOWN && habit.scheduled ? (
-              <Row label="Saved progress" value="Nothing saved" />
+              <Row label={appLabel("insights.day-detail-panel.savedProgress")} value={appLabel("insights.day-detail-panel.nothingSaved")} />
             ) : null}
             {habit.progress?.kind === 'checklist' ? <Steps detail={habit} /> : null}
           </View>
         ) : (
-          <Text style={styles.summary}>Not started — this habit didn’t exist yet. Nothing is counted.</Text>
+          <Text style={styles.summary}>{appLabel("insights.day-detail-panel.notStartedThisHabitDidnTExistYetNothingIsCounted")}</Text>
         )
       ) : (
         <>
@@ -82,44 +85,39 @@ export function DayDetailPanel({ detail, single }: Props) {
                   key={d.habit.id}
                   style={styles.habitRow}
                   accessible
-                  accessibilityLabel={`${d.habit.name}: ${d.label}${d.progress ? `, ${describeProgress(d.progress)}` : ''}`}>
+                  accessibilityLabel={d.progress ? appMessage("history.habit.progress", { name: d.habit.name, status: d.label, progress: describeProgress(d.progress) }) : appMessage("history.habit.status", { name: d.habit.name, status: d.label })}>
                   <View style={[styles.dot, { backgroundColor: d.habit.color }]} />
                   <Text style={styles.habitName} numberOfLines={1}>
                     {d.habit.name}
                   </Text>
-                  <Text style={[styles.habitStatus, { color: statusColor(d.status, d.habit.color, Palette) }]} numberOfLines={2}>
-                    {d.label}
-                    {d.progress && d.progress.kind !== 'tick' ? ` · ${describeProgress(d.progress)}` : ''}
-                  </Text>
+                  <Text style={[styles.habitStatus, { color: statusColor(d.status, d.habit.color, Palette) }]} numberOfLines={2}>{d.progress && d.progress.kind !== 'tick' ? appMessage("history.habit.statusProgress", { status: d.label, progress: describeProgress(d.progress) }) : d.label}</Text>
                 </View>
               ))}
             </View>
           ) : null}
           {detail.notStarted > 0 && detail.habits.length > 0 ? (
-            <Text style={styles.muted}>
-              {plural(detail.notStarted, 'habit hadn’t', 'habits hadn’t')} started yet — not counted.
-            </Text>
+            <Text style={styles.muted}>{appMessage("history.notStarted.habits", { count: detail.notStarted })}</Text>
           ) : null}
         </>
       )}
 
       {detail.unreadable ? (
-        <Text style={styles.warning}>This day’s saved record couldn’t be read. It’s left out of all numbers; nothing was changed.</Text>
+        <Text style={styles.warning}>{appLabel("insights.day-detail-panel.thisDaySSavedRecordCouldnTBeReadItSLeftOutOfAllNumbersNothingWasChanged")}</Text>
       ) : null}
     </View>
   );
 }
 
 function panelLabel(title: string, detail: DayDetail, habit: HabitDayDetail | undefined): string {
-  if (!habit) return `${title}. Not started.`;
-  const parts = [title, detail.isToday ? 'Today, provisional' : '', scheduleText(habit), habit.label];
-  if (habit.progress) parts.push(`Saved progress: ${describeProgress(habit.progress)}`);
+  if (!habit) return appMessage("history.day.notStartedAccessibility", { title: (title) });
+  const parts = [title, detail.isToday ? appLabel("insights.day-detail-panel.todayProvisionalVariant") : '', scheduleText(habit), habit.label];
+  if (habit.progress) parts.push(appMessage("history.day.savedProgress", { progress: (describeProgress(habit.progress)) }));
   if (habit.progress?.kind === 'checklist') {
     parts.push(
-      habit.progress.steps.map((s) => `${s.label}${s.optional ? ' (optional)' : ''} ${s.done ? 'done' : 'not done'}`).join(', '),
+      habit.progress.steps.map((s) => appMessage("history.step.accessibility", { name: s.label, optional: s.optional ? appLabel('insights.day-detail-panel.optional') : '', state: s.done ? appLabel('history.step.done') : appLabel('insights.day-detail-panel.notDone') })).join(', '),
     );
   }
-  if (detail.unreadable) parts.push('Saved record could not be read');
+  if (detail.unreadable) parts.push(appLabel("insights.day-detail-panel.savedRecordCouldNotBeRead"));
   return parts.filter(Boolean).join('. ');
 }
 
@@ -151,7 +149,7 @@ function Steps({ detail }: { detail: HabitDayDetail }) {
           </View>
           <Text style={styles.stepText} numberOfLines={2}>
             {s.label}
-            {s.optional ? <Text style={styles.muted}> · optional</Text> : null}
+            {s.optional ? <Text style={styles.muted}> {appLabel("insights.day-detail-panel.optionalVariant")}</Text> : null}
           </Text>
         </View>
       ))}

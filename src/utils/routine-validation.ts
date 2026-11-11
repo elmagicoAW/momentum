@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import {
   MAX_HABITS_PER_ROUTINE,
   ROUTINE_DESCRIPTION_MAX_LENGTH,
@@ -22,16 +23,16 @@ export type RoutineDraftErrors = Partial<Record<'title' | 'description' | 'habit
 export function validateRoutineDraft(draft: RoutineDraft, existingHabitIds: ReadonlySet<string>): RoutineDraftErrors {
   const errors: RoutineDraftErrors = {};
   const title = draft.title.trim();
-  if (title.length === 0) errors.title = 'Give your routine a title.';
+  if (title.length === 0) errors.title = appLabel("routine-validation.giveYourRoutineATitle");
   else if (title.length > ROUTINE_TITLE_MAX_LENGTH) {
-    errors.title = `Keep the title to ${ROUTINE_TITLE_MAX_LENGTH} characters or fewer.`;
+    errors.title = appMessage("validation.routine.titleLength", { limit: (ROUTINE_TITLE_MAX_LENGTH) });
   }
   if (draft.description.trim().length > ROUTINE_DESCRIPTION_MAX_LENGTH) {
-    errors.description = `Keep the description to ${ROUTINE_DESCRIPTION_MAX_LENGTH} characters or fewer.`;
+    errors.description = appMessage("validation.routine.descriptionLength", { limit: (ROUTINE_DESCRIPTION_MAX_LENGTH) });
   }
   const linked = new Set(draft.habitIds.filter((id) => existingHabitIds.has(id)));
   if (linked.size > MAX_HABITS_PER_ROUTINE) {
-    errors.habitIds = `A routine can hold up to ${MAX_HABITS_PER_ROUTINE} habits.`;
+    errors.habitIds = appMessage("validation.routine.habitLimitSentence", { limit: (MAX_HABITS_PER_ROUTINE) });
   }
   return errors;
 }

@@ -1,7 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage, appRich } from '@/i18n/app-copy';
+import { LocalizedInline } from '@/components/localized-inline';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { formatRate } from '@/components/insights/format';
 import { Radius } from '@/constants/theme';
@@ -28,7 +32,7 @@ export function TrendBars({ index }: { index: InsightsIndex }) {
             accessibilityState={{ selected: kind === k }}
             style={[styles.segmentButton, kind === k && styles.segmentActive]}>
             <Text style={[styles.segmentText, kind === k && styles.segmentTextActive]}>
-              {k === 'week' ? 'Weekly' : 'Monthly'}
+              {k === 'week' ? appLabel("insights.trend-bars.weekly") : appLabel("insights.trend-bars.monthly")}
             </Text>
           </Pressable>
         ))}
@@ -42,9 +46,7 @@ export function TrendBars({ index }: { index: InsightsIndex }) {
               key={p.key}
               style={styles.column}
               accessible
-              accessibilityLabel={`${p.isCurrent ? `${p.label}, so far` : p.label}: ${
-                pct === null ? 'nothing finished was scheduled' : `${pct} percent, ${p.done} of ${p.finished} check-ins`
-              }`}>
+              accessibilityLabel={appMessage("display.labelColon", { label: String(p.isCurrent ? appMessage("insights.trend.currentLabel", { label: (p.label) }) : p.label), textValue: pct === null ? appLabel("insights.trend-bars.nothingFinishedWasScheduled") : appMessage("insights.trend.accessibility", { percent: (pct), done: (p.done), total: (p.finished) }) })}>
               <Text style={styles.value}>{pct === null ? '' : `${pct}`}</Text>
               <View style={styles.track}>
                 {pct === null ? (
@@ -60,18 +62,14 @@ export function TrendBars({ index }: { index: InsightsIndex }) {
                 )}
               </View>
               <Text style={[styles.axis, p.isCurrent && styles.axisCurrent]} numberOfLines={1}>
-                {p.isCurrent ? 'Now' : p.label}
+                {p.isCurrent ? appLabel("insights.trend-bars.now") : p.label}
               </Text>
             </View>
           );
         })}
       </View>
 
-      <Text style={styles.summary}>
-        Avg {formatRate(data.average)} · Best {formatRate(data.best)}
-        {' · '}
-        <Text style={styles.dashedNote}>“Now” = so far, finished days only</Text>
-      </Text>
+      <Text style={styles.summary}><LocalizedInline message={appRich('insights.trend.footer', { average: formatRate(data.average), best: formatRate(data.best), get note(){return appLabel('insights.trend-bars.nowSoFarFinishedDaysOnly');} }, 'note')} slotStyle={styles.dashedNote} /></Text>
     </View>
   );
 }

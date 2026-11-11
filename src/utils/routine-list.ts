@@ -1,3 +1,4 @@
+import { withErrorMessage } from '@/i18n/app-copy';
 import {
   createRoutineId,
   MAX_HABITS_PER_ROUTINE,
@@ -26,14 +27,14 @@ export function cleanRoutineInput(input: RoutineInput): RoutineInput {
 }
 
 function checkLimits(input: RoutineInput) {
-  if (input.title.length === 0) throw new Error('A routine needs a title');
+  if (input.title.length === 0) throw withErrorMessage(new Error('A routine needs a title'), { key: "routine-list.aRoutineNeedsATitle" });
   if (input.habitIds.length > MAX_HABITS_PER_ROUTINE) {
-    throw new Error(`A routine can hold up to ${MAX_HABITS_PER_ROUTINE} habits`);
+    throw withErrorMessage(new Error(`A routine can hold up to ${MAX_HABITS_PER_ROUTINE} habits`), { key: "validation.routine.habitLimit", params: { limit: (MAX_HABITS_PER_ROUTINE) } });
   }
 }
 
 export function addRoutine(list: Routine[], input: RoutineInput, now: Date): { next: Routine[]; result: Routine } {
-  if (list.length >= MAX_ROUTINES) throw new Error(`You can have up to ${MAX_ROUTINES} routines`);
+  if (list.length >= MAX_ROUTINES) throw withErrorMessage(new Error(`You can have up to ${MAX_ROUTINES} routines`), { key: "validation.routine.countLimit", params: { limit: (MAX_ROUTINES) } });
   const clean = cleanRoutineInput(input);
   checkLimits(clean);
   const routine: Routine = {
@@ -52,7 +53,7 @@ export function updateRoutineIn(
   now: Date,
 ): { next: Routine[]; result: undefined } {
   const existing = list.find((r) => r.id === id);
-  if (!existing) throw new Error('This routine no longer exists');
+  if (!existing) throw withErrorMessage(new Error('This routine no longer exists'), { key: "routine-list.thisRoutineNoLongerExists" });
   const clean = cleanRoutineInput(input);
   checkLimits(clean);
   const updated: Routine = { ...clean, id: existing.id, createdAt: existing.createdAt, updatedAt: now.toISOString() };
@@ -60,7 +61,7 @@ export function updateRoutineIn(
 }
 
 export function deleteRoutineFrom(list: Routine[], id: string): { next: Routine[]; result: undefined } {
-  if (!list.some((r) => r.id === id)) throw new Error('This routine no longer exists');
+  if (!list.some((r) => r.id === id)) throw withErrorMessage(new Error('This routine no longer exists'), { key: "routine-list.thisRoutineNoLongerExists" });
   // Habits, their progress, goals and insights are not affected.
   return { next: list.filter((r) => r.id !== id), result: undefined };
 }
@@ -68,7 +69,7 @@ export function deleteRoutineFrom(list: Routine[], id: string): { next: Routine[
 /** Moves a routine one place up (-1) or down (+1). At the edge: unchanged (no write). */
 export function moveRoutineIn(list: Routine[], id: string, delta: -1 | 1): { next: Routine[]; result: boolean } {
   const from = list.findIndex((r) => r.id === id);
-  if (from === -1) throw new Error('This routine no longer exists');
+  if (from === -1) throw withErrorMessage(new Error('This routine no longer exists'), { key: "routine-list.thisRoutineNoLongerExists" });
   const to = from + delta;
   if (to < 0 || to >= list.length) return { next: list, result: false };
   const next = [...list];

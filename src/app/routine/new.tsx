@@ -1,3 +1,5 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { appLabel } from '@/i18n/app-copy';
 import { RoutineForm } from '@/components/routines/routine-form';
 import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
 import { useRoutines } from '@/hooks/use-routines';
@@ -8,8 +10,8 @@ export default function NewRoutineScreen() {
 
   return (
     <RoutineForm
-      title="New routine"
-      submitLabel="Create"
+      title={appLabel("routine.new.newRoutine")}
+      submitLabel={appLabel("routine.new.create")}
       initialDraft={{
         title: '',
         description: '',

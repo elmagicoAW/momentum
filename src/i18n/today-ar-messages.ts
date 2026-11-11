@@ -1,0 +1,32 @@
+import type { PluralCategory } from './types';
+import type { todayEnMessages } from './today-en-messages';
+export const todayArMessages = {
+  'today.greetingLine': '{greeting}،\n{name}', 'today.greetingOnly': '{greeting}.',
+  'today.noneOnDay': 'لا توجد عادات مجدولة ليوم {day}. استمتع بالراحة أو عدّل جدولًا.',
+  'today.remainingCount': { zero: 'لم تتبق عادات', one: 'تبقت عادة واحدة', two: 'تبقت عادتان', few: 'تبقت {count} عادات', many: 'تبقت {count} عادة', other: 'تبقى {count} من العادات' },
+  'today.remainingSaved': { zero: 'لم تتبق عادات · {status}', one: 'تبقت عادة واحدة · {status}', two: 'تبقت عادتان · {status}', few: 'تبقت {count} عادات · {status}', many: 'تبقت {count} عادة · {status}', other: 'تبقى {count} من العادات · {status}' },
+  'today.ringCounter': '{completed}{denominator}', 'today.ringDenominator': '/{total}',
+  'today.percentDone': 'اكتمل {percent}٪', 'today.compactRatio': '{completed}/{total}',
+  'today.countValue': '{value} / {target}', 'today.countValueUnit': '{value} / {target} {unit}',
+  'today.habitA11y': '{name}، {progress}', 'today.habitDoneA11y': '{name}، {progress}، مكتمل',
+  'today.checklistProgress': 'الخطوات المكتملة: {completed} من أصل {total}',
+  'today.checklistMixedProgress': 'الخطوات المطلوبة: {requiredDone} من أصل {requiredTotal} · الإجمالي: {done} من أصل {steps}',
+  'today.optionalStepA11y': '{name}، اختياري',
+  'today.plan.loadError': 'تعذّر تحميل الروتينات · {action}',
+  'today.plan.summary': { zero: 'الروتينات المكتملة: {completed} من أصل {count} · {action}', one: 'الروتين المكتمل: {completed} من أصل روتين واحد · {action}', two: 'الروتينات المكتملة: {completed} من أصل روتينين · {action}', few: 'الروتينات المكتملة: {completed} من أصل {count} روتينات · {action}', many: 'الروتينات المكتملة: {completed} من أصل {count} روتينًا · {action}', other: 'الروتينات المكتملة: {completed} من أصل {count} من الروتينات · {action}' },
+  'today.plan.outside': { zero: 'لا توجد عادات مستحقة خارج الروتينات.', one: '+عادة واحدة مستحقة اليوم خارج الروتينات — انظر أدناه.', two: '+عادتان مستحقتان اليوم خارج الروتينات — انظر أدناه.', few: '+{count} عادات مستحقة اليوم خارج الروتينات — انظر أدناه.', many: '+{count} عادة مستحقة اليوم خارج الروتينات — انظر أدناه.', other: '+{count} من العادات مستحقة اليوم خارج الروتينات — انظر أدناه.' },
+  'today.plan.restNames': { zero: 'لا توجد عادات مستحقة اليوم في {names}.', one: 'لا توجد عادات مستحقة اليوم في {names}.', two: 'لا توجد عادات مستحقة اليوم في {names}.', few: 'لا توجد عادات مستحقة اليوم في {names}، ضمن {count} روتينات.', many: 'لا توجد عادات مستحقة اليوم في {names}، ضمن {count} روتينًا.', other: 'لا توجد عادات مستحقة اليوم في {names}، ضمن {count} من الروتينات.' },
+  'today.plan.allDone': 'اكتملت جميع العادات وعددها {total}', 'today.plan.progress': 'اكتمل {completed} من أصل {total}',
+  'today.plan.rowA11y': '{name}، {summary}', 'today.plan.rowNowA11y': '{name}، مقترح الآن، {summary}',
+  'today.achievement.count': 'الإنجازات المكتسبة: {completed} من أصل {total}', 'today.achievement.next': 'التالي: {name} · {progress}',
+  'today.achievement.found': { zero: 'لم يُعثر على إنجازات في سجلك', one: 'عُثر على إنجاز واحد في سجلك', two: 'عُثر على إنجازين في سجلك', few: 'عُثر على {count} إنجازات في سجلك', many: 'عُثر على {count} إنجازًا في سجلك', other: 'عُثر على {count} من الإنجازات في سجلك' },
+  'today.achievement.confirmed': { zero: 'لا توجد إنجازات جديدة مؤكدة', one: 'تأكّد إنجاز جديد واحد', two: 'تأكّد إنجازان جديدان', few: 'تأكّدت {count} إنجازات جديدة', many: 'تأكّد {count} إنجازًا جديدًا', other: 'تأكّد {count} من الإنجازات الجديدة' },
+  'today.achievement.progress.checkins': 'تسجيلات الإتمام: {value} / {target}',
+  'today.achievement.progress.activeDays': 'أيام مختلفة: {value} / {target}',
+  'today.achievement.progress.streak': 'تسجيلات إتمام مجدولة لعادة واحدة: {value} / {target}',
+  'today.achievement.progress.types': 'أنواع التتبع: {value} / {target}',
+  'today.achievement.progress.perfectDays': 'يوم مكتمل: {value} / {target}',
+  'today.achievement.progress.perfectWeeks': 'أسبوع منتهٍ مكتمل: {value} / {target}',
+  'today.motivation.quote': '«{quote}»', 'today.motivation.author': '— {author}',
+} as const satisfies Readonly<{ [K in keyof typeof todayEnMessages]:
+  (typeof todayEnMessages)[K] extends string ? string : Readonly<Record<PluralCategory, string>> }>;

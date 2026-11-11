@@ -1,18 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, TextInput} from '@/components/localized-native';
+import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
+
 import { useState, type ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { HabitLinkPicker } from '@/components/goals/habit-link-picker';
@@ -50,8 +44,7 @@ type Props = {
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
 
 function errorMessage(error: unknown, fallback: string) {
-  const detail = error instanceof Error && error.message ? ` (${error.message})` : '';
-  return `${fallback}${detail}`;
+  return displayError(error, fallback);
 }
 
 export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
@@ -78,7 +71,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
     if (locked) return;
     if (!habitsReady) {
       // Saving now would drop every habit link (they'd all look deleted).
-      setFailure('Your habits haven’t loaded, so this routine can’t be saved safely. Go back and try again.');
+      setFailure(appLabel("routines.routine-form.yourHabitsHavenTLoadedSoThisRoutineCanTBeSavedSafelyGoBackAndTryAgain"));
       return;
     }
     if (hasRoutineErrors(errors)) {
@@ -92,7 +85,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
       setBusy('done'); // stays locked while the screen closes
     } catch (error) {
       console.warn('[momentum] Failed to save routine', error);
-      setFailure(errorMessage(error, "Couldn't save this routine. Your changes are still here — try again."));
+      setFailure(errorMessage(error, appLabel("routines.routine-form.couldnTSaveThisRoutineYourChangesAreStillHereTryAgain")));
       setBusy('idle');
     }
   };
@@ -106,7 +99,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
       setBusy(deleted ? 'done' : 'idle');
     } catch (error) {
       console.warn('[momentum] Failed to delete routine', error);
-      setFailure(errorMessage(error, "Couldn't delete this routine. Nothing was removed — try again."));
+      setFailure(errorMessage(error, appLabel("routines.routine-form.couldnTDeleteThisRoutineNothingWasRemovedTryAgain")));
       setBusy('idle');
     }
   };
@@ -119,7 +112,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
             onPress={onCancel}
             disabled={locked}
             accessibilityRole="button"
-            accessibilityLabel="Cancel"
+            accessibilityLabel={appLabel("routines.routine-form.cancel")}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
             <SymbolView
@@ -162,89 +155,87 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
             <View style={styles.preview}>
               <RoutineIcon routine={draft} size={52} />
               <Text style={styles.previewTitle} numberOfLines={1}>
-                {draft.title.trim() || 'New routine'}
+                {draft.title.trim() || appLabel("routines.routine-form.newRoutine")}
               </Text>
             </View>
 
             <Field
-              label="Title"
+              label={appLabel("routines.routine-form.title")}
               error={visibleErrors.title}
-              counter={`${draft.title.length}/${ROUTINE_TITLE_MAX_LENGTH}`}>
+              counter={appMessage("display.ratio", { value: draft.title.length, maximum: ROUTINE_TITLE_MAX_LENGTH })}>
               <TextInput
                 selectionColor={Palette.accent}
                 keyboardAppearance={scheme}
                 value={draft.title}
                 onChangeText={(text) => update('title', text)}
-                placeholder="e.g. Morning Routine"
+                placeholder={appLabel("routines.routine-form.eGMorningRoutine")}
                 placeholderTextColor={Palette.textMuted}
                 maxLength={ROUTINE_TITLE_MAX_LENGTH}
                 autoCapitalize="sentences"
                 returnKeyType="done"
                 editable={!locked}
-                accessibilityLabel="Routine title"
+                accessibilityLabel={appLabel("routines.routine-form.routineTitle")}
                 style={[styles.input, visibleErrors.title && styles.inputError]}
               />
             </Field>
 
             <Field
-              label="Description"
+              label={appLabel("routines.routine-form.description")}
               optional
               error={visibleErrors.description}
-              counter={`${draft.description.length}/${ROUTINE_DESCRIPTION_MAX_LENGTH}`}>
+              counter={appMessage("display.ratio", { value: draft.description.length, maximum: ROUTINE_DESCRIPTION_MAX_LENGTH })}>
               <TextInput
                 selectionColor={Palette.accent}
                 keyboardAppearance={scheme}
                 value={draft.description}
                 onChangeText={(text) => update('description', text)}
-                placeholder="What this routine sets you up for"
+                placeholder={appLabel("routines.routine-form.whatThisRoutineSetsYouUpFor")}
                 placeholderTextColor={Palette.textMuted}
                 maxLength={ROUTINE_DESCRIPTION_MAX_LENGTH}
                 multiline
                 textAlignVertical="top"
                 editable={!locked}
-                accessibilityLabel="Routine description"
+                accessibilityLabel={appLabel("routines.routine-form.routineDescription")}
                 style={[styles.input, styles.multiline, visibleErrors.description && styles.inputError]}
               />
             </Field>
 
             <Field
-              label="Preferred time"
-              hint="Orders your plan on Today and highlights what fits right now. Habits are always available.">
+              label={appLabel("routines.routine-form.preferredTime")}
+              hint={appLabel("routines.routine-form.ordersYourPlanOnTodayAndHighlightsWhatFitsRightNowHabitsAreAlwaysAvailable")}>
               <TimeOfDayPicker value={draft.timeOfDay} onChange={(t) => update('timeOfDay', t)} disabled={locked} />
             </Field>
 
-            <Field label="Icon">
+            <Field label={appLabel("routines.routine-form.icon")}>
               <IconPicker value={draft.icon} color={draft.color} onChange={(icon) => !locked && update('icon', icon)} />
             </Field>
 
-            <Field label="Color">
+            <Field label={appLabel("routines.routine-form.color")}>
               <ColorPicker value={draft.color} onChange={(color) => !locked && update('color', color)} />
             </Field>
 
             <Field
-              label="Habits"
+              label={appLabel("routines.routine-form.habits")}
               optional
               error={visibleErrors.habitIds}
-              counter={`${linkedCount}/${MAX_HABITS_PER_ROUTINE}`}
-              hint="Habits stay exactly as they are — a routine only groups them. A habit can be in more than one routine and is still tracked once.">
+              counter={appMessage("display.ratio", { value: linkedCount, maximum: MAX_HABITS_PER_ROUTINE })}
+              hint={appLabel("routines.routine-form.habitsStayExactlyAsTheyAreARoutineOnlyGroupsThemAHabitCanBeInMoreThanOneRoutineAndIsStillTrackedOnce")}>
               {habitsReady ? (
                 <View style={styles.habitsBlock}>
                   {missingCount > 0 && (
                     <Text style={styles.hint}>
-                      {missingCount === 1 ? '1 habit was' : `${missingCount} habits were`} deleted and will be removed
-                      from this routine when you save.
-                    </Text>
+                      {appMessage("routines.form.deletedHabits", { count: missingCount })}</Text>
                   )}
                   {linkedCount > 0 && (
                     <>
-                      <Text style={styles.subLabel}>Order</Text>
+                      <Text style={styles.subLabel}>{appLabel("routines.routine-form.order")}</Text>
                       <RoutineHabitOrder
                         habitIds={draft.habitIds}
                         habits={habits}
                         onChange={(ids) => update('habitIds', ids)}
                         disabled={locked}
                       />
-                      <Text style={styles.subLabel}>Choose habits</Text>
+                      <Text style={styles.subLabel}>{appLabel("routines.routine-form.chooseHabits")}</Text>
                     </>
                   )}
                   <HabitLinkPicker
@@ -253,13 +244,13 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
                     onChange={(ids) => update('habitIds', ids)}
                     onCreateHabit={() => router.navigate('/habits/new')}
                     disabled={locked}
-                    emptyText="You don’t have any habits yet. Save this routine now and add habits later — or create a habit first (this form will close without saving)."
+                    emptyText={appLabel("routines.routine-form.youDonTHaveAnyHabitsYetSaveThisRoutineNowAndAddHabitsLaterOrCreateAHabitFirstThisFormWillCloseWithoutSaving")}
                   />
                 </View>
               ) : habitsStatus === 'loading' ? (
                 <ActivityIndicator color={Palette.accent} />
               ) : (
-                <Text style={styles.hint}>Couldn’t load your habits. This routine can’t be saved right now.</Text>
+                <Text style={styles.hint}>{appLabel("routines.routine-form.couldnTLoadYourHabitsThisRoutineCanTBeSavedRightNow")}</Text>
               )}
             </Field>
 
@@ -273,7 +264,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
                 {busy === 'deleting' ? (
                   <ActivityIndicator size="small" color={Palette.danger} />
                 ) : (
-                  <Text style={styles.deleteText}>Delete routine</Text>
+                  <Text style={styles.deleteText}>{appLabel("routines.routine-form.deleteRoutine")}</Text>
                 )}
               </Pressable>
             )}
@@ -305,7 +296,7 @@ function Field({
       <View style={styles.fieldHeader}>
         <Text style={styles.label}>
           {label}
-          {optional && <Text style={styles.optional}> · optional</Text>}
+          {optional && <Text style={styles.optional}> {appLabel("routines.routine-form.optional")}</Text>}
         </Text>
         {counter && <Text style={styles.counter}>{counter}</Text>}
       </View>

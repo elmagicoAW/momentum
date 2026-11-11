@@ -1,3 +1,5 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { appLabel, appMessage, withErrorMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
@@ -19,7 +21,7 @@ import { habitToDraft } from '@/utils/habit-validation';
 import { closeHabitEditor } from '@/utils/navigation';
 import { routinesContaining } from '@/utils/routine-progress';
 
-const TYPE_LABEL: Record<TrackingType, string> = { tick: 'Tick', count: 'Count', checklist: 'Checklist' };
+const TYPE_LABEL: Record<TrackingType, string> = { get tick(){return appLabel("habits.detail.tick");}, get count(){return appLabel("habits.detail.count");}, get checklist(){return appLabel("habits.detail.checklist");} };
 
 export default function EditHabitScreen() {
   const { palette: Palette, styles } = useAppStyles(createStyles);
@@ -41,18 +43,18 @@ export default function EditHabitScreen() {
             <ActivityIndicator color={Palette.accent} />
           ) : status === 'load-error' ? (
             <EmptyState
-              title="Couldn't load your habits"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("habits.detail.couldnTLoadYourHabits")}
+              description={appLabel("habits.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("habits.detail.tryAgain")}
               onAction={reload}
             />
           ) : (
             <EmptyState
-              title="Habit not found"
-              description="It may have been deleted."
+              title={appLabel("habits.detail.habitNotFound")}
+              description={appLabel("habits.detail.itMayHaveBeenDeleted")}
               icon={{ ios: 'questionmark.circle.fill', android: 'help', web: 'help' }}
-              actionLabel="Back to habits"
+              actionLabel={appLabel("habits.detail.backToHabits")}
               onAction={closeHabitEditor}
             />
           )}
@@ -64,8 +66,8 @@ export default function EditHabitScreen() {
   return (
     <HabitForm
       key={habit.id}
-      title="Edit habit"
-      submitLabel="Save"
+      title={appLabel("habits.detail.editHabit")}
+      submitLabel={appLabel("habits.detail.save")}
       initialDraft={habitToDraft(habit)}
       onCancel={closeHabitEditor}
       onSubmit={async (input) => {
@@ -76,15 +78,15 @@ export default function EditHabitScreen() {
           // their own records). Only allowed once today's progress has loaded, so
           // the reset can actually be saved and we know whether to ask.
           if (daily.status !== 'ready') {
-            throw new Error("today's progress hasn't loaded yet, so the tracking type can't be changed right now");
+            throw withErrorMessage(new Error("today's progress hasn't loaded yet, so the tracking type can't be changed right now"), { key: "habits.detail.todaySProgressHasnTLoadedYetSoTheTrackingTypeCanTBeChangedRightNow" });
           }
           if (hasAnyProgress(daily.record, habit.id)) {
             const confirmed = await confirmDestructive({
-              title: 'Reset today’s progress?',
+              get title(){return appLabel("habits.detail.resetTodaySProgress");},
               message:
-                `Changing “${habit.name}” from ${TYPE_LABEL[from]} to ${TYPE_LABEL[to]} resets today’s progress for this habit. ` +
-                'Earlier days, your history and linked goals are kept.',
-              confirmLabel: 'Change and reset',
+                appMessage("habits.changeTracking.warning", { name: (habit.name), fromType: (TYPE_LABEL[from]), toType: (TYPE_LABEL[to]) }) +
+                appLabel("habits.detail.earlierDaysYourHistoryAndLinkedGoalsAreKept"),
+              get confirmLabel(){return appLabel("habits.detail.changeAndReset");},
             });
             if (!confirmed) return false; // form stays open, nothing saved
           }
@@ -96,18 +98,18 @@ export default function EditHabitScreen() {
         const linkedGoals = goals.filter((g) => g.habitIds.includes(habit.id)).length;
         const goalNote =
           linkedGoals > 0
-            ? ` It’s linked to ${linkedGoals === 1 ? '1 goal' : `${linkedGoals} goals`} and will be unlinked; the goals themselves are kept.`
+            ? appMessage("habits.delete.goalNote", { count: linkedGoals })
             : '';
         // Routines keep the ID until they're next saved; it's ignored everywhere meanwhile.
         const inRoutines = routinesContaining(routines, habit.id).length;
         const routineNote =
           inRoutines > 0
-            ? ` It’s in ${inRoutines === 1 ? '1 routine' : `${inRoutines} routines`} and will be removed from ${inRoutines === 1 ? 'it' : 'them'}; the routines themselves are kept.`
+            ? appMessage("habits.delete.routineNote", { count: inRoutines })
             : '';
         const confirmed = await confirmDestructive({
-          title: `Delete “${habit.name}”?`,
-          message: `It will be removed from your habits and from Today.${goalNote}${routineNote} This can’t be undone.`,
-          confirmLabel: 'Delete',
+          title: appMessage("habits.delete.title", { name: (habit.name) }),
+          message: appMessage("habits.delete.warning", { goalNote: (goalNote), routineNote: (routineNote) }),
+          get confirmLabel(){return appLabel("habits.detail.delete");},
         });
         if (!confirmed) return false;
         setDeleting(habit);

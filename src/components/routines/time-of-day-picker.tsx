@@ -1,6 +1,9 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { TIME_OF_DAY_VALUES, type TimeOfDay } from '@/data/routine-storage';
@@ -26,7 +29,7 @@ export function TimeOfDayPicker({ value, onChange, disabled = false }: Props) {
             disabled={disabled}
             accessibilityRole="radio"
             accessibilityState={{ checked: selected, disabled }}
-            accessibilityLabel={`${TIME_OF_DAY_LABELS[option]}, ${TIME_OF_DAY_HINTS[option]}`}
+            accessibilityLabel={appMessage("display.labelValue", { label: String(TIME_OF_DAY_LABELS[option]), textValue: TIME_OF_DAY_HINTS[option] })}
             android_ripple={{ color: Palette.ripple }}
             style={({ pressed }) => [styles.option, selected && styles.selected, pressed && styles.pressed]}>
             <Text style={[styles.label, selected && styles.labelSelected]}>{TIME_OF_DAY_LABELS[option]}</Text>

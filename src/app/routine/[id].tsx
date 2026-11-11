@@ -1,10 +1,14 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage, appRich } from '@/i18n/app-copy';
+import { LocalizedInline } from '@/components/localized-inline';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
+
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
@@ -25,15 +29,15 @@ import { describeSchedule, WEEKDAY_LONG } from '@/utils/schedule';
 function progressMessage(day: RoutineDay, weekday: string): string {
   switch (day.state) {
     case 'empty':
-      return 'Add habits to start this routine.';
+      return appLabel("routine.detail.addHabitsToStartThisRoutine");
     case 'rest':
-      return `Nothing in this routine is scheduled for ${weekday}.`;
+      return appMessage("routines.rest.weekday", { weekday: (weekday) });
     case 'complete':
-      return 'Routine complete. Nicely done.';
+      return appLabel("routine.detail.routineCompleteNicelyDone");
     case 'partial':
-      return `${day.total - day.done} to go — keep it rolling.`;
+      return appMessage("routines.progress.remaining", { count: (day.total - day.done) });
     default:
-      return 'Ready when you are.';
+      return appLabel("routine.detail.readyWhenYouAre");
   }
 }
 
@@ -62,26 +66,26 @@ export default function RoutineDetailScreen() {
       <ActivityIndicator color={Palette.accent} />
     ) : routinesStatus === 'load-error' ? (
       <EmptyState
-        title="Couldn't load your routines"
-        description="Your saved data hasn't been changed. Try again, or restart the app."
+        title={appLabel("routine.detail.couldnTLoadYourRoutines")}
+        description={appLabel("routine.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
         icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-        actionLabel="Try again"
+        actionLabel={appLabel("routine.detail.tryAgain")}
         onAction={reloadRoutines}
       />
     ) : habitsStatus === 'load-error' ? (
       <EmptyState
-        title="Couldn't load your habits"
-        description="Your saved data hasn't been changed. Try again, or restart the app."
+        title={appLabel("routine.detail.couldnTLoadYourHabits")}
+        description={appLabel("routine.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
         icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-        actionLabel="Try again"
+        actionLabel={appLabel("routine.detail.tryAgain")}
         onAction={reloadHabits}
       />
     ) : !routine ? (
       <EmptyState
-        title="This routine no longer exists"
-        description="It may have been deleted. Your habits and progress are not affected."
+        title={appLabel("routine.detail.thisRoutineNoLongerExists")}
+        description={appLabel("routine.detail.itMayHaveBeenDeletedYourHabitsAndProgressAreNotAffected")}
         icon={{ ios: 'questionmark.circle.fill', android: 'help', web: 'help' }}
-        actionLabel="Go back"
+        actionLabel={appLabel("routine.detail.goBack")}
         onAction={closeRoutine}
       />
     ) : null;
@@ -129,9 +133,9 @@ export default function RoutineDetailScreen() {
             <View style={[styles.progressCard, day.state === 'complete' && styles.progressCardDone]}>
               <ProgressRing completed={day.done} total={day.total} size={120} strokeWidth={10} />
               <View style={styles.progressText}>
-                <Text style={styles.cardLabel}>Today</Text>
+                <Text style={styles.cardLabel}>{appLabel("routine.detail.today")}</Text>
                 <Text style={styles.progressTitle}>
-                  {day.total === 0 ? 'Nothing due' : `${day.done} of ${day.total} habits`}
+                  {day.total === 0 ? appLabel("routine.detail.nothingDue") : appMessage("routines.progress.habits", { done: (day.done), total: (day.total) })}
                 </Text>
                 <Text style={styles.progressSubtitle}>{progressMessage(day, weekday)}</Text>
               </View>
@@ -141,18 +145,15 @@ export default function RoutineDetailScreen() {
           {day.missingCount > 0 && (
             <View style={styles.infoNote}>
               <Text style={styles.infoText}>
-                {day.missingCount === 1 ? '1 habit in this routine was' : `${day.missingCount} habits in this routine were`}{' '}
-                deleted. {day.missingCount === 1 ? 'It’s' : 'They’re'} ignored here and will be removed when you next
-                save the routine. Past check-ins are kept.
-              </Text>
+                {appMessage("routines.deletedHabits.notice", { count: day.missingCount })}</Text>
             </View>
           )}
 
           {day.state === 'empty' && (
             <EmptyState
-              title="No habits in this routine"
-              description="Add habits you already track. They stay the same habits — the routine just groups them."
-              actionLabel="Add habits"
+              title={appLabel("routine.detail.noHabitsInThisRoutine")}
+              description={appLabel("routine.detail.addHabitsYouAlreadyTrackTheyStayTheSameHabitsTheRoutineJustGroupsThem")}
+              actionLabel={appLabel("routine.detail.addHabits")}
               onAction={() => openRoutineEditor(routine.id)}
             />
           )}
@@ -161,11 +162,8 @@ export default function RoutineDetailScreen() {
           {day.total > 0 && (
             <>
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Due today</Text>
-                <Text style={styles.sectionMeta} accessibilityLiveRegion="polite">
-                  {day.total - day.done} left
-                  {savingText && <Text style={styles.saveMeta}> · {savingText}</Text>}
-                </Text>
+                <Text style={styles.sectionTitle}>{appLabel("routine.detail.dueToday")}</Text>
+                <Text style={styles.sectionMeta} accessibilityLiveRegion="polite"><LocalizedInline message={appRich('routines.remaining.withSave', { remaining: appMessage("routines.remaining.short", { count: day.total - day.done }), saving: savingText ? ' · ' + savingText : '' }, 'saving')} slotStyle={styles.saveMeta} /></Text>
               </View>
               <View style={styles.list}>
                 {day.due.map((habit) => (
@@ -199,7 +197,7 @@ export default function RoutineDetailScreen() {
                 accessibilityRole="button"
                 accessibilityState={{ expanded: notDueOpen }}
                 style={({ pressed }) => [styles.notDueHeader, pressed && styles.pressed]}>
-                <Text style={styles.notDueTitle}>Not scheduled today ({day.notDue.length})</Text>
+                <Text style={styles.notDueTitle}>{appMessage("routines.rest.notDue", { total: day.notDue.length })}</Text>
                 {day.state !== 'rest' && (
                   <SymbolView
                     name={
@@ -214,15 +212,13 @@ export default function RoutineDetailScreen() {
               </Pressable>
               {notDueOpen && (
                 <View style={styles.notDueList}>
-                  <Text style={styles.notDueHint}>
-                    These habits aren’t due on {weekday}, so they can’t be checked off today — same as on Today.
-                  </Text>
+                  <Text style={styles.notDueHint}>{appMessage("routines.rest.explanation", { weekday })}</Text>
                   {day.notDue.map((habit) => (
                     <View
                       key={habit.id}
                       style={styles.notDueRow}
                       accessible
-                      accessibilityLabel={`${habit.name}, not scheduled today, ${describeSchedule(habit.schedule)}`}>
+                      accessibilityLabel={appMessage("routines.habit.notScheduled", { name: (habit.name), schedule: (describeSchedule(habit.schedule)) })}>
                       <View style={[styles.notDueIcon, { backgroundColor: `${habit.color}18` }]}>
                         <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={readableAccent(habit.color, Palette)} />
                       </View>
@@ -253,7 +249,7 @@ function Header({ onBack, onEdit }: { onBack: () => void; onEdit?: () => void })
       <Pressable
         onPress={onBack}
         accessibilityRole="button"
-        accessibilityLabel="Back"
+        accessibilityLabel={appLabel("routine.detail.back")}
         hitSlop={8}
         style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
         <SymbolView
@@ -267,10 +263,10 @@ function Header({ onBack, onEdit }: { onBack: () => void; onEdit?: () => void })
         <Pressable
           onPress={onEdit}
           accessibilityRole="button"
-          accessibilityLabel="Edit routine"
+          accessibilityLabel={appLabel("routine.detail.editRoutine")}
           android_ripple={{ color: Palette.rippleMedium }}
           style={({ pressed }) => [styles.editButton, pressed && styles.pressed]}>
-          <Text style={styles.editText}>Edit</Text>
+          <Text style={styles.editText}>{appLabel("routine.detail.edit")}</Text>
         </Pressable>
       )}
     </View>

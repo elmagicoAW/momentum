@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { useRoutines } from '@/hooks/use-routines';
@@ -14,19 +17,19 @@ export function RoutinesEntryCard() {
   const { routines, status } = useRoutines();
 
   let detail: string;
-  if (status === 'loading') detail = 'Loading…';
-  else if (status === 'load-error') detail = 'Couldn’t load routines — tap to retry';
-  else if (routines.length === 0) detail = 'Group habits into a Morning or Evening Routine';
+  if (status === 'loading') detail = appLabel("routines.routines-entry-card.loadingPending");
+  else if (status === 'load-error') detail = appLabel("routines.routines-entry-card.couldnTLoadRoutinesTapToRetry");
+  else if (routines.length === 0) detail = appLabel("routines.routines-entry-card.groupHabitsIntoAMorningOrEveningRoutine");
   else detail = routines.map((r) => r.title).join(' · ');
 
-  const count = status === 'ready' && routines.length > 0 ? String(routines.length) : null;
+  const count = status === 'ready' && routines.length > 0 ? appNumber(routines.length) : null;
 
   return (
     <Pressable
       onPress={() => router.push(ROUTINES_HREF)}
       accessibilityRole="button"
-      accessibilityLabel={`Routines${count ? `, ${count}` : ''}. ${detail}`}
-      accessibilityHint="Opens your routines"
+      accessibilityLabel={count ? appMessage("routines.entry.withCount", { count: routines.length, detail }) : appMessage("routines.entry.noCount", { detail })}
+      accessibilityHint={appLabel("routines.routines-entry-card.opensYourRoutines")}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.icon}>
@@ -38,7 +41,7 @@ export function RoutinesEntryCard() {
       </View>
       <View style={styles.body}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>Routines</Text>
+          <Text style={styles.title}>{appLabel("routines.routines-entry-card.routines")}</Text>
           {count && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{count}</Text>

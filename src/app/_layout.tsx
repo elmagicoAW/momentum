@@ -1,3 +1,5 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { ACTIVE_PRESENTATION } from '@/utils/presentation';
 import { useAppTheme } from '@/hooks/use-app-theme';
 import { DataBackupProvider } from '@/hooks/use-data-backup';
 import { Stack } from 'expo-router';
@@ -62,12 +64,12 @@ function RootNavigator() {
                       contentStyle: { backgroundColor: Palette.background },
                     }}>
                     <Stack.Screen name="(tabs)" />
-                    <Stack.Screen name="routine/[id]" options={{ animation: 'slide_from_right' }} />
+                    <Stack.Screen name="routine/[id]" options={{ animation: ACTIVE_PRESENTATION.direction === 'rtl' ? 'slide_from_left' : 'slide_from_right' }} />
                     <Stack.Screen name="routine/new" options={{ animation: 'slide_from_bottom' }} />
                     <Stack.Screen name="routine/edit/[id]" options={{ animation: 'slide_from_bottom' }} />
                     <Stack.Screen name="profile/edit" options={{ animation: 'slide_from_bottom' }} />
-                    <Stack.Screen name="data-backup" options={{ animation: 'slide_from_right' }} />
-                    <Stack.Screen name="achievements" options={{ animation: 'slide_from_right' }} />
+                    <Stack.Screen name="data-backup" options={{ animation: ACTIVE_PRESENTATION.direction === 'rtl' ? 'slide_from_left' : 'slide_from_right' }} />
+                    <Stack.Screen name="achievements" options={{ animation: ACTIVE_PRESENTATION.direction === 'rtl' ? 'slide_from_left' : 'slide_from_right' }} />
                   </Stack>
                 </RoutinesProvider>
               </GoalsProvider>

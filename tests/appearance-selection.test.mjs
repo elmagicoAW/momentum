@@ -142,7 +142,7 @@ test('selector saves leave all domain records and backup v1 payload/schema uncha
   assert.deepEqual([...new Set(f.writes)], [PREFERENCES_KEY]);
 });
 
-test('production theme uses saved preferences with no preview override; language activation stays closed', () => {
+test('production theme uses saved preferences with no preview override; language subscribes to committed preferences', () => {
   const theme = readFileSync('src/hooks/use-theme-preview.tsx', 'utf8');
   assert.match(theme, /const appearance = preferences.appearance/);
   assert.match(theme, /startAppearanceSession\(appearance,/);
@@ -150,6 +150,6 @@ test('production theme uses saved preferences with no preview override; language
   const dev = readFileSync('src/components/dev-theme-preview.tsx', 'utf8');
   assert.match(dev, /return null/); assert.doesNotMatch(dev, /Pressable|setPreview/);
   const language = readFileSync('src/hooks/use-language.ts', 'utf8');
-  assert.match(language, /language: ACTIVE_PRESENTATION.language/);
-  assert.match(language, /direction: ACTIVE_PRESENTATION.direction/);
+  assert.match(language, /usePresentationLanguage/);
+  assert.match(language, /direction: languageDirection\(language\)/);
 });

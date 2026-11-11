@@ -1,7 +1,11 @@
 import type { TemplateDictionary } from '@/i18n/types';
+import { todayArMessages } from './today-ar-messages';
+import { remainingArMessages } from './remaining-ar-messages';
 
 /** Draft Modern Standard Arabic; native copy review remains a release gate. */
 export const arMessages = {
+  ...remainingArMessages,
+  ...todayArMessages,
   'today.progress': 'أُنجزت {completed} من أصل {total} من العادات',
   'today.greetingNamed': '{greeting}، {name}',
   'today.remaining': { zero: 'لا توجد عادات متبقية', one: 'تبقت عادة واحدة', two: 'تبقت عادتان', few: 'تبقت {count} عادات', many: 'تبقت {count} عادة', other: 'تبقى {count} من العادات' },

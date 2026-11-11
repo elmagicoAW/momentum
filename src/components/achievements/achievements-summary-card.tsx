@@ -1,7 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useLanguage } from '@/hooks/use-language';
+import { todayAchievementProgress, todayBadgeName, todayCopy } from '@/i18n/today';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { ACHIEVEMENTS } from '@/data/achievement-definitions';
@@ -11,23 +15,26 @@ import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
 import { hasProvisionalEffort } from '@/utils/achievements';
 import { openAchievements } from '@/utils/navigation';
-import { achievementProgress } from './achievement-card';
 
 export function AchievementCelebration() {
   const { styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { t, m } = todayCopy(language);
   const { collection, storeReady, acknowledge } = useAchievements();
   const unseen = ACHIEVEMENTS.filter((badge) => collection.awards[badge.id] && !collection.seenBadgeIds.includes(badge.id));
   if (!storeReady || unseen.length === 0) return null;
   const backfill = unseen.every((badge) => collection.awards[badge.id].source === 'backfill');
   return <View style={styles.celebration}>
-    <Text style={styles.celebrationTitle} accessibilityLiveRegion="polite">{backfill ? `${unseen.length} ${unseen.length === 1 ? 'achievement found' : 'achievements found'} in your history` : `${unseen.length} new ${unseen.length === 1 ? 'achievement' : 'achievements'} confirmed`}</Text>
-    <Text style={styles.copy}>{unseen.map((badge) => badge.name).join(' · ')}</Text>
-    <Pressable accessibilityRole="button" accessibilityLabel="Dismiss achievement summary" onPress={() => acknowledge(unseen.map((badge) => badge.id))} style={styles.action}><Text style={styles.link}>Dismiss</Text></Pressable>
+    <Text style={styles.celebrationTitle} accessibilityLiveRegion="polite">{m(backfill ? 'today.achievement.found' : 'today.achievement.confirmed', { count: unseen.length })}</Text>
+    <Text style={styles.copy}>{unseen.map((badge) => todayBadgeName(language, badge)).join(' · ')}</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel={t('today.achievement.dismissA11y')} onPress={() => acknowledge(unseen.map((badge) => badge.id))} style={styles.action}><Text style={styles.link}>{t('today.achievement.dismiss')}</Text></Pressable>
   </View>;
 }
 
 export function AchievementsSummaryCard({ today = false }: { today?: boolean }) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { t, m } = todayCopy(language);
   const { collection, storeReady, status, evaluation, acknowledge } = useAchievements();
   const daily = useDailyProgress();
   const { habits, status: habitsStatus } = useHabits();
@@ -42,19 +49,19 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
   return <View style={styles.card}>
     <Pressable accessibilityRole="button" onPress={open} style={({ pressed }) => [styles.body, pressed && { opacity: 0.75 }]}>
       <View style={styles.row}>
-        <Text style={styles.eyebrow}>YOUR MOMENTUM</Text>
+        <Text style={styles.eyebrow}>{t('today.achievement.eyebrow')}</Text>
         <SymbolView name={{ ios: 'arrow.up.right', android: 'north_east', web: 'north_east' }} size={18} tintColor={Palette.accentBlue} />
       </View>
-      <Text style={styles.title}>Achievements</Text>
+      <Text style={styles.title}>{t('navigation.achievements')}</Text>
       <View style={styles.row}>
-        <Text style={styles.count}>{storeReady ? `${earned.length} of ${ACHIEVEMENTS.length} earned` : status === 'store-error' ? 'Collection unavailable' : 'Loading collection…'}</Text>
+        <Text style={styles.count}>{storeReady ? m('today.achievement.count', { completed: earned.length, total: ACHIEVEMENTS.length }) : t(status === 'store-error' ? 'today.achievement.unavailable' : 'today.achievement.loading')}</Text>
         <View style={styles.symbols} accessible={false} importantForAccessibility="no-hide-descendants">{recent.map((badge) => <SymbolView key={badge.id} name={habitIconSymbol(badge.icon)} size={20} tintColor={Palette.accent} />)}</View>
       </View>
-      {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>Next: {next.name} · {achievementProgress(next, evaluation)}</Text>}
-      {storeReady && !next && <Text style={styles.copy}>Your collection is complete. Keep showing up for yourself.</Text>}
-      <Text style={styles.link}>View achievements</Text>
+      {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
+      {storeReady && !next && <Text style={styles.copy}>{t('today.achievement.complete')}</Text>}
+      <Text style={styles.link}>{t('today.achievement.view')}</Text>
     </Pressable>
-    {encouraging && <Text style={styles.encouragement}>{earned.length === 0 ? 'Great start! Your progress today is provisional. Your first achievement can be confirmed after today once its requirement is complete and saved.' : 'Good work today. This progress is provisional; eligible achievements are confirmed after the day ends and saves finish.'}</Text>}
+    {encouraging && <Text style={styles.encouragement}>{t(earned.length === 0 ? 'today.achievement.firstEffort' : 'today.achievement.effort')}</Text>}
     {today && <AchievementCelebration />}
   </View>;
 }

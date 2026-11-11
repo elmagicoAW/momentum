@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { GoalInput, GoalStatus } from '@/data/goal-storage';
 
 export const GOAL_TITLE_MAX_LENGTH = 60;
@@ -25,20 +26,20 @@ type Context = {
 export function validateGoalDraft(draft: GoalDraft, { todayKey, startDate, savedTargetDate }: Context): GoalDraftErrors {
   const errors: GoalDraftErrors = {};
   const title = draft.title.trim();
-  if (title.length === 0) errors.title = 'Give your goal a title.';
-  else if (title.length > GOAL_TITLE_MAX_LENGTH) errors.title = `Keep the title under ${GOAL_TITLE_MAX_LENGTH} characters.`;
+  if (title.length === 0) errors.title = appLabel("goal-validation.giveYourGoalATitle");
+  else if (title.length > GOAL_TITLE_MAX_LENGTH) errors.title = appMessage("validation.goal.titleLength", { limit: (GOAL_TITLE_MAX_LENGTH) });
 
   if (draft.description.trim().length > GOAL_DESCRIPTION_MAX_LENGTH) {
-    errors.description = `Keep the description under ${GOAL_DESCRIPTION_MAX_LENGTH} characters.`;
+    errors.description = appMessage("validation.goal.descriptionLength", { limit: (GOAL_DESCRIPTION_MAX_LENGTH) });
   }
 
   if (!draft.targetDate) {
-    errors.targetDate = 'Pick a target date.';
+    errors.targetDate = appLabel("goal-validation.pickATargetDate");
   } else if (startDate && draft.targetDate < startDate) {
-    errors.targetDate = 'The target date can’t be before the goal started.';
+    errors.targetDate = appLabel("goal-validation.theTargetDateCanTBeBeforeTheGoalStarted");
   } else if (draft.targetDate < todayKey && draft.targetDate !== savedTargetDate) {
     // A past date is only allowed if the goal was already saved with it.
-    errors.targetDate = 'Pick today or a future date.';
+    errors.targetDate = appLabel("goal-validation.pickTodayOrAFutureDate");
   }
   return errors;
 }

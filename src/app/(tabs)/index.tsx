@@ -1,7 +1,15 @@
+"use no memo";
+import { stackProgress } from '@/utils/rtl-presentation';
+import { useState } from 'react';
+import {Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
+import { useLanguage } from '@/hooks/use-language';
+import { todayCopy, todayDate, todayGreeting, todayMotivation, todayRich } from '@/i18n/today';
+import { formatLocalWeekday } from '@/i18n/format';
+import { LocalizedInline } from '@/components/localized-inline';
 import { router } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
@@ -21,22 +29,28 @@ import { useHabits } from '@/hooks/use-habits';
 import { useProfile } from '@/hooks/use-profile';
 import { useRoutines } from '@/hooks/use-routines';
 import { useTimeOfDay } from '@/hooks/use-time-of-day';
-import { formatLongDate, getGreeting, parseLocalDateKey } from '@/utils/date';
+import { parseLocalDateKey } from '@/utils/date';
 import { isCompleteNow } from '@/utils/habit-progress';
 import { HABITS_HREF, openProfileEditor, openRoutine, openRoutineList } from '@/utils/navigation';
 import { planForDay } from '@/utils/routine-progress';
-import { isScheduledOn, WEEKDAY_LONG } from '@/utils/schedule';
+import { isScheduledOn } from '@/utils/schedule';
+import type { MessageKey } from '@/i18n/types';
 
-function progressMessage(done: number, total: number) {
-  if (total === 0) return 'Nothing scheduled — enjoy the rest day.';
-  if (done === 0) return "Let's build some momentum today.";
-  if (done === total) return 'All done. You showed up for yourself today.';
-  if (done / total >= 0.5) return 'Over halfway there — keep it rolling.';
-  return 'Great start. One habit at a time.';
+function progressMessageKey(done: number, total: number): MessageKey {
+  if (total === 0) return 'today.restDay';
+  if (done === 0) return 'today.getStarted';
+  if (done === total) return 'today.allDone';
+  if (done / total >= 0.5) return 'today.halfway';
+  return 'today.greatStart';
 }
 
 export default function TodayScreen() {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const {width, fontScale} = useWindowDimensions();
+  const [progressWidth, setProgressWidth] = useState<number | null>(null);
+  const stacked = stackProgress(language === 'ar', progressWidth ?? width, fontScale);
+  const { t, m } = todayCopy(language);
   const now = useCurrentDate();
   const daily = useDailyProgress();
   const { record, status, saveState, canEdit } = daily;
@@ -52,8 +66,8 @@ export default function TodayScreen() {
   const todayHabits = habits.filter((habit) => isScheduledOn(habit, today));
   const total = todayHabits.length;
   const doneCount = todayHabits.filter((habit) => isCompleteNow(record, habit)).length;
-  const savingText = saveLabel(saveState);
-  const motivation = getDailyMotivation(now);
+  const savingText = saveLabel(saveState, language);
+  const motivation = todayMotivation(language, getDailyMotivation(now));
   const openHabits = () => router.navigate(HABITS_HREF);
 
   // Today's plan: overview of routines only. It never changes the ring or list above/below.
@@ -66,9 +80,9 @@ export default function TodayScreen() {
   const { profile, status: profileStatus, dismissNamePrompt } = useProfile();
   const profileReady = profileStatus === 'ready';
   const displayName = profileReady ? profile.displayName : undefined;
-  const greeting = getGreeting(now);
+  const greeting = todayGreeting(language, now);
   const showNamePrompt = profileReady && shouldShowNamePrompt(profile);
-  const avatarLabel = displayName ? `Profile: ${displayName}. Edit profile` : 'Set up your profile';
+  const avatarLabel = displayName ? m('accessibility.profileNamed', { name: displayName }) : t('profile.setup');
 
   return (
     <View style={styles.screen}>
@@ -79,15 +93,12 @@ export default function TodayScreen() {
           {/* Header */}
           <View style={styles.header}>
             <View style={styles.headerText}>
-              <Text style={styles.date}>{formatLongDate(now).toUpperCase()}</Text>
+              <Text style={styles.date}>{todayDate(language, now)}</Text>
               <Text style={styles.greeting} accessibilityRole="header">
                 {displayName ? (
-                  <>
-                    {greeting},{'\n'}
-                    <Text style={styles.name}>{displayName}</Text>
-                  </>
+                  <LocalizedInline message={todayRich(language, 'today.greetingLine', { greeting, name: displayName }, 'name')} slotStyle={styles.name} />
                 ) : (
-                  `${greeting}.`
+                  m('today.greetingOnly', { greeting })
                 )}
               </Text>
             </View>
@@ -102,14 +113,14 @@ export default function TodayScreen() {
           </View>
 
           {/* Progress */}
-          <View style={styles.progressCard}>
+          <View onLayout={event => setProgressWidth(event.nativeEvent.layout.width)} style={[styles.progressCard, stacked && {flexDirection:'column', alignItems:'center'}]}>
             <ProgressRing completed={doneCount} total={total} />
-            <View style={styles.progressText}>
-              <Text style={styles.cardLabel}>Daily progress</Text>
+            <View style={[styles.progressText, stacked && {flex:0, width:'100%', minWidth:0}]}>
+              <Text style={styles.cardLabel}>{t('today.dailyProgress')}</Text>
               <Text style={styles.progressTitle}>
-                {doneCount} of {total} habits
+                {m('today.progress', { completed: doneCount, total })}
               </Text>
-              <Text style={styles.progressSubtitle}>{progressMessage(doneCount, total)}</Text>
+              <Text style={styles.progressSubtitle}>{t(progressMessageKey(doneCount, total))}</Text>
             </View>
           </View>
 
@@ -131,11 +142,11 @@ export default function TodayScreen() {
 
           {/* Habits */}
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Today&apos;s Habits</Text>
+            <Text style={styles.sectionTitle}>{t('today.habits')}</Text>
             {habitsReady && total > 0 && (
               <Text style={styles.sectionMeta} accessibilityLiveRegion="polite">
-                {total - doneCount} left
-                {savingText && <Text style={styles.saveMeta}> · {savingText}</Text>}
+                {savingText ? <LocalizedInline message={todayRich(language, 'today.remainingSaved', { count: total - doneCount, status: savingText }, 'status')} slotStyle={styles.saveMeta} />
+                  : m('today.remainingCount', { count: total - doneCount })}
               </Text>
             )}
           </View>
@@ -148,29 +159,29 @@ export default function TodayScreen() {
 
           {habitsStatus === 'load-error' && (
             <EmptyState
-              title="Couldn't load your habits"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={t('today.loadHabits.title')}
+              description={t('today.loadHabits.body')}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={t('today.retry')}
               onAction={reload}
             />
           )}
 
           {habitsReady && habits.length === 0 && (
             <EmptyState
-              title="No habits yet"
-              description="Create your first habit and it will show up here on the days you schedule it."
-              actionLabel="Create a habit"
+              title={t('habits.empty.title')}
+              description={t('habits.empty.description')}
+              actionLabel={t('habits.create')}
               onAction={openHabits}
             />
           )}
 
           {habitsReady && habits.length > 0 && total === 0 && (
             <EmptyState
-              title="Nothing scheduled today"
-              description={`None of your habits are scheduled for ${WEEKDAY_LONG[today.getDay()]}. Enjoy the rest, or adjust a schedule.`}
+              title={t('today.noneScheduled')}
+              description={m('today.noneOnDay', { day: formatLocalWeekday(language, daily.dateKey) })}
               icon={{ ios: 'moon.stars.fill', android: 'bedtime', web: 'bedtime' }}
-              actionLabel="Manage habits"
+              actionLabel={t('habits.manage')}
               onAction={openHabits}
             />
           )}
@@ -200,9 +211,9 @@ export default function TodayScreen() {
 
           {/* Motivation */}
           <View style={styles.quoteCard}>
-            <Text style={styles.cardLabel}>Daily motivation</Text>
-            <Text style={styles.quote}>“{motivation.quote}”</Text>
-            <Text style={styles.quoteAuthor}>— {motivation.author}</Text>
+            <Text style={styles.cardLabel}>{t('today.motivation')}</Text>
+            <Text style={styles.quote}>{m('today.motivation.quote', { quote: motivation.quote })}</Text>
+            <Text style={styles.quoteAuthor}>{m('today.motivation.author', { author: motivation.author })}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>

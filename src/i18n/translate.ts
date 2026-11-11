@@ -6,6 +6,7 @@ import { arMessages } from '@/i18n/ar-messages';
 import { entryParameters, templateParameters, type CatalogInput, type TemplateEntry } from '@/i18n/catalog';
 import { formatNumber, pluralCategory } from '@/i18n/format';
 import type { MessageDescriptor, MessageKey, MessageParams, TemplateKey } from '@/i18n/types';
+import { NUMERIC_PARAMETERS } from '@/i18n/types';
 
 export type LocalizationIssue = 'missing-key' | 'invalid-language' | 'missing-parameter' |
   'unexpected-parameter' | 'invalid-parameter' | 'invalid-template' | 'missing-plural-form';
@@ -13,18 +14,20 @@ export class LocalizationError extends Error {
   readonly code: LocalizationIssue;
   constructor(code: LocalizationIssue) { super(`Localization: ${code}`); this.name = 'LocalizationError'; this.code = code; }
 }
-const numericParameters = new Set(['count', 'completed', 'total', 'position', 'limit', 'minimum', 'maximum']);
+const numericParameters: ReadonlySet<string> = new Set(NUMERIC_PARAMETERS);
 const own = (object: object, key: string) => Object.hasOwn(object, key);
 
 /** Injection is for catalog tests; no persistence, locale discovery or native/global state. */
 export function createTranslator(options: {
   strict?: boolean;
   onDiagnostic?: (issue: LocalizationIssue) => void;
+  numberFormat?: (language: Language, value: number) => string;
   labels?: Partial<Record<Language, Readonly<Record<string, string>>>>;
   messages?: Partial<Record<Language, CatalogInput>>;
 } = {}) {
   const labels = options.labels ?? { en, ar };
   const messages = options.messages ?? { en: enMessages, ar: arMessages };
+  const renderNumber = options.numberFormat ?? formatNumber;
   const problem = (code: LocalizationIssue) => {
     options.onDiagnostic?.(code);
     if (typeof __DEV__ !== 'undefined' && __DEV__) console.warn(`[momentum:i18n] ${code}`);
@@ -89,7 +92,7 @@ export function createTranslator(options: {
     }
     // A callback replacement inserts text literally ($&, braces and markup are never evaluated).
     return text.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g, (_, name: string) =>
-      typeof params[name] === 'number' ? formatNumber(displayLanguage, params[name]) : params[name] as string);
+      typeof params[name] === 'number' ? renderNumber(displayLanguage, params[name]) : params[name] as string);
   };
   function message<K extends TemplateKey>(language: Language, key: K, params: MessageParams<NoInfer<K>>): string {
     return render(language, key, params);

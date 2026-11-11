@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text, TextInput} from '@/components/localized-native';
+import { appLabel } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useRef } from 'react';
-import { StyleSheet, Text, TextInput, View, type TextInputInstance } from 'react-native';
+import { StyleSheet, View, type TextInputInstance } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { UNIT_MAX_LENGTH } from '@/utils/habit-validation';
@@ -34,7 +37,7 @@ export function CountFields({
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.targetCol}>
-          <Text style={styles.subLabel}>Daily target</Text>
+          <Text style={styles.subLabel}>{appLabel("habits.count-fields.dailyTarget")}</Text>
           <TextInput
             selectionColor={Palette.accent}
             keyboardAppearance={scheme}
@@ -50,12 +53,12 @@ export function CountFields({
             editable={editable}
             placeholder="8"
             placeholderTextColor={Palette.textMuted}
-            accessibilityLabel="Daily target"
+            accessibilityLabel={appLabel("habits.count-fields.dailyTarget")}
             style={[styles.input, styles.targetInput, targetError && styles.inputError]}
           />
         </View>
         <View style={styles.unitCol}>
-          <Text style={styles.subLabel}>Unit · optional</Text>
+          <Text style={styles.subLabel}>{appLabel("habits.count-fields.unitOptional")}</Text>
           <TextInput
             selectionColor={Palette.accent}
             keyboardAppearance={scheme}
@@ -67,9 +70,9 @@ export function CountFields({
             autoCapitalize="none"
             returnKeyType="done"
             editable={editable}
-            placeholder="glasses, pages, min"
+            placeholder={appLabel("habits.count-fields.glassesPagesMin")}
             placeholderTextColor={Palette.textMuted}
-            accessibilityLabel="Unit"
+            accessibilityLabel={appLabel("habits.count-fields.unit")}
             style={[styles.input, unitError && styles.inputError]}
           />
         </View>

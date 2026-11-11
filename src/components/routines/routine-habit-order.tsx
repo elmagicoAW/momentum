@@ -1,9 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appMessage, appNumber } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import type { ComponentProps } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
@@ -33,7 +36,7 @@ export function RoutineHabitOrder({ habitIds, habits, onChange, disabled = false
         const last = index === ordered.length - 1;
         return (
           <View key={id} style={styles.row}>
-            <Text style={styles.position}>{index + 1}</Text>
+            <Text style={styles.position}>{appNumber(index + 1)}</Text>
             <View style={[styles.icon, { backgroundColor: `${habit.color}22` }]}>
               <SymbolView name={habitIconSymbol(habit.icon)} size={18} tintColor={readableAccent(habit.color, Palette)} />
             </View>
@@ -41,19 +44,19 @@ export function RoutineHabitOrder({ habitIds, habits, onChange, disabled = false
               {habit.name}
             </Text>
             <IconButton
-              label={`Move ${habit.name} up`}
+              label={appMessage("routines.habit.moveUp", { name: (habit.name) })}
               symbol={{ ios: 'chevron.up', android: 'keyboard_arrow_up', web: 'keyboard_arrow_up' }}
               disabled={disabled || first}
               onPress={() => onChange(moveId(habitIds, id, -1))}
             />
             <IconButton
-              label={`Move ${habit.name} down`}
+              label={appMessage("routines.habit.moveDown", { name: (habit.name) })}
               symbol={{ ios: 'chevron.down', android: 'keyboard_arrow_down', web: 'keyboard_arrow_down' }}
               disabled={disabled || last}
               onPress={() => onChange(moveId(habitIds, id, 1))}
             />
             <IconButton
-              label={`Remove ${habit.name} from this routine`}
+              label={appMessage("routines.habit.remove", { name: (habit.name) })}
               symbol={{ ios: 'xmark', android: 'close', web: 'close' }}
               disabled={disabled}
               onPress={() => onChange(habitIds.filter((h) => h !== id))}

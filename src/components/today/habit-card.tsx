@@ -1,9 +1,13 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+import { useLanguage } from '@/hooks/use-language';
+import { todayCopy, todaySchedule } from '@/i18n/today';
+
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ChecklistSteps } from '@/components/today/checklist-steps';
 import { CountControl } from '@/components/today/count-control';
@@ -12,7 +16,6 @@ import type { DayRecord } from '@/data/completion-storage';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
 import { countValue, doneStepIds, isCompleteNow, requiredStepIds } from '@/utils/habit-progress';
-import { describeSchedule } from '@/utils/schedule';
 
 type Props = {
   habit: Habit;
@@ -66,6 +69,7 @@ function Check({ done, size = 28 }: { done: boolean; size?: number }) {
 
 function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
   const done = isCompleteNow(record, habit);
   return (
     <Pressable
@@ -82,7 +86,7 @@ function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
           {habit.name}
         </Text>
         <Text style={styles.detail} numberOfLines={1}>
-          {habit.description || describeSchedule(habit.schedule)}
+          {habit.description || todaySchedule(language, habit.schedule)}
         </Text>
       </View>
       <Check done={done} />
@@ -96,12 +100,14 @@ function TickCard({ habit, record, disabled = false, onToggleTick }: Props) {
 
 function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { m } = todayCopy(language);
   if (habit.tracking.type !== 'count') return null;
   const { target, unit } = habit.tracking;
   const value = countValue(record, habit);
   const done = isCompleteNow(record, habit);
   const ratio = Math.min(value / target, 1);
-  const progressText = `${value} / ${target}${unit ? ` ${unit}` : ''}`;
+  const progressText = unit ? m('today.countValueUnit', { value, target, unit }) : m('today.countValue', { value, target });
 
   return (
     <View style={[styles.card, done && styles.cardDone]}>
@@ -126,7 +132,7 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
         </View>
         <CountControl
           value={value}
-          label={`${habit.name}, ${progressText}${done ? ', done' : ''}`}
+          label={m(done ? 'today.habitDoneA11y' : 'today.habitA11y', { name: habit.name, progress: progressText })}
           color={habit.color}
           disabled={disabled}
           onAdjust={(delta) => onAdjustCount(habit, delta)}
@@ -145,6 +151,8 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
 
 function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { t, m } = todayCopy(language);
   const [expanded, setExpanded] = useState(false);
   if (habit.tracking.type !== 'checklist') return null;
   const { steps } = habit.tracking;
@@ -154,8 +162,8 @@ function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props)
   const requiredDone = required.filter((id) => done.has(id)).length;
   const summary =
     required.length === steps.length
-      ? `${requiredDone} of ${steps.length} steps`
-      : `${requiredDone} of ${required.length} required · ${done.size} of ${steps.length} total`;
+      ? m('today.checklistProgress', { completed: requiredDone, total: steps.length })
+      : m('today.checklistMixedProgress', { requiredDone, requiredTotal: required.length, done: done.size, steps: steps.length });
 
   return (
     <View style={[styles.card, complete && styles.cardDone]}>
@@ -163,8 +171,8 @@ function ChecklistCard({ habit, record, disabled = false, onToggleStep }: Props)
         onPress={() => setExpanded((e) => !e)}
         accessibilityRole="button"
         accessibilityState={{ expanded }}
-        accessibilityLabel={`${habit.name}, ${summary}${complete ? ', done' : ''}`}
-        accessibilityHint={expanded ? 'Hides the steps' : 'Shows the steps'}
+        accessibilityLabel={m(complete ? 'today.habitDoneA11y' : 'today.habitA11y', { name: habit.name, progress: summary })}
+        accessibilityHint={t(expanded ? 'today.steps.hide' : 'today.steps.show')}
         style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
         <HabitIcon habit={habit} />
         <View style={styles.body}>

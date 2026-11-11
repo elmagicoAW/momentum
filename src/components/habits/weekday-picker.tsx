@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { foregroundOnColor } from '@/utils/theme-color';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import type { Weekday } from '@/data/habit-storage';
@@ -16,8 +19,8 @@ type Props = {
 };
 
 const KINDS = [
-  { value: 'daily', label: 'Every day' },
-  { value: 'weekdays', label: 'Specific days' },
+  { value: 'daily', get label(){return appLabel("habits.weekday-picker.everyDay");} },
+  { value: 'weekdays', get label(){return appLabel("habits.weekday-picker.specificDays");} },
 ] as const;
 
 export function WeekdayPicker({ kind, days, color, onKindChange, onDaysChange }: Props) {

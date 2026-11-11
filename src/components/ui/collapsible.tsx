@@ -1,4 +1,5 @@
-import { SymbolView } from 'expo-symbols';
+import {SymbolView} from '@/components/localized-native';
+
 import { PropsWithChildren, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';

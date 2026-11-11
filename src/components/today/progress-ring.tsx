@@ -1,7 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text, NumericText} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
+import { useLanguage } from '@/hooks/use-language';
+import { todayCopy, todayRich } from '@/i18n/today';
+import { LocalizedInline } from '@/components/localized-inline';
 import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -22,6 +27,8 @@ type Props = {
  */
 export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { m } = todayCopy(language);
   const ratio = total === 0 ? 0 : Math.min(completed / total, 1);
   const progress = useSharedValue(ratio);
 
@@ -64,7 +71,7 @@ export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }:
   const percent = Math.round(ratio * 100);
 
   return (
-    <View style={{ width: size, height: size }}>
+    <View style={{ width: size, height: size, direction: 'ltr', flexShrink:0 }}>
       <View style={[ringBase, styles.track]} />
 
       <View style={[styles.clip, { left: half, width: half, height: size }]}>
@@ -90,11 +97,10 @@ export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }:
       </View>
 
       <View style={styles.center}>
-        <Text style={styles.count}>
-          {completed}
-          <Text style={styles.total}>/{total}</Text>
-        </Text>
-        <Text style={styles.caption}>{percent}% done</Text>
+        {language === 'ar' ? <NumericText style={[styles.count,{maxWidth:size-strokeWidth*2-12, fontSize:28}]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{m('today.ringCounter',{completed,denominator:m('today.ringDenominator',{total})})}</NumericText> : <Text style={styles.count}>
+          <LocalizedInline message={todayRich(language, 'today.ringCounter', { completed, denominator: m('today.ringDenominator', { total }) }, 'denominator')} slotStyle={styles.total} />
+        </Text>}
+        <Text style={[styles.caption,{textAlign:'center',maxWidth:size-strokeWidth*2-12}]}>{m('today.percentDone', { percent })}</Text>
       </View>
     </View>
   );

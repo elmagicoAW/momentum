@@ -1,7 +1,8 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { CompletionHistory, DayRecord } from '@/data/completion-storage';
 import type { Goal } from '@/data/goal-storage';
 import type { Habit } from '@/data/habit-storage';
-import { addDays, daysBetween, formatShortDate, parseLocalDateKey, toLocalDateKey } from '@/utils/date';
+import { addDays, daysBetween, formatShortDate, parseLocalDateKey, toLocalDateKey } from '@/i18n/presentation-date';
 import { isHabitCompleteOn } from '@/utils/habit-progress';
 import { isScheduledOn } from '@/utils/schedule';
 
@@ -123,13 +124,13 @@ export function computeHabitConsistency(
 /** Calendar timeline of a goal — elapsed time, not achievement. */
 export function describeTimeline(goal: Goal, todayKey: string): string {
   if (goal.status === 'completed') {
-    return goal.completedAt ? `Completed ${formatShortDate(goal.completedAt)}` : 'Completed';
+    return goal.completedAt ? appMessage("goals.timeline.completed", { date: (formatShortDate(goal.completedAt)) }) : appLabel("goal-progress.completed");
   }
   const daysLeft = daysBetween(todayKey, goal.targetDate);
-  if (daysLeft < 0) return `Target date passed · ${formatShortDate(goal.targetDate)}`;
-  if (daysLeft === 0) return 'Target date is today';
+  if (daysLeft < 0) return appMessage("goals.timeline.passed", { date: (formatShortDate(goal.targetDate)) });
+  if (daysLeft === 0) return appLabel("goal-progress.targetDateIsToday");
   const totalDays = daysBetween(goal.startDate, goal.targetDate) + 1;
   const dayNumber = daysBetween(goal.startDate, todayKey) + 1;
-  const left = daysLeft === 1 ? '1 day left' : `${daysLeft} days left`;
-  return dayNumber >= 1 ? `Day ${dayNumber} of ${totalDays} · ${left}` : left;
+  const left = appMessage("goals.timeline.daysLeft", { count: daysLeft });
+  return dayNumber >= 1 ? appMessage("goals.timeline.position", { position: (dayNumber), total: (totalDays), remaining: (left) }) : left;
 }

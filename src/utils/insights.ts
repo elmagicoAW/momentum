@@ -1,3 +1,5 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
+import { weekSummary } from '@/i18n/insight-summary';
 import type { CompletionHistory, DayRecord, HabitEntry } from '@/data/completion-storage';
 import type { Habit } from '@/data/habit-storage';
 import {
@@ -10,7 +12,7 @@ import {
   shortMonthName,
   startOfWeek,
   toLocalDateKey,
-} from '@/utils/date';
+} from '@/i18n/presentation-date';
 import { currentEntry, isCompleteBySnapshot, isCompleteNow, requiredStepIds } from '@/utils/habit-progress';
 import { isScheduledOnWeekday } from '@/utils/schedule';
 
@@ -669,26 +671,26 @@ export function weeklyReview(index: InsightsIndex, startKey: string): WeeklyRevi
     counts.rate !== null && prev.rate !== null ? Math.round(counts.rate * 100) - Math.round(prev.rate * 100) : null;
 
   const perfectDays = perfectDaysBetween(index, startKey, endKey);
-  const achievements: string[] = [];
-  if (perfectDays > 0) achievements.push(`${perfectDays} perfect ${perfectDays === 1 ? 'day' : 'days'} — every scheduled habit done`);
+  const achievements: (() => string)[] = [];
+  if (perfectDays > 0) achievements.push(() => appMessage("insights.highlight.perfectDays", { count: perfectDays }));
   for (const l of lines) {
     if (achievements.length >= 4) break;
     if (l.counts.finished >= 2 && l.counts.missed === 0 && l.counts.unknown === 0) {
-      achievements.push(`${l.habit.name}: every scheduled check-in done${isCurrent ? ' so far' : ''}`);
+      achievements.push(() => appMessage("insights.highlight.perfectHabit", { name: (l.habit.name), provisional: (isCurrent ? appLabel("insights.soFar") : '') }));
     }
   }
   if (isCurrent) {
     for (const h of index.habits) {
       if (achievements.length >= 5) break;
       const streak = currentStreak(index, h);
-      if (streak.length >= 5) achievements.push(`${h.habit.name}: ${streak.length} in a row${streak.uncertain ? ' (at least)' : ''}`);
+      if (streak.length >= 5) achievements.push(() => appMessage("insights.highlight.streak", { name: (h.habit.name), count: (streak.length), uncertainty: (streak.uncertain ? appLabel("insights.atLeast") : '') }));
     }
   }
 
   return {
     startKey,
     endKey,
-    label: formatWeekRange(startKey),
+    get label() { return formatWeekRange(startKey); },
     isCurrent,
     empty: endKey < index.startKey,
     counts,
@@ -700,7 +702,7 @@ export function weeklyReview(index: InsightsIndex, startKey: string): WeeklyRevi
     needsAttention,
     previousRate: prev.rate,
     deltaPoints,
-    achievements,
+    get achievements() { return achievements.map(render => render()); },
     possibleScheduleChange,
   };
 }
@@ -736,18 +738,18 @@ export function trend(index: InsightsIndex, kind: 'week' | 'month'): Trend {
   for (let n = count - 1; n >= 0; n -= 1) {
     let from: Date;
     let to: Date;
-    let label: string;
+    let label: () => string;
     if (kind === 'week') {
       from = addDays(startOfWeek(today), -7 * n);
       to = addDays(from, 6);
-      label = formatMonthDay(toLocalDateKey(from));
+      label = () => formatMonthDay(toLocalDateKey(from));
     } else {
       from = new Date(today.getFullYear(), today.getMonth() - n, 1);
       to = new Date(from.getFullYear(), from.getMonth() + 1, 0);
-      label = shortMonthName(from.getMonth());
+      label = () => shortMonthName(from.getMonth());
     }
     const c = overallCounts(index, toLocalDateKey(from), toLocalDateKey(to));
-    points.push({ key: toLocalDateKey(from), label, rate: c.rate, done: c.done, finished: c.finished, isCurrent: n === 0 });
+    points.push({ key: toLocalDateKey(from), get label() { return label(); }, rate: c.rate, done: c.done, finished: c.finished, isCurrent: n === 0 });
   }
   const done = points.reduce((s, p) => s + p.done, 0);
   const finished = points.reduce((s, p) => s + p.finished, 0);
@@ -916,23 +918,23 @@ export type DayDetail = {
 export function dayStatusLabel(status: DayStatusCode | null, isToday: boolean): string {
   switch (status) {
     case null:
-      return 'Upcoming';
+      return appLabel("insights.upcoming");
     case S.DONE:
-      return isToday ? 'Completed today (provisional)' : 'Completed';
+      return isToday ? appLabel("insights.completedTodayProvisional") : appLabel("insights.completed");
     case S.PARTIAL:
-      return 'Partial — not complete';
+      return appLabel("insights.partialNotComplete");
     case S.MISSED:
-      return 'Not checked in';
+      return appLabel("insights.notCheckedIn");
     case S.PENDING:
-      return 'In progress — today isn’t over';
+      return appLabel("insights.inProgressTodayIsnTOver");
     case S.UNKNOWN:
-      return isToday ? 'Today’s progress hasn’t loaded' : 'Saved record couldn’t be read';
+      return isToday ? appLabel("insights.todaySProgressHasnTLoaded") : appLabel("insights.savedRecordCouldnTBeRead");
     case S.EXTRA:
-      return 'Not scheduled · done anyway (not counted)';
+      return appLabel("insights.notScheduledDoneAnywayNotCounted");
     case S.UNSCHEDULED:
-      return 'Not scheduled';
+      return appLabel("insights.notScheduled");
     default:
-      return 'Not started';
+      return appLabel("insights.notStarted");
   }
 }
 
@@ -977,7 +979,7 @@ export function entryProgress(habit: Habit, entry: HabitEntry | undefined, isTod
     requiredDone: entry.required.filter((id) => done.has(id)).length,
     requiredTotal: entry.required.length,
     optionalDone: entry.done.filter((id) => !required.has(id)).length,
-    steps: ids.map((id) => ({ id, label: labels.get(id) ?? 'Removed step', done: done.has(id), optional: !required.has(id) })),
+    steps: ids.map((id) => ({ id, label: labels.get(id) ?? appLabel("insights.removedStep"), done: done.has(id), optional: !required.has(id) })),
   };
 }
 
@@ -985,12 +987,12 @@ export function entryProgress(habit: Habit, entry: HabitEntry | undefined, isTod
 export function describeProgress(p: EntryProgress): string {
   switch (p.kind) {
     case 'tick':
-      return p.done ? 'Ticked' : 'Not ticked yet';
+      return p.done ? appLabel("insights.ticked") : appLabel("insights.notTickedYet");
     case 'count':
-      return `${p.value} of ${p.target}${p.unit ? ` ${p.unit}` : ''}`;
+      return appMessage("history.progress.count", { value: (p.value), target: (p.target), unit: (p.unit ? ` ${p.unit}` : '') });
     case 'checklist': {
-      const opt = p.optionalDone > 0 ? ` · ${p.optionalDone} optional` : '';
-      return `${p.requiredDone} of ${p.requiredTotal} required ${p.requiredTotal === 1 ? 'step' : 'steps'}${opt}`;
+      const opt = p.optionalDone > 0 ? appMessage("history.progress.optional", { count: (p.optionalDone) }) : '';
+      return appMessage("history.progress.required", { done: p.requiredDone, count: p.requiredTotal, optional: opt });
     }
   }
 }
@@ -1005,7 +1007,7 @@ export function habitDayDetail(index: InsightsIndex, h: HabitIndex, dateKey: str
       status: null,
       scheduled,
       progress: null,
-      label: scheduled ? 'Upcoming · scheduled' : 'Upcoming · not scheduled',
+      label: scheduled ? appLabel("insights.upcomingScheduled") : appLabel("insights.upcomingNotScheduled"),
     };
   }
   const status = (offset < 0 ? S.BEFORE : h.status[offset]) as DayStatusCode;
@@ -1038,13 +1040,11 @@ export function dayDetail(index: InsightsIndex, dateKey: string, habitId?: strin
   }
 
   let summary: string;
-  if (isFuture) summary = 'Upcoming — future days are never counted';
-  else if (habits.length === 0) summary = habitId ? 'Not started — this habit didn’t exist yet' : 'No habits had started yet';
-  else if (due === 0 && unknown === 0) summary = 'Nothing scheduled';
+  if (isFuture) summary = appLabel("insights.upcomingFutureDaysAreNeverCounted");
+  else if (habits.length === 0) summary = habitId ? appLabel("insights.notStartedThisHabitDidnTExistYet") : appLabel("insights.noHabitsHadStartedYet");
+  else if (due === 0 && unknown === 0) summary = appLabel("insights.nothingScheduled");
   else {
-    summary = `${done} of ${due} scheduled ${due === 1 ? 'check-in' : 'check-ins'} completed`;
-    if (isToday) summary += ' so far (provisional)';
-    if (unknown > 0) summary += ` · ${unknown} couldn’t be read`;
+    summary = isToday ? (unknown > 0 ? appMessage("insights.complete.day.today.unreadable", { done: done, count: due, total: unknown }) : appMessage("insights.complete.day.today.readable", { done: done, count: due })) : (unknown > 0 ? appMessage("insights.complete.day.finished.unreadable", { done: done, count: due, total: unknown }) : appMessage("insights.complete.day.finished.readable", { done: done, count: due }));
   }
   return {
     dateKey,
@@ -1062,23 +1062,12 @@ export function dayDetail(index: InsightsIndex, dateKey: string, habitId?: strin
 
 /** One-line summary of a review week (shown under the week navigation). */
 export function describeWeek(r: WeeklyReview): string {
-  if (r.empty) return 'No habits had started yet this week — nothing is counted.';
-  const { done, finished, unknown, rate } = r.counts;
-  const pct = rate === null ? '' : ` (${Math.round(rate * 100)}%)`;
-  const unread = unknown > 0 ? ` · ${unknown} couldn’t be read` : '';
-  if (r.isCurrent) {
-    const today = r.todayDone > 0 ? ` · ${r.todayDone} done today (provisional)` : '';
-    const left = r.remaining > 0 ? ` · ${r.remaining} still to come` : '';
-    if (finished === 0) return `No finished days yet this week${today}${left}${unread}`;
-    return `So far: ${done} of ${finished} finished check-ins completed${pct}${today}${left}${unread}`;
-  }
-  if (finished === 0 && unknown === 0) return 'Nothing was scheduled this week.';
-  return `${done} of ${finished} scheduled check-ins completed${pct}${unread}`;
+  return weekSummary(r);
 }
 
 /** Caption for a review week: current, finished, or before history. */
 export function weekCaption(r: WeeklyReview): string {
-  if (r.isCurrent) return 'This week · in progress';
-  if (r.empty) return 'Before your habits started';
-  return 'Finished week';
+  if (r.isCurrent) return appLabel("insights.thisWeekInProgress");
+  if (r.empty) return appLabel("insights.beforeYourHabitsStarted");
+  return appLabel("insights.finishedWeek");
 }

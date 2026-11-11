@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ConsistencySummary } from '@/components/goals/consistency-summary';
@@ -15,7 +18,7 @@ import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
 import { confirmDestructive } from '@/utils/confirm';
-import { formatShortDate } from '@/utils/date';
+import { formatShortDate } from '@/i18n/presentation-date';
 import { computeHabitConsistency } from '@/utils/goal-progress';
 import { closeGoalEditor } from '@/utils/navigation';
 
@@ -40,18 +43,18 @@ export default function EditGoalScreen() {
             <ActivityIndicator color={Palette.accent} />
           ) : status === 'load-error' ? (
             <EmptyState
-              title="Couldn't load your goals"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("goals.detail.couldnTLoadYourGoals")}
+              description={appLabel("goals.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("goals.detail.tryAgain")}
               onAction={reload}
             />
           ) : (
             <EmptyState
-              title="Goal not found"
-              description="It may have been deleted."
+              title={appLabel("goals.detail.goalNotFound")}
+              description={appLabel("goals.detail.itMayHaveBeenDeleted")}
               icon={{ ios: 'questionmark.circle.fill', android: 'help', web: 'help' }}
-              actionLabel="Back to goals"
+              actionLabel={appLabel("goals.detail.backToGoals")}
               onAction={closeGoalEditor}
             />
           )}
@@ -69,8 +72,8 @@ export default function EditGoalScreen() {
   return (
     <GoalForm
       key={goal.id}
-      title="Edit goal"
-      submitLabel="Save"
+      title={appLabel("goals.detail.editGoal")}
+      submitLabel={appLabel("goals.detail.save")}
       todayKey={todayKey}
       startDate={goal.startDate}
       initialDraft={{
@@ -87,12 +90,7 @@ export default function EditGoalScreen() {
             loading={historyLoading}
             color={consistency?.linkedHabits[0]?.color ?? Palette.accent}
           />
-          <Text style={styles.note}>
-            Counted from {formatShortDate(goal.startDate)}, using saved check-ins for this goal’s current linked
-            habits. Past days use each habit’s current schedule — earlier schedules aren’t recorded, so if you changed
-            a schedule, past counts may differ from what was actually planned. Today stays provisional until the day
-            ends.
-          </Text>
+          <Text style={styles.note}>{appMessage("goals.consistency.explanation", { date: formatShortDate(goal.startDate) })}</Text>
         </View>
       }
       onCancel={closeGoalEditor}
@@ -102,9 +100,9 @@ export default function EditGoalScreen() {
       }}
       onDelete={async () => {
         const confirmed = await confirmDestructive({
-          title: `Delete “${goal.title}”?`,
-          message: 'Your habits and their check-in history are not affected. This can’t be undone.',
-          confirmLabel: 'Delete',
+          title: appMessage("goals.delete.title", { name: (goal.title) }),
+          get message(){return appLabel("goals.detail.yourHabitsAndTheirCheckInHistoryAreNotAffectedThisCanTBeUndone");},
+          get confirmLabel(){return appLabel("goals.detail.delete");},
         });
         if (!confirmed) return false;
         setDeleting(goal);

@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ConsistencySummary } from '@/components/goals/consistency-summary';
 import { StatusPill } from '@/components/goals/status-picker';
@@ -30,11 +33,11 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
     <Pressable
       onPress={() => onPress(goal.id)}
       accessibilityRole="button"
-      accessibilityHint="Opens the goal editor"
+      accessibilityHint={appLabel("goals.goal-card.opensTheGoalEditor")}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.header}>
-        <View style={styles.headerText}>
+        <View style={[styles.headerText,{minWidth:0,flexShrink:1}]}>
           <Text style={[styles.title, dimmed && styles.titleDimmed]} numberOfLines={2}>
             {goal.title}
           </Text>
@@ -59,10 +62,10 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
                 <SymbolView name={habitIconSymbol(habit.icon)} size={14} tintColor={readableAccent(habit.color, Palette)} />
               </View>
             ))}
-            {linked.length > 5 && <Text style={styles.more}>+{linked.length - 5}</Text>}
+            {linked.length > 5 && <Text style={styles.more}>+{appNumber(linked.length - 5)}</Text>}
           </View>
           <Text style={styles.habitCount} numberOfLines={1}>
-            {linked.length === 1 ? linked[0].name : `${linked.length} habits linked`}
+            {linked.length === 1 ? linked[0].name : appMessage("goals.linked.count", { count: (linked.length) })}
           </Text>
         </View>
       )}

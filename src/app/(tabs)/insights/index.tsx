@@ -1,13 +1,16 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { useMemo, type ReactNode } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { DataNotesCard } from '@/components/insights/data-notes';
-import { formatRate, plural } from '@/components/insights/format';
+import { formatRate } from '@/components/insights/format';
 import { HabitInsightRow } from '@/components/insights/habit-insight-row';
 import { HeatmapCalendar } from '@/components/insights/heatmap-calendar';
 import { StatTile } from '@/components/insights/stat-tile';
@@ -39,20 +42,20 @@ export default function InsightsScreen() {
   } else if (status === 'habits-error' || status === 'history-error') {
     content = (
       <EmptyState
-        title={status === 'habits-error' ? 'Couldn’t load your habits' : 'Couldn’t read your history'}
-        description="Your saved data hasn’t been changed. Try again, or restart the app."
+        title={status === 'habits-error' ? appLabel("insights.index.couldnTLoadYourHabits") : appLabel("insights.index.couldnTReadYourHistory")}
+        description={appLabel("insights.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
         icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-        actionLabel="Try again"
+        actionLabel={appLabel("insights.index.tryAgain")}
         onAction={retry}
       />
     );
   } else if (!index || !derived) {
     content = (
       <EmptyState
-        title="No habits yet"
-        description="Add a habit and check in on Today — your streaks and trends will appear here."
+        title={appLabel("insights.index.noHabitsYet")}
+        description={appLabel("insights.index.addAHabitAndCheckInOnTodayYourStreaksAndTrendsWillAppearHere")}
         icon={{ ios: 'chart.line.uptrend.xyaxis', android: 'insights', web: 'insights' }}
-        actionLabel="Go to Habits"
+        actionLabel={appLabel("insights.index.goToHabits")}
         onAction={() => router.navigate(HABITS_HREF)}
       />
     );
@@ -64,62 +67,58 @@ export default function InsightsScreen() {
         {!hasHistory && (
           <View style={styles.banner}>
             <Text style={styles.bannerText}>
-              Insights fill in after your first full day. Today counts once it’s over.
-            </Text>
+              {appLabel("insights.index.insightsFillInAfterYourFirstFullDayTodayCountsOnceItSOver")}</Text>
           </View>
         )}
 
         <View style={styles.tiles}>
           <StatTile
-            label="Consistency"
+            label={appLabel("insights.index.consistency")}
             value={formatRate(ov.counts.rate)}
-            caption={ov.counts.finished > 0 ? `Last ${OVERVIEW_DAYS} finished days` : 'Starts after your first full day'}
+            caption={ov.counts.finished > 0 ? appMessage("insights.overview.window", { count: (OVERVIEW_DAYS) }) : appLabel("insights.index.startsAfterYourFirstFullDay")}
             color={Palette.accent}
-            badge={ov.unreadableDays > 0 ? 'May be incomplete' : undefined}
+            badge={ov.unreadableDays > 0 ? appLabel("insights.index.mayBeIncomplete") : undefined}
           />
           <StatTile
-            label="Finished check-ins"
-            value={ov.counts.finished > 0 ? `${ov.counts.done}/${ov.counts.finished}` : '—'}
+            label={appLabel("insights.index.finishedCheckIns")}
+            value={ov.counts.finished > 0 ? appMessage("display.ratio", { value: ov.counts.done, maximum: ov.counts.finished }) : '—'}
             caption={
               ov.counts.finished === 0
-                ? 'No finished days yet'
+                ? appLabel("insights.index.noFinishedDaysYet")
                 : ov.counts.missed > 0
-                  ? `${ov.counts.missed} not checked in`
-                  : 'None missed'
+                  ? appMessage("insights.overview.missed", { count: (ov.counts.missed) })
+                  : appLabel("insights.index.noneMissed")
             }
           />
           <StatTile
-            label="Best streak now"
-            value={ov.bestCurrent ? `${ov.bestCurrent.streak.length}${ov.bestCurrent.streak.uncertain ? '+' : ''}` : '0'}
-            caption={ov.bestCurrent ? `${ov.bestCurrent.habit.name} · in a row` : 'Complete a scheduled habit to start one'}
+            label={appLabel("insights.index.bestStreakNow")}
+            value={ov.bestCurrent ? appMessage("display.uncertainCount", { count: ov.bestCurrent.streak.length, uncertainty: String(ov.bestCurrent.streak.uncertain ? '+' : '') }) : '0'}
+            caption={ov.bestCurrent ? appMessage("insights.streak.habit", { name: (ov.bestCurrent.habit.name) }) : appLabel("insights.index.completeAScheduledHabitToStartOne")}
             color={Palette.accentBlue}
-            badge={ov.bestCurrent?.streak.todayDone ? 'Includes today' : undefined}
+            badge={ov.bestCurrent?.streak.todayDone ? appLabel("insights.index.includesToday") : undefined}
           />
           <StatTile
-            label="Today"
-            value={today.known ? `${today.done}/${today.due}` : '—'}
-            caption={today.known ? (today.due === 0 ? 'Nothing scheduled' : 'Checked in so far') : 'Not loaded yet'}
-            badge="Provisional"
+            label={appLabel("insights.index.today")}
+            value={today.known ? appMessage("display.ratio", { value: today.done, maximum: today.due }) : '—'}
+            caption={today.known ? (today.due === 0 ? appLabel("insights.index.nothingScheduled") : appLabel("insights.index.checkedInSoFar")) : appLabel("insights.index.notLoadedYet")}
+            badge={appLabel("insights.index.provisional")}
           />
         </View>
-        <Text style={styles.footnote}>
-          {plural(ov.perfectDays, 'perfect day', 'perfect days')} in the last {OVERVIEW_DAYS} days
-          {ov.unreadableDays > 0 ? ` · ${plural(ov.unreadableDays, 'day', 'days')} couldn’t be read` : ''}
-        </Text>
+        <Text style={styles.footnote}>{appMessage("insights.overview.perfect", { count: ov.perfectDays, total: OVERVIEW_DAYS, unreadable: ov.unreadableDays > 0 ? appMessage("insights.overview.unreadable", { count: ov.unreadableDays }) : "" })}</Text>
 
-        <Section title="Calendar">
+        <Section title={appLabel("insights.index.calendar")}>
           <HeatmapCalendar index={index} />
         </Section>
 
-        <Section title="Weekly review">
+        <Section title={appLabel("insights.index.weeklyReview")}>
           <WeeklyReviewCard index={index} />
         </Section>
 
-        <Section title="Trends">
+        <Section title={appLabel("insights.index.trends")}>
           <TrendBars index={index} />
         </Section>
 
-        <Text style={styles.sectionTitle}>Habits</Text>
+        <Text style={styles.sectionTitle}>{appLabel("insights.index.habits")}</Text>
         <View style={styles.list}>
           {summaries.map((s) => (
             <HabitInsightRow key={s.habit.id} summary={s} todayKey={todayKey} onPress={openHabitHistory} />
@@ -137,9 +136,8 @@ export default function InsightsScreen() {
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <Text style={styles.title} accessibilityRole="header">
-              Insights
-            </Text>
-            <Text style={styles.subtitle}>Based only on your saved check-ins</Text>
+              {appLabel("insights.index.insights")}</Text>
+            <Text style={styles.subtitle}>{appLabel("insights.index.basedOnlyOnYourSavedCheckIns")}</Text>
           </View>
           {content}
         </ScrollView>

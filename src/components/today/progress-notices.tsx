@@ -1,14 +1,18 @@
+import {Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import type { SaveState } from '@/hooks/use-daily-progress';
+import type { Language } from '@/data/preferences-storage';
+import { translate } from '@/i18n/translate';
+import { useLanguage } from '@/hooks/use-language';
 
 /** Saving status shown next to "N left". Never says "Saved" before the data is on disk. */
-export function saveLabel(saveState: SaveState): string | null {
-  if (saveState === 'saving') return 'Saving…';
-  if (saveState === 'saved') return 'Saved';
+export function saveLabel(saveState: SaveState, language: Language = 'en'): string | null {
+  if (saveState === 'saving') return translate(language, 'common.saving');
+  if (saveState === 'saved') return translate(language, 'today.saved');
   return null;
 }
 
@@ -23,19 +27,20 @@ type Props = {
 
 /** Daily-progress load/save problems. Shared by Today and the routine screen so both say the same thing. */
 export function ProgressNotices({ loadError, saveError, onReload, onRetry }: Props) {
+  const { t } = useLanguage();
   return (
     <>
       {loadError && (
         <Notice
-          message="Couldn’t load today’s saved progress, so changes are paused. Your saved data is untouched."
-          actionLabel="Try again"
+          message={t('today.loadProgress')}
+          actionLabel={t('today.retry')}
           onAction={onReload}
         />
       )}
       {saveError && (
         <Notice
-          message="Couldn’t save your latest changes. They’re kept here and will be retried automatically — keep the app open until it says Saved."
-          actionLabel="Retry now"
+          message={t('today.saveProgress')}
+          actionLabel={t('today.retryNow')}
           onAction={onRetry}
         />
       )}

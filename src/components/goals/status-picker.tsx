@@ -1,15 +1,18 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { GOAL_STATUSES, type GoalStatus } from '@/data/goal-storage';
 
 export const goalStatusMeta = (Palette: AppPalette): Record<GoalStatus, { label: string; color: string; soft: string }> => ({
-  active: { label: 'Active', color: Palette.accent, soft: Palette.accentSoft },
-  paused: { label: 'Paused', color: Palette.textSecondary, soft: Palette.pausedSoft },
-  completed: { label: 'Completed', color: Palette.success, soft: Palette.successSoft },
+  active: { get label() { return appLabel("goals.status-picker.active"); }, color: Palette.accent, soft: Palette.accentSoft },
+  paused: { get label() { return appLabel("goals.status-picker.paused"); }, color: Palette.textSecondary, soft: Palette.pausedSoft },
+  completed: { get label() { return appLabel("goals.status-picker.completed"); }, color: Palette.success, soft: Palette.successSoft },
 });
 
 type Props = {

@@ -1,3 +1,4 @@
+import { withErrorMessage } from '@/i18n/app-copy';
 /** Never evaluate optional native packages while Router imports the layout.
  * Static import() paths remain visible to Metro. No checksum fallback exists. */
 export class BackupRuntimeUnavailable extends Error {}
@@ -6,14 +7,14 @@ export function lazyBackupDependency<T>(name: string, importer: () => Promise<T>
   return () => {
     if (!loaded) loaded = Promise.resolve().then(importer).catch(() => {
       loaded = null;
-      throw new BackupRuntimeUnavailable(`${name} is unavailable in this native runtime. Update Expo Go to a compatible SDK 58 build, or use a newly compiled SDK 58 development build. Do not uninstall or clear app data.`);
+      throw withErrorMessage(new BackupRuntimeUnavailable(`${name} is unavailable in this native runtime. Update Expo Go to a compatible SDK 58 build, or use a newly compiled SDK 58 development build. Do not uninstall or clear app data.`), { key: "backup.runtime.moduleUnavailable", params: { moduleName: (name) } });
     });
     return loaded;
   };
 }
 export async function requireBackupCapabilities(names: string[], lookup?: (name: string) => unknown): Promise<void> {
   const optional = lookup ?? (await import('expo')).requireOptionalNativeModule;
-  for (const name of names) if (!optional(name)) throw new BackupRuntimeUnavailable(`${name} is missing from this native app binary.`);
+  for (const name of names) if (!optional(name)) throw withErrorMessage(new BackupRuntimeUnavailable(`${name} is missing from this native app binary.`), { key: "backup.runtime.moduleMissing", params: { moduleName: (name) } });
 }
 export const loadCrypto = lazyBackupDependency('ExpoCrypto (SHA-256)', async () => {
   // The package root also imports AES. Probe before evaluating its throwing

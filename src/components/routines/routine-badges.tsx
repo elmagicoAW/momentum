@@ -1,13 +1,14 @@
+import {SymbolView, Text} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { StyleSheet, Text, View } from 'react-native';
+import { useLanguage } from '@/hooks/use-language';
+
+import { StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Routine, TimeOfDay } from '@/data/routine-storage';
-import { TIME_OF_DAY_LABELS } from '@/utils/routine-progress';
 
 /** Icon tile in the routine's colour (same treatment as habit icons). */
 export function RoutineIcon({ routine, size = 44 }: { routine: Pick<Routine, 'icon' | 'color'>; size?: number }) {
@@ -26,9 +27,10 @@ export function RoutineIcon({ routine, size = 44 }: { routine: Pick<Routine, 'ic
 
 export function TimeChip({ timeOfDay }: { timeOfDay: TimeOfDay }) {
   const { styles } = useAppStyles(createStyles);
+  const { t } = useLanguage();
   return (
     <View style={styles.chip}>
-      <Text style={styles.chipText}>{TIME_OF_DAY_LABELS[timeOfDay]}</Text>
+      <Text style={styles.chipText}>{t(`routines.time.${timeOfDay}`)}</Text>
     </View>
   );
 }
@@ -36,9 +38,10 @@ export function TimeChip({ timeOfDay }: { timeOfDay: TimeOfDay }) {
 /** Highlights the routine that fits the current time of day. Never affects availability. */
 export function NowChip() {
   const { styles } = useAppStyles(createStyles);
+  const { t } = useLanguage();
   return (
     <View style={[styles.chip, styles.nowChip]}>
-      <Text style={[styles.chipText, styles.nowText]}>Now</Text>
+      <Text style={[styles.chipText, styles.nowText]}>{t('today.plan.now')}</Text>
     </View>
   );
 }

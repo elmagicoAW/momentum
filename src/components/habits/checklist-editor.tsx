@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, TextInput} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View, type TextInputInstance } from 'react-native';
+import { Pressable, StyleSheet, View, type TextInputInstance } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { CHECKLIST_MAX_STEPS, createStepId } from '@/data/habit-storage';
@@ -71,12 +74,12 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
             onSubmitEditing={() => handleSubmit(index)}
             submitBehavior="submit"
             returnKeyType={index === steps.length - 1 && steps.length < CHECKLIST_MAX_STEPS ? 'next' : 'done'}
-            placeholder={`Step ${index + 1}`}
+            placeholder={appMessage("habits.step.placeholder", { position: (index + 1) })}
             placeholderTextColor={Palette.textMuted}
             maxLength={STEP_LABEL_MAX_LENGTH}
             autoCapitalize="sentences"
             editable={editable}
-            accessibilityLabel={`Step ${index + 1} name`}
+            accessibilityLabel={appMessage("habits.step.nameAccessibility", { position: (index + 1) })}
             style={styles.input}
           />
           <Pressable
@@ -84,18 +87,18 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
             disabled={!editable}
             accessibilityRole="switch"
             accessibilityState={{ checked: !step.optional, disabled: !editable }}
-            accessibilityLabel={`Step ${index + 1} required`}
+            accessibilityLabel={appMessage("habits.step.requiredAccessibility", { position: (index + 1) })}
             hitSlop={6}
             style={({ pressed }) => [styles.chip, !step.optional && styles.chipOn, pressed && styles.pressed]}>
             <Text style={[styles.chipText, !step.optional && styles.chipTextOn]}>
-              {step.optional ? 'Optional' : 'Required'}
+              {step.optional ? appLabel("habits.checklist-editor.optional") : appLabel("habits.checklist-editor.required")}
             </Text>
           </Pressable>
           <Pressable
             onPress={() => removeStep(step.id)}
             disabled={!editable}
             accessibilityRole="button"
-            accessibilityLabel={`Remove step ${index + 1}`}
+            accessibilityLabel={appMessage("habits.step.removeAccessibility", { position: (index + 1) })}
             hitSlop={8}
             style={({ pressed }) => [styles.remove, pressed && styles.pressed]}>
             <SymbolView
@@ -122,12 +125,11 @@ export function ChecklistEditor({ steps, color, editable, error, onChange, onInp
         style={({ pressed }) => [styles.addButton, !canAdd && styles.disabled, pressed && styles.pressed]}>
         <SymbolView name={{ ios: 'plus', android: 'add', web: 'add' }} size={16} tintColor={Palette.accent} />
         <Text style={styles.addText}>
-          {steps.length >= CHECKLIST_MAX_STEPS ? `Up to ${CHECKLIST_MAX_STEPS} steps` : 'Add step'}
+          {steps.length >= CHECKLIST_MAX_STEPS ? appMessage("habits.steps.limit", { limit: (CHECKLIST_MAX_STEPS) }) : appLabel("habits.checklist-editor.addStep")}
         </Text>
       </Pressable>
       <Text style={styles.hint}>
-        The habit is done when every required step is checked. Optional steps don’t affect completion.
-      </Text>
+        {appLabel("habits.checklist-editor.theHabitIsDoneWhenEveryRequiredStepIsCheckedOptionalStepsDonTAffectCompletion")}</Text>
     </View>
   );
 }

@@ -1,18 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, TextInput} from '@/components/localized-native';
+import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
+
 import { useState, type ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { DatePicker } from '@/components/goals/date-picker';
@@ -21,7 +15,7 @@ import { StatusPicker } from '@/components/goals/status-picker';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import type { GoalInput } from '@/data/goal-storage';
 import { useHabits } from '@/hooks/use-habits';
-import { formatShortDate } from '@/utils/date';
+import { formatShortDate } from '@/i18n/presentation-date';
 import {
   GOAL_DESCRIPTION_MAX_LENGTH,
   GOAL_TITLE_MAX_LENGTH,
@@ -50,8 +44,7 @@ type Props = {
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
 
 function errorMessage(error: unknown, fallback: string) {
-  const detail = error instanceof Error && error.message ? ` (${error.message})` : '';
-  return `${fallback}${detail}`;
+  return displayError(error, fallback);
 }
 
 export function GoalForm({
@@ -87,7 +80,7 @@ export function GoalForm({
   const handleSubmit = async () => {
     if (locked) return;
     if (!habitsReady) {
-      setFailure('Your habits haven’t loaded, so links can’t be saved safely. Go back and try again.');
+      setFailure(appLabel("goals.goal-form.yourHabitsHavenTLoadedSoLinksCanTBeSavedSafelyGoBackAndTryAgain"));
       return;
     }
     if (hasGoalErrors(errors)) {
@@ -101,7 +94,7 @@ export function GoalForm({
       setBusy('done'); // stays locked while the screen closes
     } catch (error) {
       console.warn('[momentum] Failed to save goal', error);
-      setFailure(errorMessage(error, "Couldn't save this goal. Your changes are still here — try again."));
+      setFailure(errorMessage(error, appLabel("goals.goal-form.couldnTSaveThisGoalYourChangesAreStillHereTryAgain")));
       setBusy('idle');
     }
   };
@@ -115,7 +108,7 @@ export function GoalForm({
       setBusy(deleted ? 'done' : 'idle');
     } catch (error) {
       console.warn('[momentum] Failed to delete goal', error);
-      setFailure(errorMessage(error, "Couldn't delete this goal. Nothing was removed — try again."));
+      setFailure(errorMessage(error, appLabel("goals.goal-form.couldnTDeleteThisGoalNothingWasRemovedTryAgain")));
       setBusy('idle');
     }
   };
@@ -131,7 +124,7 @@ export function GoalForm({
             onPress={onCancel}
             disabled={locked}
             accessibilityRole="button"
-            accessibilityLabel="Cancel"
+            accessibilityLabel={appLabel("goals.goal-form.cancel")}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
             <SymbolView
@@ -170,46 +163,46 @@ export function GoalForm({
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
             showsVerticalScrollIndicator={false}>
-            <Field label="Title" error={visibleErrors.title} counter={`${draft.title.length}/${GOAL_TITLE_MAX_LENGTH}`}>
+            <Field label={appLabel("goals.goal-form.title")} error={visibleErrors.title} counter={appMessage("display.ratio", { value: draft.title.length, maximum: GOAL_TITLE_MAX_LENGTH })}>
               <TextInput
                 selectionColor={Palette.accent}
                 keyboardAppearance={scheme}
                 value={draft.title}
                 onChangeText={(text) => update('title', text)}
-                placeholder="e.g. Run a half marathon"
+                placeholder={appLabel("goals.goal-form.eGRunAHalfMarathon")}
                 placeholderTextColor={Palette.textMuted}
                 maxLength={GOAL_TITLE_MAX_LENGTH}
                 autoCapitalize="sentences"
                 returnKeyType="done"
                 editable={!locked}
-                accessibilityLabel="Goal title"
+                accessibilityLabel={appLabel("goals.goal-form.goalTitle")}
                 style={[styles.input, visibleErrors.title && styles.inputError]}
               />
             </Field>
 
             <Field
-              label="Description"
+              label={appLabel("goals.goal-form.description")}
               optional
               error={visibleErrors.description}
-              counter={`${draft.description.length}/${GOAL_DESCRIPTION_MAX_LENGTH}`}>
+              counter={appMessage("display.ratio", { value: draft.description.length, maximum: GOAL_DESCRIPTION_MAX_LENGTH })}>
               <TextInput
                 selectionColor={Palette.accent}
                 keyboardAppearance={scheme}
                 value={draft.description}
                 onChangeText={(text) => update('description', text)}
-                placeholder="Why it matters to you"
+                placeholder={appLabel("goals.goal-form.whyItMattersToYou")}
                 placeholderTextColor={Palette.textMuted}
                 maxLength={GOAL_DESCRIPTION_MAX_LENGTH}
                 multiline
                 textAlignVertical="top"
                 editable={!locked}
-                accessibilityLabel="Goal description"
+                accessibilityLabel={appLabel("goals.goal-form.goalDescription")}
                 style={[styles.input, styles.multiline, visibleErrors.description && styles.inputError]}
               />
             </Field>
 
             <Field
-              label="Target date"
+              label={appLabel("goals.goal-form.targetDate")}
               error={visibleErrors.targetDate}
               counter={draft.targetDate ? formatShortDate(draft.targetDate) : undefined}>
               <DatePicker
@@ -221,14 +214,14 @@ export function GoalForm({
               />
             </Field>
 
-            <Field label="Status" hint="You decide when a goal is achieved — Habit Consistency never changes it.">
+            <Field label={appLabel("goals.goal-form.status")} hint={appLabel("goals.goal-form.youDecideWhenAGoalIsAchievedHabitConsistencyNeverChangesIt")}>
               <StatusPicker value={draft.status} onChange={(s) => update('status', s)} disabled={locked} />
             </Field>
 
             <Field
-              label="Linked habits"
+              label={appLabel("goals.goal-form.linkedHabits")}
               optional
-              counter={linkedCount > 0 ? `${linkedCount} selected` : undefined}>
+              counter={linkedCount > 0 ? appMessage("goals.linked.selected", { count: (linkedCount) }) : undefined}>
               {habitsStatus === 'ready' ? (
                 <HabitLinkPicker
                   habits={habits}
@@ -240,7 +233,7 @@ export function GoalForm({
               ) : habitsStatus === 'loading' ? (
                 <ActivityIndicator color={Palette.accent} />
               ) : (
-                <Text style={styles.hint}>Couldn’t load your habits. Linked habits can’t be changed right now.</Text>
+                <Text style={styles.hint}>{appLabel("goals.goal-form.couldnTLoadYourHabitsLinkedHabitsCanTBeChangedRightNow")}</Text>
               )}
             </Field>
 
@@ -256,7 +249,7 @@ export function GoalForm({
                 {busy === 'deleting' ? (
                   <ActivityIndicator size="small" color={Palette.danger} />
                 ) : (
-                  <Text style={styles.deleteText}>Delete goal</Text>
+                  <Text style={styles.deleteText}>{appLabel("goals.goal-form.deleteGoal")}</Text>
                 )}
               </Pressable>
             )}
@@ -288,7 +281,7 @@ function Field({
       <View style={styles.fieldHeader}>
         <Text style={styles.label}>
           {label}
-          {optional && <Text style={styles.optional}> · optional</Text>}
+          {optional && <Text style={styles.optional}> {appLabel("goals.goal-form.optional")}</Text>}
         </Text>
         {counter && <Text style={styles.counter}>{counter}</Text>}
       </View>

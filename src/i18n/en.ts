@@ -1,5 +1,11 @@
-/** Fixed labels for staged migration. Screens remain English/LTR in Phase 4A. */
+import { languageEn } from './language-en';
+import { todayEn } from './today-en';
+import { remainingEn } from './remaining-en';
+/** Fixed labels. Public language remains English/LTR. */
 export const en = {
+  ...languageEn,
+  ...remainingEn,
+  ...todayEn,
   'preferences.invalid-record': 'Saved appearance and language preferences could not be read. Retry loading them.',
   'preferences.unsupported-version': 'These preferences were saved by an unsupported app version.',
   'preferences.read-failed': 'Could not load appearance and language preferences. Please retry.',
@@ -28,11 +34,11 @@ export const en = {
   'navigation.achievements': 'Achievements',
   'navigation.routines': 'Routines',
   'today.dailyProgress': 'Daily progress',
-  'today.habits': 'Today’s Habits',
-  'today.plan': 'Today’s plan',
+  'today.habits': "Today's Habits",
+  'today.plan': "Today's plan",
   'today.motivation': 'Daily motivation',
   'today.restDay': 'Nothing scheduled — enjoy the rest day.',
-  'today.getStarted': 'Let’s build some momentum today.',
+  'today.getStarted': "Let's build some momentum today.",
   'today.allDone': 'All done. You showed up for yourself today.',
   'today.halfway': 'Over halfway there — keep it rolling.',
   'today.greatStart': 'Great start. One habit at a time.',

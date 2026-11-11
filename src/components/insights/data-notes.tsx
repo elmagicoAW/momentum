@@ -1,10 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { plural } from '@/components/insights/format';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+
 import { Radius, Spacing } from '@/constants/theme';
 import type { DataNotes } from '@/utils/insights';
 
@@ -24,22 +26,16 @@ export function DataNotesCard({ notes, habitName }: Props) {
   const warnings: string[] = [];
   if (notes.unreadableDays > 0) {
     warnings.push(
-      `${plural(notes.unreadableDays, 'day', 'days')} of saved check-ins couldn’t be read. ${
-        notes.unreadableDays === 1 ? 'It is' : 'They are'
-      } left out of every number, and streaks that touch ${
-        notes.unreadableDays === 1 ? 'it' : 'them'
-      } are marked “+” (may be longer). Statistics may be incomplete. Nothing was changed.`,
+      appMessage("insights.notes.unreadable", { count: notes.unreadableDays }),
     );
   }
   if (!notes.todayKnown) {
-    warnings.push('Today’s progress hasn’t loaded, so today isn’t included yet.');
+    warnings.push(appLabel("insights.data-notes.todaySProgressHasnTLoadedSoTodayIsnTIncludedYet"));
   }
   if (notes.scheduleChangeHabits.length > 0) {
     const names = notes.scheduleChangeHabits.map((h) => h.name).join(', ');
     warnings.push(
-      `${habitName ?? names} ${habitName || notes.scheduleChangeHabits.length === 1 ? 'has' : 'have'} check-ins on days ${
-        habitName || notes.scheduleChangeHabits.length === 1 ? 'it isn’t' : 'they aren’t'
-      } scheduled now, so the schedule may have changed. Past numbers use the current schedule.`,
+      appMessage("insights.notes.scheduleChange", { count: habitName ? 1 : notes.scheduleChangeHabits.length, names: habitName ?? names }),
     );
   }
 
@@ -47,14 +43,14 @@ export function DataNotesCard({ notes, habitName }: Props) {
   if (notes.startFromEntriesHabits.length > 0) {
     const names = habitName ?? notes.startFromEntriesHabits.map((h) => h.name).join(', ');
     info.push(
-      `History for ${names} starts at the first saved check-in, which is earlier than the habit’s saved creation date. Days before that first check-in aren’t counted as scheduled or missed.`,
+      appMessage("insights.history.inferredStart", { names: (names) }),
     );
   }
   if (notes.ignoredRecordDays > 0) {
-    info.push(`${plural(notes.ignoredRecordDays, 'saved day has', 'saved days have')} a future or invalid date and ${notes.ignoredRecordDays === 1 ? 'is' : 'are'} ignored.`);
+    info.push(appMessage("insights.notes.ignored", { count: notes.ignoredRecordDays }));
   }
   if (!habitName && notes.deletedHabitsWithHistory > 0) {
-    info.push(`Check-ins of ${plural(notes.deletedHabitsWithHistory, 'deleted habit', 'deleted habits')} are kept in storage but not shown.`);
+    info.push(appMessage("insights.notes.deleted", { count: notes.deletedHabitsWithHistory }));
   }
 
   return (
@@ -80,7 +76,7 @@ export function DataNotesCard({ notes, habitName }: Props) {
           size={16}
           tintColor={Palette.textSecondary}
         />
-        <Text style={styles.headerText}>About these numbers</Text>
+        <Text style={styles.headerText}>{appLabel("insights.data-notes.aboutTheseNumbers")}</Text>
         <SymbolView
           name={
             open
@@ -106,16 +102,16 @@ export function DataNotesCard({ notes, habitName }: Props) {
 }
 
 const ABOUT = [
-  'Only saved check-ins count. Nothing is estimated, invented or changed.',
-  'Each scheduled habit counts once a day: Tick when ticked, Count when the target is reached, Checklist when every required step is done.',
-  'Past days use the target and steps saved that day, so editing a habit doesn’t change its history. Today uses the current definition.',
-  'Today is provisional: habits not done yet are “in progress”, never missed. Future days are never counted.',
-  'Streaks count scheduled check-ins in a row. Days a habit isn’t scheduled are skipped, and a streak only breaks after a scheduled day ends without a check-in.',
-  'A scheduled day with progress that didn’t meet the target (partial) counts as missed.',
-  'Schedules aren’t stored historically: the current schedule is applied to all past days. If you changed a schedule, past scheduled and missed counts follow the new one.',
-  'Days before a habit existed aren’t counted. Deleted habits aren’t shown.',
-  'Days follow your phone’s local calendar; changing time zones can shift a day.',
-  'A scheduled day without a saved check-in counts as missed, even if you did the habit but didn’t log it.',
+  appLabel("insights.data-notes.onlySavedCheckInsCountNothingIsEstimatedInventedOrChanged"),
+  appLabel("insights.data-notes.eachScheduledHabitCountsOnceADayTickWhenTickedCountWhenTheTargetIsReachedChecklistWhenEveryRequiredStepIsDone"),
+  appLabel("insights.data-notes.pastDaysUseTheTargetAndStepsSavedThatDaySoEditingAHabitDoesnTChangeItsHistoryTodayUsesTheCurrentDefinition"),
+  appLabel("insights.data-notes.todayIsProvisionalHabitsNotDoneYetAreInProgressNeverMissedFutureDaysAreNeverCounted"),
+  appLabel("insights.data-notes.streaksCountScheduledCheckInsInARowDaysAHabitIsnTScheduledAreSkippedAndAStreakOnlyBreaksAfterAScheduledDayEndsWithoutACheckIn"),
+  appLabel("insights.data-notes.aScheduledDayWithProgressThatDidnTMeetTheTargetPartialCountsAsMissed"),
+  appLabel("insights.data-notes.schedulesArenTStoredHistoricallyTheCurrentScheduleIsAppliedToAllPastDaysIfYouChangedASchedulePastScheduledAndMissedCountsFollowTheNewOne"),
+  appLabel("insights.data-notes.daysBeforeAHabitExistedArenTCountedDeletedHabitsArenTShown"),
+  appLabel("insights.data-notes.daysFollowYourPhoneSLocalCalendarChangingTimeZonesCanShiftADay"),
+  appLabel("insights.data-notes.aScheduledDayWithoutASavedCheckInCountsAsMissedEvenIfYouDidTheHabitButDidnTLogIt"),
 ];
 
 const createStyles = (Palette: AppPalette) => StyleSheet.create({

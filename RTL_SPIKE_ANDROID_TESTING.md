@@ -1,5 +1,9 @@
 # Phase 1: temporary Android runtime RTL spike
 
+## Later evidence reconciliation (Phase 4C)
+
+The user has confirmed that Phase 1 was physically tested on their Android device: native tab reordering, navigation/Back, mixed Arabic/English input, and returning to LTR worked without reload. The historical Pending entries below were not updated at the time and must not be treated as evidence of unsupported runtime RTL. The confirmation does not supply a device/build identifier or establish every opposite-device-language matrix entry. The completed Phase 4C integration still needs its own physical QA; no new physical success is claimed here.
+
 Baseline: `cbd23fa`. Scope: feasibility only. Physical Android results are **pending**; no device session was available/exercised during this change. Passing static checks is not evidence that native tabs mirror correctly.
 
 ## Changes and safety

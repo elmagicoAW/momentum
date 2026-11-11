@@ -1,7 +1,8 @@
+import {Text, NumericText} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 
@@ -16,15 +17,15 @@ type Props = {
 };
 
 export function StatTile({ label, value, caption, color, badge }: Props) {
-  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { palette: Palette, styles, language } = useAppStyles(createStyles);
   return (
-    <View style={styles.tile} accessible accessibilityLabel={`${label}: ${value}${caption ? `, ${caption}` : ''}${badge ? `, ${badge}` : ''}`}>
+    <View style={[styles.tile,language === 'ar' && {flexBasis:'100%',minWidth:0}]} accessible accessibilityLabel={`${label}: ${value}${caption ? `, ${caption}` : ''}${badge ? `, ${badge}` : ''}`}>
       <Text style={styles.label} numberOfLines={1}>
         {label}
       </Text>
-      <Text style={[styles.value, color ? { color: readableAccent(color, Palette) } : null]} numberOfLines={1} adjustsFontSizeToFit>
+      <NumericText style={[styles.value, color ? { color: readableAccent(color, Palette) } : null]} numberOfLines={1} adjustsFontSizeToFit>
         {value}
-      </Text>
+      </NumericText>
       {caption ? (
         <Text style={styles.caption} numberOfLines={2}>
           {caption}

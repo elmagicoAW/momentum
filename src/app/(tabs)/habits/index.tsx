@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
@@ -26,12 +29,9 @@ export default function HabitsScreen() {
           <View style={styles.header}>
             <View style={styles.headerText}>
               <Text style={styles.title} accessibilityRole="header">
-                Habits
-              </Text>
+                {appLabel("habits.index.habits")}</Text>
               {ready && habits.length > 0 && (
-                <Text style={styles.subtitle}>
-                  {habits.length} {habits.length === 1 ? 'habit' : 'habits'} building momentum
-                </Text>
+                <Text style={styles.subtitle}>{appMessage("habits.list.count", { count: habits.length })}</Text>
               )}
             </View>
 
@@ -40,8 +40,8 @@ export default function HabitsScreen() {
               onPress={openNew}
               disabled={!ready}
               accessibilityRole="button"
-              accessibilityLabel="Add habit"
-              accessibilityHint="Opens the form to create a new habit"
+              accessibilityLabel={appLabel("habits.index.addHabit")}
+              accessibilityHint={appLabel("habits.index.opensTheFormToCreateANewHabit")}
               accessibilityState={{ disabled: !ready }}
               hitSlop={8}
               android_ripple={{ color: Palette.rippleOnAccent }}
@@ -50,7 +50,7 @@ export default function HabitsScreen() {
                 !ready && styles.addButtonDisabled,
                 pressed && styles.pressed,
               ]}>
-              <Text style={styles.addButtonText}>+ Add Habit</Text>
+              <Text style={styles.addButtonText}>{appLabel("habits.index.addaddHabit")}</Text>
             </Pressable>
           </View>
         </View>
@@ -67,19 +67,19 @@ export default function HabitsScreen() {
 
           {status === 'load-error' && (
             <EmptyState
-              title="Couldn't load your habits"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("habits.index.couldnTLoadYourHabits")}
+              description={appLabel("habits.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("habits.index.tryAgain")}
               onAction={reload}
             />
           )}
 
           {ready && habits.length === 0 && (
             <EmptyState
-              title="Start your first habit"
-              description="Pick something small you want to do regularly. You can choose the days, an icon and a color."
-              actionLabel="Create a habit"
+              title={appLabel("habits.index.startYourFirstHabit")}
+              description={appLabel("habits.index.pickSomethingSmallYouWantToDoRegularlyYouCanChooseTheDaysAnIconAndAColor")}
+              actionLabel={appLabel("habits.index.createAHabit")}
               onAction={openNew}
             />
           )}

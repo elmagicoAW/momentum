@@ -1,0 +1,130 @@
+{
+  "baseline": "2ed299c",
+  "files": [
+    {
+      "file": "src/app/(tabs)/index.tsx",
+      "styles": [
+        "7ce2e2a029104eca632fb253555acf3853f3b38f9dc1c0957ea5cb0d82979375"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/app-tabs.tsx",
+      "styles": [],
+      "navigation": [
+        [
+          "name",
+          "index"
+        ],
+        [
+          "name",
+          "habits"
+        ],
+        [
+          "name",
+          "goals"
+        ],
+        [
+          "name",
+          "insights"
+        ],
+        [
+          "name",
+          "settings"
+        ]
+      ]
+    },
+    {
+      "file": "src/components/app-tabs.web.tsx",
+      "styles": [
+        "71a2ad8f18350f513d8ad758e3fabce884f1a7057065927605b551df66b721f7"
+      ],
+      "navigation": [
+        [
+          "name",
+          "index"
+        ],
+        [
+          "name",
+          "habits"
+        ],
+        [
+          "name",
+          "goals"
+        ],
+        [
+          "name",
+          "insights"
+        ],
+        [
+          "name",
+          "settings"
+        ],
+        [
+          "href",
+          "/settings"
+        ],
+        [
+          "href",
+          "https://docs.expo.dev"
+        ]
+      ]
+    },
+    {
+      "file": "src/components/today/progress-ring.tsx",
+      "styles": [
+        "86476022d1fd13d7da3ce5f8a7c4d7a4175f35d7d81b303c53b6395436b21b7d"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/today/progress-notices.tsx",
+      "styles": [
+        "2eb504fcf379be7a3360710a77e424c3c0fa1d0f77dd6be242cb6d8fde923983"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/today/habit-card.tsx",
+      "styles": [
+        "68d44151caf88ee56ac731484fb80c082d502d89c5cf6eb3128dc5692bbbb36f"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/today/checklist-steps.tsx",
+      "styles": [
+        "87c96f3bee1768344ac0b8e243e236308cc73d2090f6d3fb73023b85a8249d2b"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/profile/name-prompt-card.tsx",
+      "styles": [
+        "050a0ea30778aca3d740a0a2ee4feb7226431c0c18b83f0952cb63498e63e66a"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/routines/todays-plan.tsx",
+      "styles": [
+        "3b3a78ce58e7a66fec2ab3fee8f991d47b41b274769a463a31565401bfafcefc"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/routines/routine-badges.tsx",
+      "styles": [
+        "6867edc6e76f011b09eebcc7d4f553f540d8669557d9e08d0c0fa07f698b8f2e"
+      ],
+      "navigation": []
+    },
+    {
+      "file": "src/components/achievements/achievements-summary-card.tsx",
+      "styles": [
+        "0917b629dd9831851f76562c6812c02ef4bd83606dc510cfef9c36f8607b2825"
+      ],
+      "navigation": []
+    }
+  ]
+}

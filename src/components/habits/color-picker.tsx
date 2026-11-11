@@ -1,5 +1,6 @@
+import {SymbolView} from '@/components/localized-native';
 import { foregroundOnColor } from '@/utils/theme-color';
-import { SymbolView } from 'expo-symbols';
+
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { HABIT_COLORS } from '@/data/habit-options';

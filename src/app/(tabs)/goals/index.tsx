@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { GoalCard } from '@/components/goals/goal-card';
@@ -57,25 +60,22 @@ export default function GoalsScreen() {
           <View style={styles.header}>
             <View style={styles.headerText}>
               <Text style={styles.title} accessibilityRole="header">
-                Goals
-              </Text>
+                {appLabel("goals.index.goals")}</Text>
               {ready && goals.length > 0 && (
-                <Text style={styles.subtitle}>
-                  {activeCount} active {activeCount === 1 ? 'goal' : 'goals'}
-                </Text>
+                <Text style={styles.subtitle}>{appMessage("goals.list.activeCount", { count: activeCount })}</Text>
               )}
             </View>
             <Pressable
               onPress={openNew}
               disabled={!ready}
               accessibilityRole="button"
-              accessibilityLabel="New goal"
-              accessibilityHint="Opens the form to create a new goal"
+              accessibilityLabel={appLabel("goals.index.newGoal")}
+              accessibilityHint={appLabel("goals.index.opensTheFormToCreateANewGoal")}
               accessibilityState={{ disabled: !ready }}
               hitSlop={8}
               android_ripple={{ color: Palette.rippleOnAccent }}
               style={({ pressed }) => [styles.addButton, !ready && styles.addButtonDisabled, pressed && styles.pressed]}>
-              <Text style={styles.addButtonText}>+ New Goal</Text>
+              <Text style={styles.addButtonText}>{appLabel("goals.index.addnewGoal")}</Text>
             </Pressable>
           </View>
 
@@ -84,17 +84,17 @@ export default function GoalsScreen() {
               {FILTERS.map((f) => {
                 const selected = f === filter;
                 const count = f === 'all' ? goals.length : goals.filter((g) => g.status === f).length;
-                const label = f === 'all' ? 'All' : GOAL_STATUS_META[f].label;
+                const label = f === 'all' ? appLabel("goals.index.all") : GOAL_STATUS_META[f].label;
                 return (
                   <Pressable
                     key={f}
                     onPress={() => setFilter(f)}
                     accessibilityRole="tab"
                     accessibilityState={{ selected }}
-                    accessibilityLabel={`${label}, ${count}`}
+                    accessibilityLabel={appMessage("display.labelValue", { label: String(label), textValue: appNumber(count) })}
                     style={({ pressed }) => [styles.chip, selected && styles.chipSelected, pressed && styles.pressed]}>
                     <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
-                      {label} <Text style={styles.chipCount}>{count}</Text>
+                      {label} <Text style={styles.chipCount}>{appNumber(count)}</Text>
                     </Text>
                   </Pressable>
                 );
@@ -112,26 +112,26 @@ export default function GoalsScreen() {
 
           {status === 'load-error' && (
             <EmptyState
-              title="Couldn't load your goals"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("goals.index.couldnTLoadYourGoals")}
+              description={appLabel("goals.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("goals.index.tryAgain")}
               onAction={reload}
             />
           )}
 
           {ready && goals.length === 0 && (
             <EmptyState
-              title="Set your first goal"
-              description="Choose something you’re working toward, give it a target date and link the daily habits that move you closer."
+              title={appLabel("goals.index.setYourFirstGoal")}
+              description={appLabel("goals.index.chooseSomethingYouReWorkingTowardGiveItATargetDateAndLinkTheDailyHabitsThatMoveYouCloser")}
               icon={{ ios: 'flag.fill', android: 'flag', web: 'flag' }}
-              actionLabel="Create a goal"
+              actionLabel={appLabel("goals.index.createAGoal")}
               onAction={openNew}
             />
           )}
 
           {ready && goals.length > 0 && visible.length === 0 && (
-            <Text style={styles.filterEmpty}>No {GOAL_STATUS_META[filter as GoalStatus].label.toLowerCase()} goals.</Text>
+            <Text style={styles.filterEmpty}>{appMessage("goals.list.emptyFilter", { status: GOAL_STATUS_META[filter as GoalStatus].label.toLowerCase() })}</Text>
           )}
 
           {ready && visible.length > 0 && (
@@ -139,9 +139,7 @@ export default function GoalsScreen() {
               {history.status === 'error' && (
                 <View style={styles.notice} accessibilityRole="alert">
                   <Text style={styles.noticeText}>
-                    Couldn’t read your saved check-ins, so Habit Consistency is unavailable. Nothing was changed —
-                    leave and return to this tab to try again.
-                  </Text>
+                    {appLabel("goals.index.couldnTReadYourSavedCheckInsSoHabitConsistencyIsUnavailableNothingWasChangedLeaveAndReturnToThisTabToTryAgain")}</Text>
                 </View>
               )}
               <View style={styles.list}>
@@ -161,10 +159,7 @@ export default function GoalsScreen() {
                 ))}
               </View>
               <Text style={styles.footnote}>
-                Habit Consistency is the share of scheduled check-ins for a goal’s linked habits that you completed on
-                past days. Today is shown separately until it ends. It doesn’t measure how much of a goal is achieved —
-                you mark that with the goal’s status.
-              </Text>
+                {appLabel("goals.index.habitConsistencyIsTheShareOfScheduledCheckInsForAGoalSLinkedHabitsThatYouCompletedOnPastDaysTodayIsShownSeparatelyUntilItEndsItDoesnTMeasureHowMuchOfAGoalIsAchievedYouMarkThatWithTheGoalSStatus")}</Text>
             </>
           )}
         </ScrollView>

@@ -1,7 +1,8 @@
+import {SymbolView} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';

@@ -1,13 +1,18 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useLanguage } from '@/hooks/use-language';
+import { todayCopy, todayRich, todayRoutineDay } from '@/i18n/today';
+import { LocalizedInline } from '@/components/localized-inline';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { MiniBar, NowChip, RoutineIcon, TimeChip } from '@/components/routines/routine-badges';
 import { Radius, Spacing } from '@/constants/theme';
 import type { RoutinesStatus } from '@/hooks/use-routines';
-import { describeRoutineDay, type DailyPlan, type RoutineDay } from '@/utils/routine-progress';
+import { type DailyPlan, type RoutineDay } from '@/utils/routine-progress';
 
 type Props = {
   plan: DailyPlan;
@@ -25,15 +30,17 @@ type Props = {
  */
 export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: Props) {
   const { styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { t, m } = todayCopy(language);
   if (routinesStatus === 'load-error') {
     return (
       <Pressable
         onPress={onRetry}
         accessibilityRole="button"
-        accessibilityLabel="Couldn't load routines. Retry"
+        accessibilityLabel={t('today.plan.loadErrorA11y')}
         style={({ pressed }) => [styles.errorLine, pressed && styles.pressed]}>
         <Text style={styles.errorText}>
-          Couldn’t load routines · <Text style={styles.errorAction}>Retry</Text>
+          <LocalizedInline message={todayRich(language, 'today.plan.loadError', { action: t('common.retry') }, 'action')} slotStyle={styles.errorAction} />
         </Text>
       </Pressable>
     );
@@ -45,16 +52,15 @@ export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: 
   return (
     <View style={styles.section}>
       <View style={styles.header}>
-        <Text style={styles.title}>Today&apos;s plan</Text>
+        <Text style={styles.title}>{t('today.plan')}</Text>
         <Pressable
           onPress={onManage}
           accessibilityRole="button"
-          accessibilityLabel="Manage routines"
+          accessibilityLabel={t('routines.manage')}
           hitSlop={10}
           style={({ pressed }) => [styles.manage, pressed && styles.pressed]}>
           <Text style={styles.meta}>
-            {plan.routinesDone} of {total} {total === 1 ? 'routine' : 'routines'} done ·{' '}
-            <Text style={styles.manageText}>Manage</Text>
+            <LocalizedInline message={todayRich(language, 'today.plan.summary', { completed: plan.routinesDone, count: total, action: t('today.plan.manage') }, 'action')} slotStyle={styles.manageText} />
           </Text>
         </Pressable>
       </View>
@@ -69,14 +75,12 @@ export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: 
         <View style={styles.footnotes}>
           {plan.outsideCount > 0 && (
             <Text style={styles.footnote}>
-              +{plan.outsideCount} {plan.outsideCount === 1 ? 'habit' : 'habits'} due today not in a routine — see
-              below.
+              {m('today.plan.outside', { count: plan.outsideCount })}
             </Text>
           )}
           {plan.restRoutines.length > 0 && (
             <Text style={styles.footnote}>
-              {plan.restRoutines.map((d) => d.routine.title).join(', ')}{' '}
-              {plan.restRoutines.length === 1 ? 'has' : 'have'} nothing due today.
+              {m('today.plan.restNames', { names: plan.restRoutines.map((d) => d.routine.title).join(t('today.list.separator')), count: plan.restRoutines.length })}
             </Text>
           )}
         </View>
@@ -87,15 +91,17 @@ export function TodaysPlan({ plan, routinesStatus, onOpen, onManage, onRetry }: 
 
 function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOpen: (id: string) => void }) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { language } = useLanguage();
+  const { t, m } = todayCopy(language);
   const { routine } = day;
   const complete = day.state === 'complete';
-  const summary = describeRoutineDay(day);
+  const summary = todayRoutineDay(language, day);
   return (
     <Pressable
       onPress={() => onOpen(routine.id)}
       accessibilityRole="button"
-      accessibilityLabel={`${routine.title}${isNow ? ', suggested now' : ''}, ${summary}`}
-      accessibilityHint="Opens the routine"
+      accessibilityLabel={m(isNow ? 'today.plan.rowNowA11y' : 'today.plan.rowA11y', { name: routine.title, summary })}
+      accessibilityHint={t('today.plan.openHint')}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [
         styles.row,
@@ -114,7 +120,7 @@ function PlanRow({ day, isNow, onOpen }: { day: RoutineDay; isNow: boolean; onOp
         <View style={styles.progressRow}>
           <MiniBar ratio={day.done / day.total} color={routine.color} width={72} />
           <Text style={[styles.count, complete && { color: readableAccent(routine.color, Palette) }]}>
-            {day.done}/{day.total}
+            {m('today.compactRatio', { completed: day.done, total: day.total })}
           </Text>
         </View>
       </View>

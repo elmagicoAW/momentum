@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 /**
  * Pure helpers for the display name and avatar. Used both by the editor and by
  * `profile-storage.ts`, so the app can never save a name it would refuse to load.
@@ -67,10 +68,10 @@ export function initialsFor(name: string | undefined): string | null {
 export function validateProfileDraft(draft: ProfileDraft): ProfileDraftErrors {
   const errors: ProfileDraftErrors = {};
   if (nameLength(normalizeName(draft.name)) > PROFILE_NAME_MAX_LENGTH) {
-    errors.name = `Keep your name under ${PROFILE_NAME_MAX_LENGTH} characters.`;
+    errors.name = appMessage("validation.profile.nameLength", { limit: (PROFILE_NAME_MAX_LENGTH) });
   }
   if (draft.avatarKind === 'icon' && (draft.icon.length === 0 || !isHexColor(draft.color))) {
-    errors.avatar = 'Pick an icon and a color.';
+    errors.avatar = appLabel("profile-validation.pickAnIconAndAColor");
   }
   return errors;
 }

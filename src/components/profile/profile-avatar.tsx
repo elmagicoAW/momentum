@@ -1,8 +1,9 @@
+import {SymbolView, Text} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { StyleSheet, Text, View } from 'react-native';
+
+import { StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';

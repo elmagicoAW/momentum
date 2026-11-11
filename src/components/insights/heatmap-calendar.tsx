@@ -1,14 +1,17 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { heatmapForeground, readableAccent } from '@/utils/theme-color';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { DayDetailPanel } from '@/components/insights/day-detail-panel';
 import { PeriodNav } from '@/components/insights/period-nav';
-import { plural, withAlpha } from '@/components/insights/format';
+import { withAlpha } from '@/components/insights/format';
 import { Radius } from '@/constants/theme';
-import { formatLongDateKey, formatMonthYear, monthGrid, parseLocalDateKey } from '@/utils/date';
+import { formatLongDateKey, formatMonthYear, monthGrid, parseLocalDateKey } from '@/i18n/presentation-date';
 import {
   canStepMonth,
   clampMonth,
@@ -31,7 +34,7 @@ type Props = {
   color?: string;
 };
 
-const WEEKDAY_INITIALS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const weekdayInitials = () => ([1, 2, 3, 4, 5, 6, 0] as const).map(day => appLabel(`calendar.weekday.${day}`));
 const LEVEL_ALPHA = [0, 0.3, 0.6, 1];
 
 /**
@@ -80,10 +83,10 @@ export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props)
         caption={
           beforeHistory
             ? habitMode
-              ? 'Before this habit started'
-              : 'Before your habits started'
+              ? appLabel("insights.heatmap-calendar.beforeThisHabitStarted")
+              : appLabel("insights.heatmap-calendar.beforeYourHabitsStarted")
             : isCurrentMonth
-              ? 'This month · today is provisional'
+              ? appLabel("insights.heatmap-calendar.thisMonthTodayIsProvisional")
               : undefined
         }
         unit="month"
@@ -91,7 +94,7 @@ export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props)
         canNext={canStepMonth(shown, 1, bounds)}
         onPrev={() => step(-1)}
         onNext={() => step(1)}
-        resetLabel={isCurrentMonth ? undefined : 'This month'}
+        resetLabel={isCurrentMonth ? undefined : appLabel("insights.heatmap-calendar.thisMonth")}
         onReset={() => {
           setChosen(bounds.max);
           setSelection(index.todayKey);
@@ -100,7 +103,7 @@ export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props)
 
       <View>
         <View style={styles.row}>
-          {WEEKDAY_INITIALS.map((d, i) => (
+          {weekdayInitials().map((d, i) => (
             <Text key={i} style={styles.weekday} importantForAccessibility="no">
               {d}
             </Text>
@@ -127,7 +130,7 @@ export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props)
       {detail ? (
         <DayDetailPanel detail={detail} single={habitMode} />
       ) : (
-        <Text style={styles.hint}>Tap a day to see what happened.</Text>
+        <Text style={styles.hint}>{appLabel("insights.heatmap-calendar.tapADayToSeeWhatHappened")}</Text>
       )}
     </View>
   );
@@ -136,17 +139,15 @@ export function HeatmapCalendar({ index, habitId, color: suppliedColor }: Props)
 /** Short description used for each cell's accessibility label. */
 function cellDescription(cell: HeatCell, habitMode: boolean): string {
   let text: string;
-  if (cell.kind === 'future') text = 'Upcoming';
-  else if (cell.kind === 'before') text = habitMode ? 'Not started' : 'No habits yet';
+  if (cell.kind === 'future') text = appLabel("insights.heatmap-calendar.upcoming");
+  else if (cell.kind === 'before') text = habitMode ? appLabel("insights.heatmap-calendar.notStarted") : appLabel("insights.heatmap-calendar.noHabitsYet");
   else if (habitMode && cell.status !== undefined) text = dayStatusLabel(cell.status, cell.isToday);
-  else if (cell.kind === 'rest') text = 'Nothing scheduled';
+  else if (cell.kind === 'rest') text = appLabel("insights.heatmap-calendar.nothingScheduled");
   else {
-    text = `${cell.done} of ${plural(cell.due, 'check-in', 'check-ins')}`;
-    if (cell.isToday) text += ' so far, provisional';
-    if (cell.unknown > 0) text += `, ${cell.unknown} couldn’t be read`;
+    text = cell.isToday ? (cell.unknown > 0 ? appMessage("insights.complete.calendar.today.unreadable", { done: cell.done, count: cell.due, total: cell.unknown }) : appMessage("insights.complete.calendar.today.readable", { done: cell.done, count: cell.due })) : (cell.unknown > 0 ? appMessage("insights.complete.calendar.finished.unreadable", { done: cell.done, count: cell.due, total: cell.unknown }) : appMessage("insights.complete.calendar.finished.readable", { done: cell.done, count: cell.due }));
   }
-  if (cell.unreadable) text += ', saved record couldn’t be read';
-  return `${formatLongDateKey(cell.dateKey)}${cell.isToday ? ', today' : ''}. ${text}`;
+  if (cell.unreadable) text = appMessage("history.calendar.unreadableRecord", { summary: text });
+  return appMessage("history.calendar.accessibility", { date: formatLongDateKey(cell.dateKey), today: cell.isToday ? appLabel('insights.heatmap-calendar.today') : '', summary: text });
 }
 
 function DayCell({
@@ -208,7 +209,7 @@ function DayCell({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={cellDescription(cell, habitMode)}
-      accessibilityHint="Shows details below the calendar"
+      accessibilityHint={appLabel("insights.heatmap-calendar.showsDetailsBelowTheCalendar")}
       accessibilityState={{ selected }}
       style={({ pressed }) => [styles.cellWrap, pressed && styles.pressed]}>
       <View
@@ -217,7 +218,7 @@ function DayCell({
           { backgroundColor, borderColor, borderStyle },
           selected && styles.cellSelected,
         ]}>
-        <Text style={[styles.cellText, { color: textColor }, cell.isToday && styles.todayText]}>{cell.day}</Text>
+        <Text style={[styles.cellText, { color: textColor }, cell.isToday && styles.todayText]}>{appNumber(cell.day)}</Text>
         {notStarted ? <View style={styles.notStartedBar} /> : null}
         {cell.unreadable ? <View style={styles.unreadableDot} /> : null}
       </View>
@@ -229,20 +230,20 @@ function Legend({ color, habitMode }: { color: string; habitMode: boolean }) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const items: { label: string; style: object }[] = habitMode
     ? [
-        { label: 'Done', style: { backgroundColor: color } },
+        { get label(){return appLabel("insights.heatmap-calendar.done");}, style: { backgroundColor: color } },
         {
-          label: 'Partial',
+          get label(){return appLabel("insights.heatmap-calendar.partial");},
           style: { backgroundColor: withAlpha(color, 0.25, Palette.accent), borderColor: withAlpha(color, 0.7, Palette.accent), borderStyle: 'dashed' },
         },
-        { label: 'Not checked in', style: { backgroundColor: Palette.ringTrack } },
-        { label: 'Not scheduled', style: { borderColor: Palette.border } },
+        { get label(){return appLabel("insights.heatmap-calendar.notCheckedIn");}, style: { backgroundColor: Palette.ringTrack } },
+        { get label(){return appLabel("insights.heatmap-calendar.notScheduled");}, style: { borderColor: Palette.border } },
       ]
     : [
-        { label: 'None', style: { backgroundColor: Palette.ringTrack } },
-        { label: 'Some', style: { backgroundColor: withAlpha(color, 0.3, Palette.accent) } },
-        { label: 'Most', style: { backgroundColor: withAlpha(color, 0.6, Palette.accent) } },
-        { label: 'All', style: { backgroundColor: color } },
-        { label: 'Rest day', style: { borderColor: Palette.border } },
+        { get label(){return appLabel("insights.heatmap-calendar.none");}, style: { backgroundColor: Palette.ringTrack } },
+        { get label(){return appLabel("insights.heatmap-calendar.some");}, style: { backgroundColor: withAlpha(color, 0.3, Palette.accent) } },
+        { get label(){return appLabel("insights.heatmap-calendar.most");}, style: { backgroundColor: withAlpha(color, 0.6, Palette.accent) } },
+        { get label(){return appLabel("insights.heatmap-calendar.all");}, style: { backgroundColor: color } },
+        { get label(){return appLabel("insights.heatmap-calendar.restDay");}, style: { borderColor: Palette.border } },
       ];
   return (
     <View style={styles.legend} importantForAccessibility="no-hide-descendants">
@@ -256,15 +257,15 @@ function Legend({ color, habitMode }: { color: string; habitMode: boolean }) {
         <View style={[styles.legendSwatch, styles.legendNotStarted]}>
           <View style={styles.legendBar} />
         </View>
-        <Text style={styles.legendText}>{habitMode ? 'Not started' : 'No habits yet'}</Text>
+        <Text style={styles.legendText}>{habitMode ? appLabel("insights.heatmap-calendar.notStarted") : appLabel("insights.heatmap-calendar.noHabitsYet")}</Text>
       </View>
       <View style={styles.legendItem}>
         <View style={[styles.legendSwatch, styles.legendToday]} />
-        <Text style={styles.legendText}>Today</Text>
+        <Text style={styles.legendText}>{appLabel("insights.heatmap-calendar.todayVariant")}</Text>
       </View>
       <View style={styles.legendItem}>
         <View style={[styles.unreadableDot, styles.legendDot]} />
-        <Text style={styles.legendText}>Unreadable</Text>
+        <Text style={styles.legendText}>{appLabel("insights.heatmap-calendar.unreadable")}</Text>
       </View>
     </View>
   );

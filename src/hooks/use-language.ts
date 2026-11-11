@@ -1,17 +1,18 @@
 import { usePreferences } from '@/hooks/use-preferences';
 import { translate } from '@/i18n/translate';
 import type { MessageKey } from '@/i18n/types';
-import { ACTIVE_PRESENTATION, languageDirection } from '@/utils/presentation';
+import { languageDirection } from '@/utils/presentation';
+import { usePresentationLanguage } from './use-presentation-language';
 
-const t = (key: MessageKey) => translate(ACTIVE_PRESENTATION.language, key);
-/** Stored language is not applied until whole-app localization and QA are approved. */
+/** Render the language applied only after validated hydration or a successful save. */
 export function useLanguage() {
   const { preferences } = usePreferences();
+  const language = usePresentationLanguage();
   return {
     selectedLanguage: preferences.language,
     requestedDirection: languageDirection(preferences.language),
-    language: ACTIVE_PRESENTATION.language,
-    direction: ACTIVE_PRESENTATION.direction,
-    t,
+    language,
+    direction: languageDirection(language),
+    t: (key: MessageKey) => translate(language, key),
   };
 }

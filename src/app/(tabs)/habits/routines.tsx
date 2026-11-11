@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
@@ -41,7 +44,7 @@ export default function RoutinesScreen() {
       await moveRoutine(id, delta); // saved before the list re-orders
     } catch (error) {
       console.warn('[momentum] Failed to reorder routines', error);
-      setFailure('Couldn’t save the new order. Your routines are unchanged — try again.');
+      setFailure(appLabel("habits.routines.couldnTSaveTheNewOrderYourRoutinesAreUnchangedTryAgain"));
     } finally {
       setMoving(false);
     }
@@ -55,7 +58,7 @@ export default function RoutinesScreen() {
             <Pressable
               onPress={closeRoutineList}
               accessibilityRole="button"
-              accessibilityLabel="Back to habits"
+              accessibilityLabel={appLabel("habits.routines.backToHabits")}
               hitSlop={8}
               style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}>
               <SymbolView
@@ -66,8 +69,7 @@ export default function RoutinesScreen() {
             </Pressable>
             <View style={styles.headerText}>
               <Text style={styles.title} accessibilityRole="header">
-                Routines
-              </Text>
+                {appLabel("habits.routines.routines")}</Text>
             </View>
             {ready && routines.length > 1 && (
               <Pressable
@@ -75,11 +77,11 @@ export default function RoutinesScreen() {
                 disabled={moving}
                 accessibilityRole="button"
                 accessibilityState={{ selected: reordering }}
-                accessibilityLabel={reordering ? 'Done reordering' : 'Reorder routines'}
+                accessibilityLabel={reordering ? appLabel("habits.routines.doneReordering") : appLabel("habits.routines.reorderRoutines")}
                 android_ripple={{ color: Palette.rippleMedium }}
                 style={({ pressed }) => [styles.secondaryButton, reordering && styles.secondaryActive, pressed && styles.pressed]}>
                 <Text style={[styles.secondaryText, reordering && styles.secondaryActiveText]}>
-                  {reordering ? 'Done' : 'Reorder'}
+                  {reordering ? appLabel("habits.routines.done") : appLabel("habits.routines.reorder")}
                 </Text>
               </Pressable>
             )}
@@ -88,7 +90,7 @@ export default function RoutinesScreen() {
                 onPress={openNewRoutine}
                 disabled={!ready || atLimit}
                 accessibilityRole="button"
-                accessibilityLabel="New routine"
+                accessibilityLabel={appLabel("habits.routines.newRoutine")}
                 accessibilityState={{ disabled: !ready || atLimit }}
                 hitSlop={4}
                 android_ripple={{ color: Palette.rippleOnAccent }}
@@ -97,13 +99,12 @@ export default function RoutinesScreen() {
                   (!ready || atLimit) && styles.addDisabled,
                   pressed && styles.pressed,
                 ]}>
-                <Text style={styles.addText}>+ New</Text>
+                <Text style={styles.addText}>{appLabel("habits.routines.addnew")}</Text>
               </Pressable>
             )}
           </View>
           <Text style={styles.subtitle}>
-            Group habits you already track. Progress stays with each habit, so nothing is counted twice.
-          </Text>
+            {appLabel("habits.routines.groupHabitsYouAlreadyTrackProgressStaysWithEachHabitSoNothingIsCountedTwice")}</Text>
         </View>
 
         <ScrollView style={styles.flex} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -121,20 +122,20 @@ export default function RoutinesScreen() {
 
           {status === 'load-error' && (
             <EmptyState
-              title="Couldn't load your routines"
-              description="Your saved data hasn't been changed. Try again, or restart the app."
+              title={appLabel("habits.routines.couldnTLoadYourRoutines")}
+              description={appLabel("habits.routines.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("habits.routines.tryAgain")}
               onAction={reload}
             />
           )}
 
           {ready && routines.length === 0 && (
             <EmptyState
-              title="Build your first routine"
-              description="Group habits into a Morning or Evening Routine and work through them in order. Your habits and their history stay exactly as they are."
+              title={appLabel("habits.routines.buildYourFirstRoutine")}
+              description={appLabel("habits.routines.groupHabitsIntoAMorningOrEveningRoutineAndWorkThroughThemInOrderYourHabitsAndTheirHistoryStayExactlyAsTheyAre")}
               icon={{ ios: 'list.bullet.rectangle.fill', android: 'view_list', web: 'view_list' }}
-              actionLabel="Create a routine"
+              actionLabel={appLabel("habits.routines.createARoutine")}
               onAction={openNewRoutine}
             />
           )}
@@ -157,11 +158,11 @@ export default function RoutinesScreen() {
           )}
 
           {ready && habitsStatus === 'load-error' && routines.length > 0 && (
-            <Text style={styles.note}>Couldn’t load your habits, so routine progress can’t be shown right now.</Text>
+            <Text style={styles.note}>{appLabel("habits.routines.couldnTLoadYourHabitsSoRoutineProgressCanTBeShownRightNow")}</Text>
           )}
 
           {ready && atLimit && (
-            <Text style={styles.note}>You’ve reached {MAX_ROUTINES} routines. Delete one to add another.</Text>
+            <Text style={styles.note}>{appMessage("routines.list.limit", { limit: MAX_ROUTINES })}</Text>
           )}
         </ScrollView>
       </SafeAreaView>

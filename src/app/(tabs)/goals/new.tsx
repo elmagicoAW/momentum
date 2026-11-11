@@ -1,3 +1,5 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { appLabel } from '@/i18n/app-copy';
 import { GoalForm } from '@/components/goals/goal-form';
 import { useCurrentDate } from '@/hooks/use-current-date';
 import { useGoals } from '@/hooks/use-goals';
@@ -10,8 +12,8 @@ export default function NewGoalScreen() {
 
   return (
     <GoalForm
-      title="New goal"
-      submitLabel="Create"
+      title={appLabel("goals.new.newGoal")}
+      submitLabel={appLabel("goals.new.create")}
       todayKey={toLocalDateKey(now)}
       initialDraft={{
         title: '',

@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text, NumericText} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 import type { HabitConsistency } from '@/utils/goal-progress';
@@ -14,7 +17,6 @@ type Props = {
   color: string;
 };
 
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 /**
  * Habit Consistency for one goal. Finished days are the headline number;
@@ -22,12 +24,12 @@ const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one :
  * today are never presented as missed.
  */
 export function ConsistencySummary({ consistency, loading, color }: Props) {
-  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { palette: Palette, styles, language } = useAppStyles(createStyles);
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.label}>Habit Consistency</Text>
-        <Text style={styles.muted}>Loading check-ins…</Text>
+        <Text style={styles.label}>{appLabel("goals.consistency-summary.habitConsistency")}</Text>
+        <Text style={styles.muted}>{appLabel("goals.consistency-summary.loadingCheckInsPending")}</Text>
       </View>
     );
   }
@@ -35,8 +37,8 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
   if (!consistency) {
     return (
       <View style={styles.container}>
-        <Text style={styles.label}>Habit Consistency</Text>
-        <Text style={styles.muted}>Unavailable right now — your saved check-ins couldn’t be read. Nothing was changed.</Text>
+        <Text style={styles.label}>{appLabel("goals.consistency-summary.habitConsistency")}</Text>
+        <Text style={styles.muted}>{appLabel("goals.consistency-summary.unavailableRightNowYourSavedCheckInsCouldnTBeReadNothingWasChanged")}</Text>
       </View>
     );
   }
@@ -44,8 +46,8 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
   if (consistency.linkedHabits.length === 0) {
     return (
       <View style={styles.container}>
-        <Text style={styles.label}>Habit Consistency</Text>
-        <Text style={styles.muted}>Link habits to see how consistently you show up for this goal.</Text>
+        <Text style={styles.label}>{appLabel("goals.consistency-summary.habitConsistency")}</Text>
+        <Text style={styles.muted}>{appLabel("goals.consistency-summary.linkHabitsToSeeHowConsistentlyYouShowUpForThisGoal")}</Text>
       </View>
     );
   }
@@ -55,12 +57,12 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headline}>
-        <Text style={styles.label}>Habit Consistency</Text>
+      <View style={[styles.headline,language === 'ar' && {flexWrap:'wrap',gap:8}]}>
+        <Text style={styles.label}>{appLabel("goals.consistency-summary.habitConsistency")}</Text>
         {percent !== null && (
-          <Text style={[styles.percent, { color: readableAccent(color, Palette) }]} accessibilityLabel={`Habit consistency ${percent} percent`}>
-            {percent}%
-          </Text>
+          <NumericText style={[styles.percent, { color: readableAccent(color, Palette) }]} accessibilityLabel={appMessage("goals.consistency.accessibility", { percent: (percent) })}>
+            {appMessage('display.percent',{percent})}
+          </NumericText>
         )}
       </View>
 
@@ -70,37 +72,31 @@ export function ConsistencySummary({ consistency, loading, color }: Props) {
             style={styles.track}
             accessible
             accessibilityRole="progressbar"
-            accessibilityLabel="Habit consistency on completed days"
+            accessibilityLabel={appLabel("goals.consistency-summary.habitConsistencyOnCompletedDays")}
             accessibilityValue={{ min: 0, max: 100, now: percent }}>
             <View style={[styles.fill, { width: `${percent}%`, backgroundColor: readableAccent(color, Palette) }]} />
           </View>
-          <Text style={styles.detail}>
-            {finished.completed} of {plural(finished.scheduled, 'scheduled check-in', 'scheduled check-ins')} completed
-            on past days
-          </Text>
+          <Text style={styles.detail}>{appMessage("goals.consistency.finished", { done: finished.completed, count: finished.scheduled })}</Text>
         </>
       ) : (
-        <Text style={styles.muted}>No completed days yet — the first full day counts from tomorrow.</Text>
+        <Text style={styles.muted}>{appLabel("goals.consistency-summary.noCompletedDaysYetTheFirstFullDayCountsFromTomorrow")}</Text>
       )}
 
       {today && (
         <View style={styles.todayRow}>
           <View style={styles.provisional}>
-            <Text style={styles.provisionalText}>Today · in progress</Text>
+            <Text style={styles.provisionalText}>{appLabel("goals.consistency-summary.todayInProgress")}</Text>
           </View>
           <Text style={styles.todayText}>
             {today.scheduled === 0
-              ? 'Nothing linked is scheduled today'
-              : `${today.completed} of ${today.scheduled} checked in so far`}
+              ? appLabel("goals.consistency-summary.nothingLinkedIsScheduledToday")
+              : appMessage("goals.consistency.today", { done: (today.completed), total: (today.scheduled) })}
           </Text>
         </View>
       )}
 
       {unreadableDays > 0 && (
-        <Text style={styles.warning}>
-          {plural(unreadableDays, 'day', 'days')} of saved check-ins couldn’t be read and{' '}
-          {unreadableDays === 1 ? 'is' : 'are'} left out, so this may be incomplete. Nothing was changed.
-        </Text>
+        <Text style={styles.warning}>{appMessage("goals.consistency.unreadable", { count: unreadableDays })}</Text>
       )}
     </View>
   );

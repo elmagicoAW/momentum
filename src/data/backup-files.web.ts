@@ -1,6 +1,7 @@
+import { withErrorMessage } from '@/i18n/app-copy';
 import type { JournalFiles } from '@/data/backup-service';
 export const backupSupported = false;
-const unavailable = async (): Promise<never> => { throw new Error('Manual Data & Backup is available in the Android/iOS app.'); };
+const unavailable = async (): Promise<never> => { throw withErrorMessage(new Error('Manual Data & Backup is available in the Android/iOS app.'), { key: "backup-files.web.manualDataBackupIsAvailableInTheAndroidIOSApp" }); };
 export const hashBackup = unavailable;
 export const pickBackup = unavailable;
 export const saveBackup = unavailable;

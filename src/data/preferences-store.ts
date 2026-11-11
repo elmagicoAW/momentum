@@ -14,6 +14,7 @@ export type PreferencesSnapshot = Readonly<{
 export function createPreferencesStore(options: {
   load?: () => Promise<Preferences>;
   save?: (preferences: Preferences) => Promise<void>;
+  onAppliedLanguage?: (language: Preferences['language']) => void;
 } = {}) {
   let snapshot: PreferencesSnapshot = Object.freeze({ preferences: DEFAULT_PREFERENCES, status: 'loading', saving: false, error: null });
   const listeners = new Set<() => void>();
@@ -35,6 +36,7 @@ export function createPreferencesStore(options: {
       loading = Promise.resolve().then(() => (options.load ?? loadPreferences)()).then((preferences) => {
         // Copy/freeze even an injected loader's value; production loader already validates.
         const value = Object.freeze({ ...preferences });
+        options.onAppliedLanguage?.(value.language);
         publish({ preferences: value, status: 'ready', error: null });
         return value;
       }).catch((error: unknown) => {
@@ -55,6 +57,7 @@ export function createPreferencesStore(options: {
         const next: Preferences = Object.freeze({ ...current, ...patch });
         if (next.appearance !== current.appearance || next.language !== current.language) {
           await (options.save ?? savePreferences)(next);
+          options.onAppliedLanguage?.(next.language);
           publish({ preferences: next });
         }
         publish({ error: null });

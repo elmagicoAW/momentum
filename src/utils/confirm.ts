@@ -1,3 +1,4 @@
+import { appLabel } from '@/i18n/app-copy';
 import { Alert, Platform } from 'react-native';
 
 type Options = { title: string; message: string; confirmLabel: string };
@@ -16,7 +17,7 @@ export function confirmDestructive({ title, message, confirmLabel }: Options): P
       title,
       message,
       [
-        { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+        { text: appLabel("confirm.cancel"), style: 'cancel', onPress: () => resolve(false) },
         { text: confirmLabel, style: 'destructive', onPress: () => resolve(true) },
       ],
       { cancelable: true, onDismiss: () => resolve(false) },

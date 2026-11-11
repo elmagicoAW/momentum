@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { DayRecord } from '@/data/completion-storage';
 import type { Habit } from '@/data/habit-storage';
 import type { Routine, TimeOfDay } from '@/data/routine-storage';
@@ -74,17 +75,17 @@ export function routineDay(
 export type ClockBucket = Exclude<TimeOfDay, 'anytime'>;
 
 export const TIME_OF_DAY_LABELS: Record<TimeOfDay, string> = {
-  morning: 'Morning',
-  afternoon: 'Afternoon',
-  evening: 'Evening',
-  anytime: 'Anytime',
+  get morning() { return appLabel("routine-progress.morning"); },
+  get afternoon() { return appLabel("routine-progress.afternoon"); },
+  get evening() { return appLabel("routine-progress.evening"); },
+  get anytime() { return appLabel("routine-progress.anytime"); },
 };
 
 export const TIME_OF_DAY_HINTS: Record<TimeOfDay, string> = {
-  morning: '5 am – noon',
-  afternoon: 'Noon – 6 pm',
-  evening: '6 pm – 5 am',
-  anytime: 'No preferred time',
+  get morning() { return appLabel("routine-progress.5AmNoon"); },
+  get afternoon() { return appLabel('routines.time.afternoonHint'); },
+  get evening() { return appLabel('routines.time.eveningHint'); },
+  get anytime() { return appLabel("routine-progress.noPreferredTime"); },
 };
 
 const TIME_ORDER: Record<TimeOfDay, number> = { morning: 0, afternoon: 1, evening: 2, anytime: 3 };
@@ -154,12 +155,12 @@ export function routinesContaining(routines: readonly Routine[], habitId: string
 export function describeRoutineDay(day: RoutineDay): string {
   switch (day.state) {
     case 'empty':
-      return 'No habits yet';
+      return appLabel("routine-progress.noHabitsYet");
     case 'rest':
-      return 'Nothing due today';
+      return appLabel("routine-progress.nothingDueToday");
     case 'complete':
-      return `All ${day.total} done`;
+      return appMessage("routines.progress.allDone", { total: (day.total) });
     default:
-      return `${day.done} of ${day.total} done`;
+      return appMessage("routines.progress.done", { done: (day.done), total: (day.total) });
   }
 }

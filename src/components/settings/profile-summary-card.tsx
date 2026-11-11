@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { ProfileAvatar } from '@/components/profile/profile-avatar';
 import { Radius, Spacing } from '@/constants/theme';
@@ -21,7 +24,7 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
   if (status === 'loading') {
     return (
       <View style={[styles.card, styles.center]}>
-        <ActivityIndicator color={Palette.accent} accessibilityLabel="Loading profile" />
+        <ActivityIndicator color={Palette.accent} accessibilityLabel={appLabel("settings.profile-summary-card.loadingProfile")} />
       </View>
     );
   }
@@ -38,8 +41,8 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
             />
           </View>
           <View style={styles.text}>
-            <Text style={styles.name}>Couldn&apos;t load profile</Text>
-            <Text style={styles.subtitle}>Your saved profile hasn&apos;t been changed.</Text>
+            <Text style={styles.name}>{appLabel("settings.profile-summary-card.couldnTLoadProfile")}</Text>
+            <Text style={styles.subtitle}>{appLabel("settings.profile-summary-card.yourSavedProfileHasnTBeenChanged")}</Text>
           </View>
         </View>
         <Pressable
@@ -47,7 +50,7 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
           accessibilityRole="button"
           android_ripple={{ color: Palette.rippleStrong }}
           style={({ pressed }) => [styles.retry, pressed && styles.pressed]}>
-          <Text style={styles.retryText}>Try again</Text>
+          <Text style={styles.retryText}>{appLabel("settings.profile-summary-card.tryAgain")}</Text>
         </Pressable>
       </View>
     );
@@ -58,15 +61,15 @@ export function ProfileSummaryCard({ profile, status, onEdit, onRetry }: Props) 
     <Pressable
       onPress={onEdit}
       accessibilityRole="button"
-      accessibilityLabel={name ? `Profile: ${name}. Edit name and avatar` : 'Add your name. Edit name and avatar'}
+      accessibilityLabel={name ? appMessage("profile.summary.accessibility", { name: (name) }) : appLabel("settings.profile-summary-card.addYourNameEditNameAndAvatar")}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, styles.row, pressed && styles.pressed]}>
       <ProfileAvatar avatar={profile.avatar} displayName={name} size={56} />
       <View style={styles.text}>
         <Text style={[styles.name, !name && styles.placeholder]} numberOfLines={2}>
-          {name ?? 'Add your name'}
+          {name ?? appLabel("settings.profile-summary-card.addYourName")}
         </Text>
-        <Text style={styles.subtitle}>Edit name and avatar</Text>
+        <Text style={styles.subtitle}>{appLabel("settings.profile-summary-card.editNameAndAvatar")}</Text>
       </View>
       <SymbolView
         name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}

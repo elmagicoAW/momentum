@@ -1,21 +1,13 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, TextInput} from '@/components/localized-native';
+import { appLabel, appMessage, displayError, appRich } from '@/i18n/app-copy';
+import { LocalizedInline } from '@/components/localized-inline';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { usePreventRemove } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
+
 import { useCallback, useRef, useState, type ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  type ScrollViewInstance,
-  type TextInputInstance,
-  type ViewInstance,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View, type ScrollViewInstance, type TextInputInstance, type ViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ColorPicker } from '@/components/habits/color-picker';
@@ -26,7 +18,8 @@ import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
 import { draftToProfileInput, profileToDraft, type Profile, type ProfileInput } from '@/data/profile-storage';
 import { useCurrentDate } from '@/hooks/use-current-date';
 import { confirmDestructive } from '@/utils/confirm';
-import { getGreeting } from '@/utils/date';
+import { todayGreeting } from '@/i18n/today';
+import { ACTIVE_PRESENTATION } from '@/utils/presentation';
 import {
   hasProfileErrors,
   normalizeName,
@@ -48,19 +41,18 @@ type Props = {
 type Busy = 'idle' | 'saving' | 'done';
 
 const AVATAR_OPTIONS: { value: AvatarKind; label: string; hint: string }[] = [
-  { value: 'initials', label: 'Initials', hint: 'From your name' },
-  { value: 'icon', label: 'Icon', hint: 'Pick a symbol' },
+  { value: 'initials', get label() { return appLabel("profile.profile-form.initials"); }, get hint() { return appLabel("profile.profile-form.fromYourName"); } },
+  { value: 'icon', get label() { return appLabel("profile.profile-form.icon"); }, get hint() { return appLabel("profile.profile-form.pickASymbol"); } },
 ];
 
 const DISCARD_PROMPT = {
-  title: 'Discard changes?',
-  message: "Your profile changes haven't been saved.",
-  confirmLabel: 'Discard',
+  get title() { return appLabel("profile.profile-form.discardChanges"); },
+  get message() { return appLabel("profile.profile-form.yourProfileChangesHavenTBeenSaved"); },
+  get confirmLabel() { return appLabel("profile.profile-form.discard"); },
 };
 
 function errorMessage(error: unknown, fallback: string) {
-  const detail = error instanceof Error && error.message ? ` (${error.message})` : '';
-  return `${fallback}${detail}`;
+  return displayError(error, fallback);
 }
 
 export function ProfileForm({ profile, onSave, onClose }: Props) {
@@ -152,7 +144,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
       leave();
     } catch (error) {
       console.warn('[momentum] Failed to save profile', error);
-      setFailure(errorMessage(error, "Couldn't save your profile. Your changes are still here — try again."));
+      setFailure(errorMessage(error, appLabel("profile.profile-form.couldnTSaveYourProfileYourChangesAreStillHereTryAgain")));
       setBusy('idle');
     }
   };
@@ -161,7 +153,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
     draft.avatarKind === 'icon'
       ? ({ kind: 'icon', icon: draft.icon, color: draft.color } as const)
       : ({ kind: 'initials' } as const);
-  const greeting = getGreeting(now);
+  const greeting = todayGreeting(ACTIVE_PRESENTATION.language, now);
 
   return (
     <View style={styles.screen}>
@@ -172,8 +164,8 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
             onPress={handleCancel}
             disabled={locked}
             accessibilityRole="button"
-            accessibilityLabel="Cancel"
-            accessibilityHint={dirty ? 'Asks before discarding your changes' : undefined}
+            accessibilityLabel={appLabel("profile.profile-form.cancel")}
+            accessibilityHint={dirty ? appLabel("profile.profile-form.asksBeforeDiscardingYourChanges") : undefined}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
             <SymbolView
@@ -183,20 +175,19 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
             />
           </Pressable>
           <Text style={styles.headerTitle} accessibilityRole="header">
-            Profile
-          </Text>
+            {appLabel("profile.profile-form.profile")}</Text>
           <Pressable
             onPress={handleSave}
             disabled={locked}
             accessibilityRole="button"
-            accessibilityLabel="Save profile"
+            accessibilityLabel={appLabel("profile.profile-form.saveProfile")}
             accessibilityState={{ disabled: locked, busy: busy === 'saving' }}
             android_ripple={{ color: Palette.rippleStrong }}
             style={({ pressed }) => [styles.saveButton, locked && styles.saveDisabled, pressed && styles.pressed]}>
             {busy === 'saving' ? (
               <ActivityIndicator size="small" color={Palette.onAccent} />
             ) : (
-              <Text style={styles.saveText}>Save</Text>
+              <Text style={styles.saveText}>{appLabel("profile.profile-form.save")}</Text>
             )}
           </Pressable>
         </View>
@@ -219,27 +210,19 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
               <View
                 style={styles.preview}
                 accessible
-                accessibilityLabel={`Preview: ${previewName ? `${greeting}, ${previewName}` : `${greeting}.`}`}>
+                accessibilityLabel={appMessage("display.profilePreview", { greeting: previewName ? appMessage('display.greeting.named', {greeting, name:previewName}) : appMessage('display.greeting.unnamed',{greeting}) })}>
                 <ProfileAvatar avatar={previewAvatar} displayName={previewName} size={72} />
                 <View style={styles.previewText}>
-                  <Text style={styles.previewLabel}>On Today</Text>
-                  <Text style={styles.previewGreeting} numberOfLines={2}>
-                    {previewName ? (
-                      <>
-                        {greeting}, <Text style={styles.previewName}>{previewName}</Text>
-                      </>
-                    ) : (
-                      `${greeting}.`
-                    )}
-                  </Text>
+                  <Text style={styles.previewLabel}>{appLabel("profile.profile-form.onToday")}</Text>
+                  <Text style={styles.previewGreeting} numberOfLines={2}>{previewName ? <LocalizedInline message={appRich('display.greeting.named',{greeting, name: previewName}, 'name')} slotStyle={styles.previewName} /> : appMessage('display.greeting.unnamed',{greeting})}</Text>
                 </View>
               </View>
 
               <Field
-                label="Display name"
+                label={appLabel("profile.profile-form.displayName")}
                 optional
                 error={visibleErrors.name}
-                counter={`${draft.name.length}/${PROFILE_NAME_MAX_LENGTH}`}>
+                counter={appMessage("display.ratio", { value: draft.name.length, maximum: PROFILE_NAME_MAX_LENGTH })}>
                 <View>
                   <TextInput
                     selectionColor={Palette.accent}
@@ -248,7 +231,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                     value={draft.name}
                     onChangeText={(text) => update('name', text)}
                     onFocus={() => revealInput(nameRef.current)}
-                    placeholder="What should we call you?"
+                    placeholder={appLabel("profile.profile-form.whatShouldWeCallYou")}
                     placeholderTextColor={Palette.textMuted}
                     maxLength={PROFILE_NAME_MAX_LENGTH}
                     autoCapitalize="words"
@@ -257,15 +240,15 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                     autoCorrect={false}
                     returnKeyType="done"
                     editable={!locked}
-                    accessibilityLabel="Display name"
-                    accessibilityHint="Optional. Shown on Today and stored only on this device."
+                    accessibilityLabel={appLabel("profile.profile-form.displayName")}
+                    accessibilityHint={appLabel("profile.profile-form.optionalShownOnTodayAndStoredOnlyOnThisDevice")}
                     style={[styles.input, draft.name.length > 0 && styles.inputWithClear, visibleErrors.name && styles.inputError]}
                   />
                   {draft.name.length > 0 && !locked && (
                     <Pressable
                       onPress={() => update('name', '')}
                       accessibilityRole="button"
-                      accessibilityLabel="Clear name"
+                      accessibilityLabel={appLabel("profile.profile-form.clearName")}
                       hitSlop={8}
                       style={({ pressed }) => [styles.clearButton, pressed && styles.pressed]}>
                       <SymbolView
@@ -276,10 +259,10 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                     </Pressable>
                   )}
                 </View>
-                <Text style={styles.helper}>Shown on Today. Leave it empty if you prefer no name.</Text>
+                <Text style={styles.helper}>{appLabel("profile.profile-form.shownOnTodayLeaveItEmptyIfYouPreferNoName")}</Text>
               </Field>
 
-              <Field label="Avatar" error={visibleErrors.avatar}>
+              <Field label={appLabel("profile.profile-form.avatar")} error={visibleErrors.avatar}>
                 <View style={styles.segment} accessibilityRole="radiogroup">
                   {AVATAR_OPTIONS.map((option) => {
                     const selected = draft.avatarKind === option.value;
@@ -290,7 +273,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                         disabled={locked}
                         accessibilityRole="radio"
                         accessibilityState={{ checked: selected, disabled: locked }}
-                        accessibilityLabel={`${option.label}, ${option.hint}`}
+                        accessibilityLabel={appMessage("display.labelValue", { label: String(option.label), textValue: option.hint })}
                         android_ripple={{ color: Palette.ripple }}
                         style={({ pressed }) => [styles.option, selected && styles.optionSelected, pressed && styles.pressed]}>
                         <Text style={[styles.optionLabel, selected && styles.optionLabelSelected]}>{option.label}</Text>
@@ -300,16 +283,16 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                   })}
                 </View>
                 {draft.avatarKind === 'initials' && !previewName && (
-                  <Text style={styles.helper}>Add a name to show your initials.</Text>
+                  <Text style={styles.helper}>{appLabel("profile.profile-form.addANameToShowYourInitials")}</Text>
                 )}
               </Field>
 
               {draft.avatarKind === 'icon' && (
                 <>
-                  <Field label="Icon">
+                  <Field label={appLabel("profile.profile-form.icon")}>
                     <IconPicker value={draft.icon} color={draft.color} onChange={(icon) => update('icon', icon)} />
                   </Field>
-                  <Field label="Color">
+                  <Field label={appLabel("profile.profile-form.color")}>
                     <ColorPicker value={draft.color} onChange={(color) => update('color', color)} />
                   </Field>
                 </>
@@ -322,8 +305,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
                   tintColor={Palette.textMuted}
                 />
                 <Text style={styles.noteText}>
-                  Your profile is stored locally on this device. Momentum has no account and no cloud sync.
-                </Text>
+                  {appLabel("profile.profile-form.yourProfileIsStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoCloudSync")}</Text>
               </View>
             </View>
           </ScrollView>
@@ -352,7 +334,7 @@ function Field({
       <View style={styles.fieldHeader}>
         <Text style={styles.label}>
           {label}
-          {optional && <Text style={styles.optional}> · optional</Text>}
+          {optional && <Text style={styles.optional}> {appLabel("profile.profile-form.optional")}</Text>}
         </Text>
         {counter && <Text style={styles.counter}>{counter}</Text>}
       </View>

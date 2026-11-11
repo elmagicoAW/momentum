@@ -1,3 +1,4 @@
+import { appLabel } from '@/i18n/app-copy';
 import type { SymbolViewProps } from 'expo-symbols';
 
 type SymbolName = SymbolViewProps['name'];
@@ -9,28 +10,28 @@ type IconOption = { label: string; symbol: SymbolName };
  * not the platform symbol name, so saved data never depends on symbol names.
  */
 export const HABIT_ICONS = {
-  water: { label: 'Water', symbol: { ios: 'drop.fill', android: 'water_drop', web: 'water_drop' } },
-  book: { label: 'Reading', symbol: { ios: 'book.fill', android: 'menu_book', web: 'menu_book' } },
-  run: { label: 'Running', symbol: { ios: 'figure.run', android: 'directions_run', web: 'directions_run' } },
+  water: { get label() { return appLabel("habit-options.water"); }, symbol: { ios: 'drop.fill', android: 'water_drop', web: 'water_drop' } },
+  book: { get label() { return appLabel("habit-options.reading"); }, symbol: { ios: 'book.fill', android: 'menu_book', web: 'menu_book' } },
+  run: { get label() { return appLabel("habit-options.running"); }, symbol: { ios: 'figure.run', android: 'directions_run', web: 'directions_run' } },
   mind: {
-    label: 'Mindfulness',
+    get label() { return appLabel("habit-options.mindfulness"); },
     symbol: { ios: 'figure.mind.and.body', android: 'self_improvement', web: 'self_improvement' },
   },
-  walk: { label: 'Walking', symbol: { ios: 'figure.walk', android: 'directions_walk', web: 'directions_walk' } },
+  walk: { get label() { return appLabel("habit-options.walking"); }, symbol: { ios: 'figure.walk', android: 'directions_walk', web: 'directions_walk' } },
   strength: {
-    label: 'Strength',
+    get label() { return appLabel("habit-options.strength"); },
     symbol: { ios: 'dumbbell.fill', android: 'fitness_center', web: 'fitness_center' },
   },
-  sleep: { label: 'Sleep', symbol: { ios: 'moon.fill', android: 'bedtime', web: 'bedtime' } },
-  food: { label: 'Nutrition', symbol: { ios: 'fork.knife', android: 'restaurant', web: 'restaurant' } },
-  journal: { label: 'Journal', symbol: { ios: 'square.and.pencil', android: 'edit_note', web: 'edit_note' } },
-  learn: { label: 'Learning', symbol: { ios: 'graduationcap.fill', android: 'school', web: 'school' } },
-  music: { label: 'Music', symbol: { ios: 'music.note', android: 'music_note', web: 'music_note' } },
-  art: { label: 'Creativity', symbol: { ios: 'paintbrush.fill', android: 'brush', web: 'brush' } },
-  heart: { label: 'Health', symbol: { ios: 'heart.fill', android: 'favorite', web: 'favorite' } },
-  money: { label: 'Savings', symbol: { ios: 'banknote.fill', android: 'savings', web: 'savings' } },
-  nature: { label: 'Nature', symbol: { ios: 'leaf.fill', android: 'eco', web: 'eco' } },
-  sun: { label: 'Morning', symbol: { ios: 'sun.max.fill', android: 'wb_sunny', web: 'wb_sunny' } },
+  sleep: { get label() { return appLabel("habit-options.sleep"); }, symbol: { ios: 'moon.fill', android: 'bedtime', web: 'bedtime' } },
+  food: { get label() { return appLabel("habit-options.nutrition"); }, symbol: { ios: 'fork.knife', android: 'restaurant', web: 'restaurant' } },
+  journal: { get label() { return appLabel("habit-options.journal"); }, symbol: { ios: 'square.and.pencil', android: 'edit_note', web: 'edit_note' } },
+  learn: { get label() { return appLabel("habit-options.learning"); }, symbol: { ios: 'graduationcap.fill', android: 'school', web: 'school' } },
+  music: { get label() { return appLabel("habit-options.music"); }, symbol: { ios: 'music.note', android: 'music_note', web: 'music_note' } },
+  art: { get label() { return appLabel("habit-options.creativity"); }, symbol: { ios: 'paintbrush.fill', android: 'brush', web: 'brush' } },
+  heart: { get label() { return appLabel("habit-options.health"); }, symbol: { ios: 'heart.fill', android: 'favorite', web: 'favorite' } },
+  money: { get label() { return appLabel("habit-options.savings"); }, symbol: { ios: 'banknote.fill', android: 'savings', web: 'savings' } },
+  nature: { get label() { return appLabel("habit-options.nature"); }, symbol: { ios: 'leaf.fill', android: 'eco', web: 'eco' } },
+  sun: { get label() { return appLabel("habit-options.morning"); }, symbol: { ios: 'sun.max.fill', android: 'wb_sunny', web: 'wb_sunny' } },
 } satisfies Record<string, IconOption>;
 
 export type HabitIconKey = keyof typeof HABIT_ICONS;
@@ -55,15 +56,15 @@ export function habitIconSymbol(key: string): SymbolName {
 
 /** Accent colors that read well on the dark surfaces. */
 export const HABIT_COLORS = [
-  { value: '#8B7CF6', label: 'Violet' },
-  { value: '#5B8DEF', label: 'Blue' },
-  { value: '#60A5FA', label: 'Sky' },
-  { value: '#C084FC', label: 'Lavender' },
-  { value: '#22D3EE', label: 'Cyan' },
-  { value: '#4ADE9B', label: 'Mint' },
-  { value: '#FBBF24', label: 'Amber' },
-  { value: '#F472B6', label: 'Pink' },
-  { value: '#F87171', label: 'Coral' },
+  { value: '#8B7CF6', get label() { return appLabel("habit-options.violet"); } },
+  { value: '#5B8DEF', get label() { return appLabel("habit-options.blue"); } },
+  { value: '#60A5FA', get label() { return appLabel("habit-options.sky"); } },
+  { value: '#C084FC', get label() { return appLabel("habit-options.lavender"); } },
+  { value: '#22D3EE', get label() { return appLabel("habit-options.cyan"); } },
+  { value: '#4ADE9B', get label() { return appLabel("habit-options.mint"); } },
+  { value: '#FBBF24', get label() { return appLabel("habit-options.amber"); } },
+  { value: '#F472B6', get label() { return appLabel("habit-options.pink"); } },
+  { value: '#F87171', get label() { return appLabel("habit-options.coral"); } },
 ] as const;
 
 export const DEFAULT_HABIT_COLOR = HABIT_COLORS[0].value;

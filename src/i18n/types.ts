@@ -11,7 +11,9 @@ type Entry = (typeof enMessages)[TemplateKey];
 type EntryText<T extends Entry> = T extends string ? T : T[keyof T] & string;
 type ParameterNames<K extends TemplateKey> = Placeholders<EntryText<(typeof enMessages)[K]>> |
   ((typeof enMessages)[K] extends string ? never : 'count');
-type NumericParameter = 'count' | 'completed' | 'total' | 'position' | 'limit' | 'minimum' | 'maximum';
+export const NUMERIC_PARAMETERS = ['count', 'completed', 'total', 'position', 'limit', 'minimum', 'maximum',
+  'value', 'target', 'percent', 'requiredDone', 'requiredTotal', 'done', 'steps'] as const;
+type NumericParameter = typeof NUMERIC_PARAMETERS[number];
 export type MessageParams<K extends TemplateKey> = Readonly<{
   [P in ParameterNames<K>]: P extends NumericParameter ? number : string;
 }>;

@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { sourceTextHash } from '../scripts/source-text-hash.mjs';
+import { NUMERIC_PARAMETERS } from '../src/i18n/types.ts';
 import test from 'node:test';
 import { en } from '../src/i18n/en.ts';
 import { ar } from '../src/i18n/ar.ts';
@@ -61,7 +62,8 @@ test('all six Arabic cardinal categories use complete grammatical messages; Engl
   assert.equal(pluralCategory('ar', 0.0001), 'other');
   for (const [key, entry] of Object.entries(enMessages)) if (typeof entry !== 'string') {
     for (const language of ['en', 'ar']) for (const count of [...counts, 1.5]) {
-      const rendered = formatMessage(language, key, { count });
+      const params = Object.fromEntries(entryParameters(entry).map((name) => [name, NUMERIC_PARAMETERS.includes(name) ? 3 : 'text']));
+      const rendered = formatMessage(language, key, { ...params, count });
       assert.ok(rendered.trim()); assert.doesNotMatch(rendered, /\{count\}/);
     }
   }
@@ -157,7 +159,7 @@ test('rendering all catalogs preserves user records, achievement IDs and exact b
     for (const key of Object.keys(en)) strict.label(language, key);
     for (const [key, entry] of Object.entries(enMessages)) {
       const params = Object.fromEntries(entryParameters(entry).map((name) => [name,
-        ['count', 'completed', 'total', 'position', 'limit', 'minimum', 'maximum'].includes(name) ? 3 : 'User {content} اسم']));
+        NUMERIC_PARAMETERS.includes(name) ? 3 : 'User {content} اسم']));
       strict.message(language, key, params);
     }
   }
@@ -168,11 +170,13 @@ test('rendering all catalogs preserves user records, achievement IDs and exact b
   assert.equal(backup.backupVersion, 1); assert.equal(backup.format, 'momentum.local-backup');
 });
 
-test('Arabic stays gated, Language stays read-only, and Appearance uses saved preferences', () => {
+test('Language and appearance use saved preferences without navigator keys', () => {
   const language = readFileSync('src/hooks/use-language.ts', 'utf8');
-  assert.match(language, /language: ACTIVE_PRESENTATION.language/); assert.match(language, /direction: ACTIVE_PRESENTATION.direction/);
+  assert.match(language, /usePresentationLanguage/); assert.match(language, /languageDirection\(language\)/);
   const settings = readFileSync('src/app/(tabs)/settings.tsx', 'utf8');
-  assert.match(settings, /variant="info"[\s\S]*?label="App language"[\s\S]*?value="English"/);
+  assert.match(settings, /<LanguageSelector/);
+  assert.equal(en['settings.appLanguage'], 'App language');
+  assert.equal(en['settings.english'], 'English');
   assert.match(settings, /<AppearanceSelector/);
   const theme = readFileSync('src/hooks/use-theme-preview.tsx', 'utf8');
   assert.match(theme, /const appearance = preferences.appearance/);

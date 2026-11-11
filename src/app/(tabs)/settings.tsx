@@ -1,9 +1,13 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text} from '@/components/localized-native';
+import { LanguageSelector } from '@/components/settings/language-selector';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useDataBackup } from '@/hooks/use-data-backup';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProfileSummaryCard } from '@/components/settings/profile-summary-card';
@@ -21,10 +25,10 @@ import { openProfileEditor } from '@/utils/navigation';
 type Status = 'loading' | 'ready' | 'load-error';
 
 /** e.g. "4 habits", "1 routine"; "…" while loading; "—" if that list couldn't load. */
-function countLabel(status: Status, count: number, singular: string, plural: string) {
+function countLabel(status: Status, count: number, kind: 'habits' | 'goals' | 'routines') {
   if (status === 'loading') return '…';
   if (status === 'load-error') return '—';
-  return `${count} ${count === 1 ? singular : plural}`;
+  return appMessage(`${kind}.count`, {count});
 }
 
 const APP_VERSION = Constants.expoConfig?.version;
@@ -43,9 +47,9 @@ export default function SettingsScreen() {
   const { routines, status: routinesStatus } = useRoutines();
 
   const dataSummary = [
-    countLabel(habitsStatus, habits.length, 'habit', 'habits'),
-    countLabel(goalsStatus, goals.length, 'goal', 'goals'),
-    countLabel(routinesStatus, routines.length, 'routine', 'routines'),
+    countLabel(habitsStatus, habits.length, 'habits'),
+    countLabel(goalsStatus, goals.length, 'goals'),
+    countLabel(routinesStatus, routines.length, 'routines'),
   ].join(' · ');
 
   return (
@@ -53,8 +57,7 @@ export default function SettingsScreen() {
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <Text style={styles.title} accessibilityRole="header">
-            Settings
-          </Text>
+            {appLabel("settings.settings")}</Text>
 
           {!!result && <Text style={{ color: Palette.text, fontSize: 16, lineHeight: 24 }} accessibilityLiveRegion="polite">{result}</Text>}
 
@@ -67,78 +70,65 @@ export default function SettingsScreen() {
 
           <AchievementsSummaryCard />
 
-          <SettingsSection title="Appearance" footer="Choose Light, Dark, or follow your device with System.">
+          <SettingsSection title={appLabel("settings.appearance")} footer={appLabel("settings.chooseLightDarkOrFollowYourDeviceWithSystem")}>
             <AppearanceSelector />
           </SettingsSection>
 
-          <SettingsSection title="Language">
-            <SettingsRow
-              variant="info"
-              icon={{ ios: 'globe', android: 'language', web: 'language' }}
-              tint={Palette.accentBlue}
-              label="App language"
-              value="English"
-            />
-            <SettingsRow
-              variant="soon"
-              icon={{ ios: 'character.bubble', android: 'translate', web: 'translate' }}
-              label="More languages"
-            />
-          </SettingsSection>
+          <SettingsSection title={appLabel("settings.language")}><LanguageSelector /></SettingsSection>
 
-          <SettingsSection title="Data & Backup">
+          <SettingsSection title={appLabel("settings.dataBackup")}>
             <SettingsRow
               variant="info"
               icon={{ ios: 'iphone', android: 'smartphone', web: 'smartphone' }}
               tint={Palette.accentBlue}
-              label="Storage"
-              value="This device"
+              label={appLabel("settings.storage")}
+              value={appLabel("settings.thisDevice")}
             />
             <SettingsRow
               variant="info"
               icon={{ ios: 'square.stack.3d.up.fill', android: 'inventory_2', web: 'inventory_2' }}
               tint={Palette.accentBlue}
-              label="Your data"
+              label={appLabel("settings.yourData")}
               value={dataSummary}
             />
             <SettingsRow
               variant="link"
               onPress={() => router.push('/data-backup')}
               icon={{ ios: 'square.and.arrow.up', android: 'ios_share', web: 'ios_share' }}
-              label="Export Backup"
+              label={appLabel("settings.exportBackup")}
             />
-            <SettingsRow variant="link" icon={{ ios: 'square.and.arrow.down', android: 'file_download', web: 'file_download' }} label="Import Backup" onPress={() => router.push('/data-backup')} />
+            <SettingsRow variant="link" icon={{ ios: 'square.and.arrow.down', android: 'file_download', web: 'file_download' }} label={appLabel("settings.importBackup")} onPress={() => router.push('/data-backup')} />
           </SettingsSection>
 
-          <SettingsSection title="Privacy">
+          <SettingsSection title={appLabel("settings.privacy")}>
             <SettingsRow
               variant="text"
               icon={{ ios: 'lock.fill', android: 'lock', web: 'lock' }}
               tint={Palette.success}
-              label="Stored locally"
-              text="Your habits, goals, routines, check-ins, profile and achievements are stored locally on this device. Momentum has no account and no in-app cloud sync."
+              label={appLabel("settings.storedLocally")}
+              text={appLabel("settings.yourHabitsGoalsRoutinesCheckInsProfileAndAchievementsAreStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoInAppCloudSync")}
             />
             <SettingsRow
               variant="text"
               icon={{ ios: 'info.circle.fill', android: 'info', web: 'info' }}
               tint={Palette.textSecondary}
-              label="Device backups"
-              text="Whether app data is included in your phone's own backups depends on your device and its settings."
+              label={appLabel("settings.deviceBackups")}
+              text={appLabel("settings.whetherAppDataIsIncludedInYourPhoneSOwnBackupsDependsOnYourDeviceAndItsSettings")}
             />
           </SettingsSection>
 
-          <SettingsSection title="About">
+          <SettingsSection title={appLabel("settings.about")}>
             <SettingsRow
               variant="info"
               icon={{ ios: 'sparkles', android: 'auto_awesome', web: 'auto_awesome' }}
-              label="Momentum"
-              value="Personal growth"
+              label={appLabel("settings.momentum")}
+              value={appLabel("settings.personalGrowth")}
             />
             {APP_VERSION ? (
               <SettingsRow
                 variant="info"
                 icon={{ ios: 'number', android: 'tag', web: 'tag' }}
-                label="Version"
+                label={appLabel("settings.version")}
                 value={APP_VERSION}
               />
             ) : null}

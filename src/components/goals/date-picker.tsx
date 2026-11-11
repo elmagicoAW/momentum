@@ -1,11 +1,14 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
-import { addMonths, formatMonthYear, parseLocalDateKey, toLocalDateKey } from '@/utils/date';
+import { addMonths, formatMonthYear, parseLocalDateKey, toLocalDateKey } from '@/i18n/presentation-date';
 import { WEEKDAY_DISPLAY_ORDER, WEEKDAY_LONG, WEEKDAY_SHORT } from '@/utils/schedule';
 
 type Props = {
@@ -19,10 +22,10 @@ type Props = {
 };
 
 const PRESETS = [
-  { label: '1 month', months: 1 },
-  { label: '3 months', months: 3 },
-  { label: '6 months', months: 6 },
-  { label: '1 year', months: 12 },
+  { get label(){return appLabel('goals.target.preset.1month');}, months: 1 },
+  { get label(){return appLabel('goals.target.preset.3months');}, months: 3 },
+  { get label(){return appLabel('goals.target.preset.6months');}, months: 6 },
+  { get label(){return appLabel('goals.target.preset.1year');}, months: 12 },
 ] as const;
 
 /** Dependency-free calendar: quick presets plus a Monday-first month grid. */
@@ -72,7 +75,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
               disabled={disabled}
               accessibilityRole="button"
               accessibilityState={{ selected, disabled }}
-              accessibilityLabel={`Target in ${preset.label}`}
+              accessibilityLabel={appMessage("goals.target.preset", { duration: (preset.label) })}
               style={({ pressed }) => [styles.preset, selected && styles.presetSelected, pressed && styles.pressed]}>
               <Text style={[styles.presetText, selected && styles.presetTextSelected]}>{preset.label}</Text>
             </Pressable>
@@ -86,7 +89,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
             onPress={() => setMonth((m) => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
             disabled={!canGoBack || disabled}
             accessibilityRole="button"
-            accessibilityLabel="Previous month"
+            accessibilityLabel={appLabel("goals.date-picker.previousMonth")}
             accessibilityState={{ disabled: !canGoBack || disabled }}
             hitSlop={6}
             style={({ pressed }) => [styles.navButton, !canGoBack && styles.navDisabled, pressed && styles.pressed]}>
@@ -103,7 +106,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
             onPress={() => setMonth((m) => new Date(m.getFullYear(), m.getMonth() + 1, 1))}
             disabled={disabled}
             accessibilityRole="button"
-            accessibilityLabel="Next month"
+            accessibilityLabel={appLabel("goals.date-picker.nextMonth")}
             hitSlop={6}
             style={({ pressed }) => [styles.navButton, pressed && styles.pressed]}>
             <SymbolView
@@ -132,7 +135,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
                   onPress={() => pick(key)}
                   disabled={unavailable || disabled}
                   accessibilityRole="button"
-                  accessibilityLabel={`${WEEKDAY_LONG[date.getDay()]}, ${formatMonthYear(date)} ${date.getDate()}`}
+                  accessibilityLabel={appMessage("display.headerDate", { weekday: String(WEEKDAY_LONG[date.getDay()]), month: String(formatMonthYear(date)), day: String(appNumber(date.getDate())) })}
                   accessibilityState={{ selected, disabled: unavailable || disabled }}
                   style={({ pressed }) => [
                     styles.day,
@@ -146,7 +149,7 @@ export function DatePicker({ value, onChange, minDate, todayKey, disabled }: Pro
                       unavailable && styles.dayUnavailable,
                       selected && styles.dayTextSelected,
                     ]}>
-                    {date.getDate()}
+                    {appNumber(date.getDate())}
                   </Text>
                 </Pressable>
               </View>

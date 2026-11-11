@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState, useSyncExternalStore, type PropsWithChildren } from 'react';
 
 import { createPreferencesStore } from '@/data/preferences-store';
+import { applyPresentationLanguage } from '@/utils/presentation';
 
 const PreferencesContext = createContext<ReturnType<typeof createPreferencesStore> | null>(null);
 
 export function PreferencesProvider({ children }: PropsWithChildren) {
-  const [store] = useState(() => createPreferencesStore());
+  const [store] = useState(() => createPreferencesStore({ onAppliedLanguage: applyPresentationLanguage }));
   useEffect(() => {
     // No render gate, splash calls, domain leases or default writes. Recovery starts independently.
     void store.load().catch(() => undefined); // status/error retained for an explicit retry

@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { MiniBar, RoutineIcon, TimeChip } from '@/components/routines/routine-badges';
 import { IconButton } from '@/components/routines/routine-habit-order';
@@ -26,7 +29,7 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { routine } = day;
   const habitCount = day.members.length;
-  const summary = `${habitCount === 1 ? '1 habit' : `${habitCount} habits`} · ${describeRoutineDay(day)}`;
+  const summary = appMessage("display.descriptionPair", { first: String(appMessage("routines.card.habits", { count: habitCount })), second: String(describeRoutineDay(day)) });
   const complete = day.state === 'complete';
 
   const body = (
@@ -52,13 +55,13 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
       <View style={[styles.card, styles.row]}>
         {body}
         <IconButton
-          label={`Move ${routine.title} up`}
+          label={appMessage("routines.move.up", { name: (routine.title) })}
           symbol={{ ios: 'chevron.up', android: 'keyboard_arrow_up', web: 'keyboard_arrow_up' }}
           disabled={reorder.disabled || !reorder.canUp}
           onPress={() => reorder.onMove(routine.id, -1)}
         />
         <IconButton
-          label={`Move ${routine.title} down`}
+          label={appMessage("routines.move.down", { name: (routine.title) })}
           symbol={{ ios: 'chevron.down', android: 'keyboard_arrow_down', web: 'keyboard_arrow_down' }}
           disabled={reorder.disabled || !reorder.canDown}
           onPress={() => reorder.onMove(routine.id, 1)}
@@ -71,8 +74,8 @@ export function RoutineCard({ day, onPress, reorder }: Props) {
     <Pressable
       onPress={() => onPress(routine.id)}
       accessibilityRole="button"
-      accessibilityLabel={`${routine.title}, ${summary}`}
-      accessibilityHint="Opens the routine"
+      accessibilityLabel={appMessage("display.labelValue", { label: String(routine.title), textValue: summary })}
+      accessibilityHint={appLabel("routines.routine-card.opensTheRoutine")}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, styles.row, complete && styles.cardDone, pressed && styles.pressed]}>
       {body}

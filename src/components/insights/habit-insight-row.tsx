@@ -1,13 +1,16 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, NumericText} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { formatRate, withAlpha } from '@/components/insights/format';
 import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
-import { formatMonthDay } from '@/utils/date';
+import { formatMonthDay } from '@/i18n/presentation-date';
 import { DayStatus, type HabitSummary } from '@/utils/insights';
 import { describeSchedule } from '@/utils/schedule';
 
@@ -19,36 +22,33 @@ type Props = {
 
 export function streakText(summary: HabitSummary): string {
   const { current } = summary;
-  return `${current.length}${current.uncertain ? '+' : ''} in a row`;
+  return appMessage("history.streak.length", { count: (current.length), uncertainty: (current.uncertain ? '+' : '') });
 }
 
 export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
-  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { palette: Palette, styles, language } = useAppStyles(createStyles);
   const { habit, current, longest, last30 } = summary;
-  const label =
-    `${habit.name}. ${describeSchedule(habit.schedule)}. Current streak ${streakText(summary)}` +
-    `${current.uncertain ? ', may be longer' : ''}. Best ${longest.length}. ` +
-    `Consistency last 30 days ${formatRate(last30.rate)}.`;
+  const label = appMessage(current.uncertain ? 'history.row.accessibleUncertain' : 'history.row.accessible', {name:habit.name, schedule:describeSchedule(habit.schedule), streak:streakText(summary), best:appNumber(longest.length), rate:formatRate(last30.rate)});
 
   return (
     <Pressable
       onPress={() => onPress(habit.id)}
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint="Opens this habit's history"
+      accessibilityHint={appLabel("insights.habit-insight-row.opensThisHabitSHistory")}
       android_ripple={{ color: Palette.ripple }}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
       <View style={styles.top}>
         <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14, Palette.accent) }]}>
           <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={readableAccent(habit.color, Palette)} />
         </View>
-        <View style={styles.body}>
+        <View style={[styles.body,{minWidth:0,flexShrink:1}]}>
           <Text style={styles.title} numberOfLines={1}>
             {habit.name}
           </Text>
           <Text style={styles.schedule} numberOfLines={1}>
             {describeSchedule(habit.schedule)}
-            {summary.possibleScheduleChange ? ' · schedule may have changed' : ''}
+            {summary.possibleScheduleChange ? appLabel("insights.habit-insight-row.scheduleMayHaveChanged") : ''}
           </Text>
         </View>
         <SymbolView
@@ -58,10 +58,10 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
         />
       </View>
 
-      <View style={styles.metrics}>
-        <Metric value={streakText(summary)} label={current.todayPending && current.length > 0 ? 'Keep it going today' : 'Current'} />
-        <Metric value={`${longest.length}${longest.uncertain ? '+' : ''}`} label="Best" />
-        <Metric value={formatRate(last30.rate)} label="30 days" />
+      <View style={[styles.metrics,language === 'ar' && {flexWrap:'wrap'}]}>
+        <Metric value={streakText(summary)} label={current.todayPending && current.length > 0 ? appLabel("insights.habit-insight-row.keepItGoingToday") : appLabel("insights.habit-insight-row.current")} />
+        <Metric value={appMessage("display.uncertainCount", { count: longest.length, uncertainty: String(longest.uncertain ? '+' : '') })} label={appLabel("insights.habit-insight-row.best")} />
+        <Metric value={formatRate(last30.rate)} label={appLabel("insights.habit-insight-row.30Days")} />
       </View>
 
       <View style={styles.dots} importantForAccessibility="no-hide-descendants">
@@ -95,12 +95,12 @@ function dotStyle(status: number, color: string, isToday: boolean, Palette: AppP
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
-  const { styles } = useAppStyles(createStyles);
+  const { styles, language } = useAppStyles(createStyles);
   return (
-    <View style={styles.metric}>
-      <Text style={styles.metricValue} numberOfLines={1}>
+    <View style={[styles.metric,language === 'ar' && {flexBasis:'100%',minWidth:0}]}>
+      <NumericText style={[styles.metricValue,{width:'100%'}]} numberOfLines={1}>
         {value}
-      </Text>
+      </NumericText>
       <Text style={styles.metricLabel} numberOfLines={1}>
         {label}
       </Text>

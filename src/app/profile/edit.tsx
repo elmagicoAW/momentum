@@ -1,7 +1,10 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
@@ -31,24 +34,23 @@ export default function ProfileEditScreen() {
           <Pressable
             onPress={closeProfileEditor}
             accessibilityRole="button"
-            accessibilityLabel="Close"
+            accessibilityLabel={appLabel("profile.edit.close")}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
             <SymbolView name={{ ios: 'xmark', android: 'close', web: 'close' }} size={20} tintColor={Palette.textSecondary} />
           </Pressable>
           <Text style={styles.headerTitle} accessibilityRole="header">
-            Profile
-          </Text>
+            {appLabel("profile.edit.profile")}</Text>
         </View>
         <View style={styles.body}>
           {status === 'loading' ? (
-            <ActivityIndicator color={Palette.accent} accessibilityLabel="Loading profile" />
+            <ActivityIndicator color={Palette.accent} accessibilityLabel={appLabel("profile.edit.loadingProfile")} />
           ) : (
             <EmptyState
-              title="Couldn't load your profile"
-              description="Your saved profile hasn't been changed. Try again, or restart the app. Your habits and goals are not affected."
+              title={appLabel("profile.edit.couldnTLoadYourProfile")}
+              description={appLabel("profile.edit.yourSavedProfileHasnTBeenChangedTryAgainOrRestartTheAppYourHabitsAndGoalsAreNotAffected")}
               icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-              actionLabel="Try again"
+              actionLabel={appLabel("profile.edit.tryAgain")}
               onAction={reload}
             />
           )}

@@ -1,8 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber, appRich } from '@/i18n/app-copy';
+import { LocalizedInline } from '@/components/localized-inline';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AchievementCard } from '@/components/achievements/achievement-card';
@@ -13,38 +17,39 @@ import { ACHIEVEMENTS } from '@/data/achievement-definitions';
 import { useAchievements } from '@/hooks/use-achievements';
 import { closeAchievements } from '@/utils/navigation';
 
-const FILTERS = ['All', 'Earned', 'Locked'] as const;
+const FILTERS = ['all', 'earned', 'locked'] as const;
+const filterLabel = (value: typeof FILTERS[number]) => appLabel(`achievements.${value}`);
 export default function AchievementsScreen() {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { collection, storeReady, status, evaluation } = useAchievements();
-  const [filter, setFilter] = useState<typeof FILTERS[number]>('All');
+  const [filter, setFilter] = useState<typeof FILTERS[number]>('all');
   const { width, fontScale } = useWindowDimensions();
   const wide = width >= 380 && fontScale <= 1.15;
   const earned = ACHIEVEMENTS.filter((badge) => collection.awards[badge.id]).length;
-  const visible = ACHIEVEMENTS.filter((badge) => filter === 'All' || (filter === 'Earned' ? !!collection.awards[badge.id] : !collection.awards[badge.id]));
+  const visible = ACHIEVEMENTS.filter((badge) => filter === 'all' || (filter === 'earned' ? !!collection.awards[badge.id] : !collection.awards[badge.id]));
   const progress = status === 'ready' || status === 'save-error' ? evaluation : null;
   return <View style={styles.screen}>
     <SafeAreaView style={styles.flex} edges={['top', 'bottom', 'left', 'right']}>
       <View style={styles.header}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Back from achievements" onPress={closeAchievements} style={styles.back}>
-          <SymbolView name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} size={20} tintColor={Palette.text} /><Text style={styles.backText}>Back</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={appLabel("achievements.backFromAchievements")} onPress={closeAchievements} style={styles.back}>
+          <SymbolView name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} size={20} tintColor={Palette.text} /><Text style={styles.backText}>{appLabel("achievements.back")}</Text>
         </Pressable>
       </View>
       <ScrollView style={styles.flex} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
-          <Text style={styles.eyebrow}>SMALL STEPS. LASTING MOMENTUM.</Text>
-          <Text style={styles.title} accessibilityRole="header">Achievements</Text>
-          <Text style={styles.total}>{storeReady ? `${earned}` : '—'}<Text style={styles.totalSuffix}> / {ACHIEVEMENTS.length} earned</Text></Text>
-          <Text style={styles.subtitle}>A collection built from the effort you saved.</Text>
-          <Text style={styles.subtitle}>Finished days count. Today&apos;s progress is provisional.</Text>
+          <Text style={styles.eyebrow}>{appLabel("achievements.sMALLSTEPSLASTINGMOMENTUM")}</Text>
+          <Text style={styles.title} accessibilityRole="header">{appLabel("achievements.achievements")}</Text>
+          <Text style={styles.total}><LocalizedInline message={appRich('achievements.total', { earned: storeReady ? appNumber(earned) : '—', suffix: appMessage('achievements.total.suffix', { total: ACHIEVEMENTS.length }) }, 'suffix')} slotStyle={styles.totalSuffix} /></Text>
+          <Text style={styles.subtitle}>{appLabel("achievements.aCollectionBuiltFromTheEffortYouSaved")}</Text>
+          <Text style={styles.subtitle}>{appLabel("achievements.finishedDaysCountTodaySProgressIsProvisional")}</Text>
         </View>
         <AchievementCelebration />
         <AchievementDataNotes />
-        {status === 'loading' && <ActivityIndicator color={Palette.accent} accessibilityLabel="Checking saved achievements" />}
+        {status === 'loading' && <ActivityIndicator color={Palette.accent} accessibilityLabel={appLabel("achievements.checkingSavedAchievements")} />}
         {storeReady && <>
-          <View style={styles.filters}>{FILTERS.map((item) => <Pressable key={item} onPress={() => setFilter(item)} accessibilityRole="button" accessibilityState={{ selected: filter === item }} style={[styles.filter, filter === item && styles.selected]}><Text style={[styles.filterText, filter === item && { color: Palette.text }]}>{item}</Text></Pressable>)}</View>
-          {status === 'ready' && evaluation?.metrics.checkins === 0 && earned === 0 && <Text style={styles.subtitle}>Your first finished check-in starts your collection. Partial progress today is a great start, too.</Text>}
-          {visible.length === 0 && <Text style={styles.subtitle}>{filter === 'Earned' ? 'No confirmed badges yet. Your next finished check-in brings you closer.' : 'All 12 badges earned. Your effort is here to stay.'}</Text>}
+          <View style={styles.filters}>{FILTERS.map((item) => <Pressable key={item} onPress={() => setFilter(item)} accessibilityRole="button" accessibilityState={{ selected: filter === item }} style={[styles.filter, filter === item && styles.selected]}><Text style={[styles.filterText, filter === item && { color: Palette.text }]}>{filterLabel(item)}</Text></Pressable>)}</View>
+          {status === 'ready' && evaluation?.metrics.checkins === 0 && earned === 0 && <Text style={styles.subtitle}>{appLabel("achievements.yourFirstFinishedCheckInStartsYourCollectionPartialProgressTodayIsAGreatStartToo")}</Text>}
+          {visible.length === 0 && <Text style={styles.subtitle}>{filter === 'earned' ? appLabel("achievements.noConfirmedBadgesYetYourNextFinishedCheckInBringsYouCloser") : appLabel("achievements.all12BadgesEarnedYourEffortIsHereToStay")}</Text>}
           {[...new Set(visible.map((badge) => badge.group))].map((group) => <View key={group} style={styles.group}>
             <Text style={styles.groupTitle} accessibilityRole="header">{group}</Text>
             <View style={styles.grid}>{visible.filter((badge) => badge.group === group).map((badge) => <AchievementCard key={badge.id} badge={badge} award={collection.awards[badge.id]} evaluation={progress} wide={wide} />)}</View>

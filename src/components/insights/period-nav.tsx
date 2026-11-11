@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius } from '@/constants/theme';
 
@@ -35,10 +38,10 @@ export function PeriodNav({ label, caption, onPrev, onNext, canPrev, canNext, un
           direction="prev"
           disabled={!canPrev}
           onPress={onPrev}
-          label={`Previous ${unit}`}
-          disabledHint={`This is the earliest ${unit} available`}
+          label={appMessage("insights.period.previous", { get unit(){return appLabel(unit === 'week' ? 'period.week' : 'period.month');} })}
+          disabledHint={appMessage("insights.period.earliest", { get unit(){return appLabel(unit === 'week' ? 'period.week' : 'period.month');} })}
         />
-        <View style={styles.labelWrap} accessible accessibilityLabel={caption ? `${label}. ${caption}` : label}>
+        <View style={styles.labelWrap} accessible accessibilityLabel={caption ? appMessage("display.labelText", { label: String(label), text: String(caption) }) : label}>
           <Text style={styles.label} numberOfLines={1} accessibilityRole="header">
             {label}
           </Text>
@@ -52,8 +55,8 @@ export function PeriodNav({ label, caption, onPrev, onNext, canPrev, canNext, un
           direction="next"
           disabled={!canNext}
           onPress={onNext}
-          label={`Next ${unit}`}
-          disabledHint={`Future ${unit}s aren’t shown`}
+          label={appMessage("insights.period.next", { get unit(){return appLabel(unit === 'week' ? 'period.week' : 'period.month');} })}
+          disabledHint={appMessage("insights.period.futureUnavailable", { get unit(){return appLabel(unit === 'week' ? 'period.week' : 'period.month');} })}
         />
       </View>
       {resetLabel && onReset ? (
@@ -61,7 +64,7 @@ export function PeriodNav({ label, caption, onPrev, onNext, canPrev, canNext, un
           onPress={onReset}
           hitSlop={6}
           accessibilityRole="button"
-          accessibilityLabel={`Jump to ${resetLabel.toLowerCase()}`}
+          accessibilityLabel={appMessage("insights.period.jump", { period: (resetLabel.toLowerCase()) })}
           android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.reset, pressed && styles.pressed]}>
           <Text style={styles.resetText}>{resetLabel} ›</Text>

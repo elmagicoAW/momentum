@@ -1,3 +1,4 @@
+import { withErrorMessage } from '@/i18n/app-copy';
 /** One JS runtime owns the store. Admission is synchronous, before promises are
  * queued. A lease covers accepted work INCLUDING backoff and native writes. */
 export function createPersistenceCoordinator() {
@@ -16,7 +17,7 @@ export function createPersistenceCoordinator() {
     enableUserChanges() { if (!frozen) { normalize = true; awards = true; } },
     enableAwards() { if (!frozen) awards = true; },
     accept(expected = generation): () => void {
-      if (frozen || expected !== generation) throw new Error('Data is locked for backup/recovery. Please try again afterwards.');
+      if (frozen || expected !== generation) throw withErrorMessage(new Error('Data is locked for backup/recovery. Please try again afterwards.'), {key: 'backup.validation.dataIsLockedForBackupRecoveryPleaseTryAgainAfterwards'});
       active++;
       let finished = false;
       return () => { if (!finished) { finished = true; active--; notify(); } };
@@ -27,7 +28,7 @@ export function createPersistenceCoordinator() {
       try { return task().finally(finish); } catch (error) { finish(); return Promise.reject(error); }
     },
     freeze() {
-      if (frozen) throw new Error('Another backup/recovery operation is active');
+      if (frozen) throw withErrorMessage(new Error('Another backup/recovery operation is active'), {key: 'backup.validation.anotherBackupRecoveryOperationIsActive'});
       frozen = true;
     },
     // A timeout is ONLY a failure. It never grants permission to mutate.
@@ -36,7 +37,7 @@ export function createPersistenceCoordinator() {
       if (!active) return;
       await new Promise<void>((resolve, reject) => {
         const done = () => { if (!active) { clearTimeout(timer); listeners.delete(done); resolve(); } };
-        const timer = setTimeout(() => { listeners.delete(done); reject(new Error('Latest changes are still saving. Nothing was replaced; retry after saving completes.')); }, timeoutMs);
+        const timer = setTimeout(() => { listeners.delete(done); reject(withErrorMessage(new Error('Latest changes are still saving. Nothing was replaced; retry after saving completes.'), {key: 'backup.validation.latestChangesAreStillSavingNothingWasReplacedRetryAfterSavingCompletes'})); }, timeoutMs);
         listeners.add(done); done();
       });
     },

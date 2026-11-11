@@ -1,3 +1,4 @@
+import { withErrorMessage } from '@/i18n/app-copy';
 import { LIMITS } from '@/data/backup-format';
 
 /** Enforce a byte bound even when the provider supplies no size (or lies). */
@@ -7,7 +8,7 @@ export async function boundedText(stream: ReadableStream<Uint8Array>, limit = LI
     for (;;) {
       const { done, value } = await reader.read(); if (done) break;
       size += value.byteLength;
-      if (size > limit) throw new Error('Backup exceeds the 8 MiB file limit');
+      if (size > limit) throw withErrorMessage(new Error('Backup exceeds the 8 MiB file limit'), { key: "backup-io.backupExceedsThe8MiBFileLimit" });
       chunks.push(value);
     }
   } finally { await reader.cancel(); reader.releaseLock(); }

@@ -1,0 +1,27 @@
+import type {languageEn} from './language-en';
+export const languageAr = {
+  "settings.language-selector.light": "فاتح",
+  "settings.language-selector.alwaysUseALightAppearance": "استخدام اللغة الفاتح دائمًا.",
+  "settings.language-selector.dark": "داكن",
+  "settings.language-selector.alwaysUseADarkAppearance": "استخدام اللغة الداكن دائمًا.",
+  "settings.language-selector.system": "النظام",
+  "settings.language-selector.followYourDeviceSLightOrDarkSetting": "اتباع إعداد الفاتح أو الداكن لجهازك.",
+  "settings.language-selector.theme": "اللغة",
+  "settings.language-selector.loadingPending": "جارٍ التحميل…",
+  "settings.language-selector.loadingLanguagePreferences": "تحميل تفضيلات اللغة",
+  "settings.language-selector.retryLoadingPreferences": "إعادة محاولة تحميل التفضيلات",
+  "settings.language-selector.languageChangesAreUnavailableWhileDataBackupIsBusy": "تغييرات اللغة غير متاحة أثناء انشغال البيانات والنسخ الاحتياطي.",
+  "settings.language-selector.language": "اللغة",
+  "settings.language-selector.languageChoices": "خيارات اللغة",
+  "settings.language-selector.savedOnThisDeviceLanguageIsNotIncludedInBackups": "محفوظ على هذا الجهاز. اللغة غير مدرج في النسخ الاحتياطية.",
+  "settings.language-selector.waitForDataBackupToFinishBeforeSaving": "انتظر انتهاء البيانات والنسخ الاحتياطي قبل الحفظ.",
+  "settings.language-selector.savingLanguagePending": "حفظ اللغة…",
+  "settings.language-selector.cancel": "إلغاء",
+  "settings.language-selector.savingPending": "جارٍ الحفظ…",
+  "settings.language-selector.retrySave": "إعادة محاولة الحفظ",
+  "settings.language-selector.save": "حفظ",
+  "language.english": "English",
+  "language.arabic": "العربية",
+  "language.englishDetail": "الإنجليزية · من اليسار إلى اليمين",
+  "language.arabicDetail": "العربية · من اليمين إلى اليسار"
+} satisfies Record<keyof typeof languageEn,string>;

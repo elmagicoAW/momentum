@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
 import {
   CHECKLIST_MAX_STEPS,
@@ -75,34 +76,34 @@ export function parseCountTarget(text: string): number | null {
 export function validateHabitDraft(draft: HabitDraft): HabitDraftErrors {
   const errors: HabitDraftErrors = {};
   const name = draft.name.trim();
-  if (name.length === 0) errors.name = 'Give your habit a name.';
-  else if (name.length > NAME_MAX_LENGTH) errors.name = `Keep the name under ${NAME_MAX_LENGTH} characters.`;
+  if (name.length === 0) errors.name = appLabel("habit-validation.giveYourHabitAName");
+  else if (name.length > NAME_MAX_LENGTH) errors.name = appMessage("validation.habit.nameLength", { limit: (NAME_MAX_LENGTH) });
 
   if (draft.description.trim().length > DESCRIPTION_MAX_LENGTH) {
-    errors.description = `Keep the description under ${DESCRIPTION_MAX_LENGTH} characters.`;
+    errors.description = appMessage("validation.habit.descriptionLength", { limit: (DESCRIPTION_MAX_LENGTH) });
   }
 
   if (draft.scheduleKind === 'weekdays' && draft.days.length === 0) {
-    errors.schedule = 'Pick at least one day.';
+    errors.schedule = appLabel("habit-validation.pickAtLeastOneDay");
   }
 
   if (draft.trackingType === 'count') {
     if (parseCountTarget(draft.countTarget) === null) {
-      errors.countTarget = `Enter a whole number from 1 to ${COUNT_TARGET_MAX}.`;
+      errors.countTarget = appMessage("validation.habit.countRange", { maximum: (COUNT_TARGET_MAX) });
     }
     if (draft.countUnit.trim().length > UNIT_MAX_LENGTH) {
-      errors.countUnit = `Keep the unit under ${UNIT_MAX_LENGTH} characters.`;
+      errors.countUnit = appMessage("validation.habit.unitLength", { limit: (UNIT_MAX_LENGTH) });
     }
   }
 
   if (draft.trackingType === 'checklist') {
     const steps = draft.steps;
-    if (steps.length === 0) errors.steps = 'Add at least one step.';
-    else if (steps.length > CHECKLIST_MAX_STEPS) errors.steps = `Use at most ${CHECKLIST_MAX_STEPS} steps.`;
-    else if (steps.some((s) => s.label.trim().length === 0)) errors.steps = 'Name every step, or remove empty ones.';
+    if (steps.length === 0) errors.steps = appLabel("habit-validation.addAtLeastOneStep");
+    else if (steps.length > CHECKLIST_MAX_STEPS) errors.steps = appMessage("validation.habit.stepLimit", { limit: (CHECKLIST_MAX_STEPS) });
+    else if (steps.some((s) => s.label.trim().length === 0)) errors.steps = appLabel("habit-validation.nameEveryStepOrRemoveEmptyOnes");
     else if (steps.some((s) => s.label.trim().length > STEP_LABEL_MAX_LENGTH)) {
-      errors.steps = `Keep each step under ${STEP_LABEL_MAX_LENGTH} characters.`;
-    } else if (steps.every((s) => s.optional)) errors.steps = 'At least one step must be required.';
+      errors.steps = appMessage("validation.habit.stepLength", { limit: (STEP_LABEL_MAX_LENGTH) });
+    } else if (steps.every((s) => s.optional)) errors.steps = appLabel("habit-validation.atLeastOneStepMustBeRequired");
   }
   return errors;
 }

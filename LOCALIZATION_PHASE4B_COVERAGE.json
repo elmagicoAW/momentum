@@ -1,0 +1,1347 @@
+{
+  "scope": "Consolidated remaining reachable presentation, following Phase 4B-1",
+  "languageGate": "English/LTR; Arabic and Language Settings remain inactive",
+  "summary": {
+    "migratedSourceFiles": 69,
+    "newStaticLabels": 718,
+    "newCompleteMessages": 200,
+    "newPluralMessages": 36
+  },
+  "files": [
+    {
+      "file": "src/app/(tabs)/goals/index.tsx",
+      "keys": [
+        "display.labelValue",
+        "goals.index.addnewGoal",
+        "goals.index.all",
+        "goals.index.chooseSomethingYouReWorkingTowardGiveItATargetDateAndLinkTheDailyHabitsThatMoveYouCloser",
+        "goals.index.couldnTLoadYourGoals",
+        "goals.index.couldnTReadYourSavedCheckInsSoHabitConsistencyIsUnavailableNothingWasChangedLeaveAndReturnToThisTabToTryAgain",
+        "goals.index.createAGoal",
+        "goals.index.goals",
+        "goals.index.habitConsistencyIsTheShareOfScheduledCheckInsForAGoalSLinkedHabitsThatYouCompletedOnPastDaysTodayIsShownSeparatelyUntilItEndsItDoesnTMeasureHowMuchOfAGoalIsAchievedYouMarkThatWithTheGoalSStatus",
+        "goals.index.newGoal",
+        "goals.index.opensTheFormToCreateANewGoal",
+        "goals.index.setYourFirstGoal",
+        "goals.index.tryAgain",
+        "goals.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "goals.list.activeCount",
+        "goals.list.emptyFilter"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/goals/new.tsx",
+      "keys": [
+        "goals.new.create",
+        "goals.new.newGoal"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/goals/[id].tsx",
+      "keys": [
+        "goals.consistency.explanation",
+        "goals.delete.title",
+        "goals.detail.backToGoals",
+        "goals.detail.couldnTLoadYourGoals",
+        "goals.detail.delete",
+        "goals.detail.editGoal",
+        "goals.detail.goalNotFound",
+        "goals.detail.itMayHaveBeenDeleted",
+        "goals.detail.save",
+        "goals.detail.tryAgain",
+        "goals.detail.yourHabitsAndTheirCheckInHistoryAreNotAffectedThisCanTBeUndone",
+        "goals.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/habits/index.tsx",
+      "keys": [
+        "habits.index.addHabit",
+        "habits.index.addaddHabit",
+        "habits.index.couldnTLoadYourHabits",
+        "habits.index.createAHabit",
+        "habits.index.habits",
+        "habits.index.opensTheFormToCreateANewHabit",
+        "habits.index.pickSomethingSmallYouWantToDoRegularlyYouCanChooseTheDaysAnIconAndAColor",
+        "habits.index.startYourFirstHabit",
+        "habits.index.tryAgain",
+        "habits.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "habits.list.count"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/habits/new.tsx",
+      "keys": [
+        "habits.new.create",
+        "habits.new.newHabit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/habits/routines.tsx",
+      "keys": [
+        "habits.routines.addnew",
+        "habits.routines.backToHabits",
+        "habits.routines.buildYourFirstRoutine",
+        "habits.routines.couldnTLoadYourHabitsSoRoutineProgressCanTBeShownRightNow",
+        "habits.routines.couldnTLoadYourRoutines",
+        "habits.routines.couldnTSaveTheNewOrderYourRoutinesAreUnchangedTryAgain",
+        "habits.routines.createARoutine",
+        "habits.routines.done",
+        "habits.routines.doneReordering",
+        "habits.routines.groupHabitsIntoAMorningOrEveningRoutineAndWorkThroughThemInOrderYourHabitsAndTheirHistoryStayExactlyAsTheyAre",
+        "habits.routines.groupHabitsYouAlreadyTrackProgressStaysWithEachHabitSoNothingIsCountedTwice",
+        "habits.routines.newRoutine",
+        "habits.routines.reorder",
+        "habits.routines.reorderRoutines",
+        "habits.routines.routines",
+        "habits.routines.tryAgain",
+        "habits.routines.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "routines.list.limit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/habits/[id].tsx",
+      "keys": [
+        "habits.changeTracking.warning",
+        "habits.delete.goalNote",
+        "habits.delete.routineNote",
+        "habits.delete.title",
+        "habits.delete.warning",
+        "habits.detail.backToHabits",
+        "habits.detail.changeAndReset",
+        "habits.detail.checklist",
+        "habits.detail.couldnTLoadYourHabits",
+        "habits.detail.count",
+        "habits.detail.delete",
+        "habits.detail.earlierDaysYourHistoryAndLinkedGoalsAreKept",
+        "habits.detail.editHabit",
+        "habits.detail.habitNotFound",
+        "habits.detail.itMayHaveBeenDeleted",
+        "habits.detail.resetTodaySProgress",
+        "habits.detail.save",
+        "habits.detail.tick",
+        "habits.detail.todaySProgressHasnTLoadedYetSoTheTrackingTypeCanTBeChangedRightNow",
+        "habits.detail.tryAgain",
+        "habits.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/insights/habit/[id].tsx",
+      "keys": [
+        "display.uncertainCount",
+        "history.allTime.finished",
+        "history.habit.start",
+        "history.month.finished",
+        "history.partial.days",
+        "history.streak.ended",
+        "insights.habit.detail.allTime",
+        "insights.habit.detail.back",
+        "insights.habit.detail.backToInsights",
+        "insights.habit.detail.bestStreak",
+        "insights.habit.detail.couldnTLoadThisHistory",
+        "insights.habit.detail.currentRun",
+        "insights.habit.detail.currentRunIncludesToday",
+        "insights.habit.detail.currentStreak",
+        "insights.habit.detail.editHabit",
+        "insights.habit.detail.habitHistory",
+        "insights.habit.detail.habitNotFound",
+        "insights.habit.detail.includesToday",
+        "insights.habit.detail.itMayHaveBeenDeletedItsSavedCheckInsAreKept",
+        "insights.habit.detail.keepItGoingToday",
+        "insights.habit.detail.mayBeLonger",
+        "insights.habit.detail.noFinishedDaysYet",
+        "insights.habit.detail.noFinishedDaysYetTodayCountsOnceItSOver",
+        "insights.habit.detail.noStreakYet",
+        "insights.habit.detail.provisional",
+        "insights.habit.detail.scheduledCheckIns",
+        "insights.habit.detail.startOneToday",
+        "insights.habit.detail.thisMonth",
+        "insights.habit.detail.tryAgain",
+        "insights.habit.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/insights/index.tsx",
+      "keys": [
+        "display.ratio",
+        "display.uncertainCount",
+        "insights.index.addAHabitAndCheckInOnTodayYourStreaksAndTrendsWillAppearHere",
+        "insights.index.basedOnlyOnYourSavedCheckIns",
+        "insights.index.bestStreakNow",
+        "insights.index.calendar",
+        "insights.index.checkedInSoFar",
+        "insights.index.completeAScheduledHabitToStartOne",
+        "insights.index.consistency",
+        "insights.index.couldnTLoadYourHabits",
+        "insights.index.couldnTReadYourHistory",
+        "insights.index.finishedCheckIns",
+        "insights.index.goToHabits",
+        "insights.index.habits",
+        "insights.index.includesToday",
+        "insights.index.insights",
+        "insights.index.insightsFillInAfterYourFirstFullDayTodayCountsOnceItSOver",
+        "insights.index.mayBeIncomplete",
+        "insights.index.noFinishedDaysYet",
+        "insights.index.noHabitsYet",
+        "insights.index.noneMissed",
+        "insights.index.notLoadedYet",
+        "insights.index.nothingScheduled",
+        "insights.index.provisional",
+        "insights.index.startsAfterYourFirstFullDay",
+        "insights.index.today",
+        "insights.index.trends",
+        "insights.index.tryAgain",
+        "insights.index.weeklyReview",
+        "insights.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "insights.overview.missed",
+        "insights.overview.perfect",
+        "insights.overview.unreadable",
+        "insights.overview.window",
+        "insights.streak.habit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/(tabs)/settings.tsx",
+      "keys": [
+        "settings.about",
+        "settings.appLanguage",
+        "settings.appearance",
+        "settings.chooseLightDarkOrFollowYourDeviceWithSystem",
+        "settings.dataBackup",
+        "settings.deviceBackups",
+        "settings.english",
+        "settings.exportBackup",
+        "settings.importBackup",
+        "settings.language",
+        "settings.momentum",
+        "settings.moreLanguages",
+        "settings.personalGrowth",
+        "settings.privacy",
+        "settings.settings",
+        "settings.storage",
+        "settings.storedLocally",
+        "settings.thisDevice",
+        "settings.version",
+        "settings.whetherAppDataIsIncludedInYourPhoneSOwnBackupsDependsOnYourDeviceAndItsSettings",
+        "settings.yourData",
+        "settings.yourHabitsGoalsRoutinesCheckInsProfileAndAchievementsAreStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoInAppCloudSync"
+      ],
+      "dynamicKeys": [
+        "`${kind}.count`"
+      ]
+    },
+    {
+      "file": "src/app/achievements.tsx",
+      "keys": [
+        "achievements.aCollectionBuiltFromTheEffortYouSaved",
+        "achievements.achievements",
+        "achievements.all12BadgesEarnedYourEffortIsHereToStay",
+        "achievements.back",
+        "achievements.backFromAchievements",
+        "achievements.checkingSavedAchievements",
+        "achievements.finishedDaysCountTodaySProgressIsProvisional",
+        "achievements.noConfirmedBadgesYetYourNextFinishedCheckInBringsYouCloser",
+        "achievements.sMALLSTEPSLASTINGMOMENTUM",
+        "achievements.total",
+        "achievements.total.suffix",
+        "achievements.yourFirstFinishedCheckInStartsYourCollectionPartialProgressTodayIsAGreatStartToo"
+      ],
+      "dynamicKeys": [
+        "`achievements.${value}`"
+      ]
+    },
+    {
+      "file": "src/app/data-backup.tsx",
+      "keys": [
+        "backup.preview.currentRecordWarning",
+        "backup.preview.metadata",
+        "data-backup.afterRestoreThePreviousRawDataRemainsPrivatelyOnThisDeviceUnencryptedItCanIncludeUnreadableRecordsUninstallingOrClearingAppDataMayDeleteIt",
+        "data-backup.back",
+        "data-backup.backToSettings",
+        "data-backup.backupReadyForRestore",
+        "data-backup.backupSavedAndVerifiedInYourSelectedFolder",
+        "data-backup.cancel",
+        "data-backup.cancelImport",
+        "data-backup.checkingBackupData",
+        "data-backup.chooseADestination",
+        "data-backup.completedRecoveryCopiesRemovedCurrentAppDataWasNotChanged",
+        "data-backup.currentDeviceData",
+        "data-backup.dataBackup",
+        "data-backup.dataNotes",
+        "data-backup.exportBackup",
+        "data-backup.iUnderstandThatMyCurrentDataWillBeReplaced",
+        "data-backup.importBackup",
+        "data-backup.importCanceledNothingChanged",
+        "data-backup.incomingBackup",
+        "data-backup.lOSSLESSARCHIVEONLYUnsafeRecordsPreventNormalRestore",
+        "data-backup.localRecoveryCopy",
+        "data-backup.noRecoveryCopyIsStored",
+        "data-backup.onlyCompletedRecoverySnapshotsWillBeRemovedKeepAnExternalBackupFirst",
+        "data-backup.operationFailedYourDataHasNotBeenIntentionallyReplaced",
+        "data-backup.recoveryCopySavedAndVerified",
+        "data-backup.removeCopies",
+        "data-backup.removeLocalRecoveryCopies",
+        "data-backup.removeRecoveryCopies",
+        "data-backup.replaceAllCurrentData",
+        "data-backup.replaceCurrentData",
+        "data-backup.reviewBeforeReplacing",
+        "data-backup.saveCanceled",
+        "data-backup.saveRecoveryCopy",
+        "data-backup.saveToDevice",
+        "data-backup.shareBackup",
+        "data-backup.shareRecoveryCopy",
+        "data-backup.shareSheetClosedCheckYourChosenDestinationSavingIsNotConfirmed",
+        "data-backup.shareSheetClosedCheckYourChosenDestinationThisDoesNotConfirmTheFileWasSaved",
+        "data-backup.thisReplacesALLCurrentMOMENTUMDataIncludingDatesAndRecordsAbsentFromThisBackupItDoesNotMergeMultiKeyWritesAreNotAtomicAVerifiedRecoveryCopyWillBeKept",
+        "data-backup.thisReplacesHabitsHistoryGoalsRoutinesProfileAndAchievementsItDoesNotMergeALocalRecoveryCopyWillBeKept",
+        "data-backup.yourBackupsAreUnencryptedLocalJSONFilesTheyMayContainSensitiveHabitsPersonalRoutinesProfileAndAchievementHistoryKeepThemSomewherePrivateMOMENTUMHasNoAccountCloudBackendOrAutomaticUploadSharingWithAnotherAppOrCloudProviderIsYourChoice"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/profile/edit.tsx",
+      "keys": [
+        "profile.edit.close",
+        "profile.edit.couldnTLoadYourProfile",
+        "profile.edit.loadingProfile",
+        "profile.edit.profile",
+        "profile.edit.tryAgain",
+        "profile.edit.yourSavedProfileHasnTBeenChangedTryAgainOrRestartTheAppYourHabitsAndGoalsAreNotAffected"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/routine/edit/[id].tsx",
+      "keys": [
+        "routine.edit.detail.couldnTLoadYourRoutines",
+        "routine.edit.detail.delete",
+        "routine.edit.detail.editRoutine",
+        "routine.edit.detail.goBack",
+        "routine.edit.detail.itMayHaveBeenDeleted",
+        "routine.edit.detail.onlyTheRoutineIsRemovedYourHabitsTodaySProgressHistoryGoalsAndInsightsAreNotAffected",
+        "routine.edit.detail.routineNotFound",
+        "routine.edit.detail.save",
+        "routine.edit.detail.tryAgain",
+        "routine.edit.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "routines.delete.title"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/routine/new.tsx",
+      "keys": [
+        "routine.new.create",
+        "routine.new.newRoutine"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/app/routine/[id].tsx",
+      "keys": [
+        "routine.detail.addHabits",
+        "routine.detail.addHabitsToStartThisRoutine",
+        "routine.detail.addHabitsYouAlreadyTrackTheyStayTheSameHabitsTheRoutineJustGroupsThem",
+        "routine.detail.back",
+        "routine.detail.couldnTLoadYourHabits",
+        "routine.detail.couldnTLoadYourRoutines",
+        "routine.detail.dueToday",
+        "routine.detail.edit",
+        "routine.detail.editRoutine",
+        "routine.detail.goBack",
+        "routine.detail.itMayHaveBeenDeletedYourHabitsAndProgressAreNotAffected",
+        "routine.detail.noHabitsInThisRoutine",
+        "routine.detail.nothingDue",
+        "routine.detail.readyWhenYouAre",
+        "routine.detail.routineCompleteNicelyDone",
+        "routine.detail.thisRoutineNoLongerExists",
+        "routine.detail.today",
+        "routine.detail.tryAgain",
+        "routine.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp",
+        "routines.deletedHabits.notice",
+        "routines.habit.notScheduled",
+        "routines.progress.habits",
+        "routines.progress.remaining",
+        "routines.remaining.short",
+        "routines.remaining.withSave",
+        "routines.rest.explanation",
+        "routines.rest.notDue",
+        "routines.rest.weekday"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/achievements/achievement-card.tsx",
+      "keys": [
+        "achievements.achievement-card.allThreeTrackingTypesRecorded",
+        "achievements.achievement-card.earned",
+        "achievements.achievement-card.earnedVariant",
+        "achievements.achievement-card.hide",
+        "achievements.achievement-card.historicalCalculationsUseCurrentSchedulesAndHabitsThatStillExistOldSchedulesAndDeletedHabitDefinitionsAreUnavailable",
+        "achievements.achievement-card.lessDetail",
+        "achievements.achievement-card.locked",
+        "achievements.achievement-card.progressUnavailable",
+        "achievements.achievement-card.show",
+        "achievements.achievement-card.whyThisBadge",
+        "achievements.card.accessibility",
+        "achievements.card.detail",
+        "achievements.evidence.noStart",
+        "achievements.evidence.withStart",
+        "achievements.history.through",
+        "achievements.recognition.explanation",
+        "achievements.recognized.date",
+        "achievements.types.remaining"
+      ],
+      "dynamicKeys": [
+        "`achievements.progress.${badge.metric}`",
+        "`tracking.type.${type}`"
+      ]
+    },
+    {
+      "file": "src/components/achievements/achievement-data-notes.tsx",
+      "keys": [
+        "achievements.achievement-data-notes.checkingSavedAchievementsPending",
+        "achievements.achievement-data-notes.couldNotCheckSavedHistoryPreviouslySavedAwardsStayEarnedTryAgain",
+        "achievements.achievement-data-notes.couldNotReadAchievementsSavedDataHasNotBeenResetOrOverwrittenTryAgain",
+        "achievements.achievement-data-notes.couldNotSaveNewAchievementsNoNewBadgeIsConfirmedYetTryAgain",
+        "achievements.achievement-data-notes.couldNotSaveYourAcknowledgementTheSummaryWillStayVisibleTapDismissAgainToRetry",
+        "achievements.achievement-data-notes.finishedLocalDaysCountTodayIsProvisionalHistoricalProgressUsesCurrentSchedulesSchedulesAreNotVersionedEditsOrDeletionsCanReduceLockedProgressWhileSavedAwardsStayEarned",
+        "achievements.achievement-data-notes.someCompletionsAreOutsideCurrentSchedulesAndDoNotCount",
+        "achievements.achievement-data-notes.someHistoryBelongsToRemovedHabitsAndDoesNotCountTowardNewAwards",
+        "achievements.achievement-data-notes.tryAgain",
+        "achievements.achievement-data-notes.waitingForCheckInsToSaveIncludingAnyFromAPreviousDayConfirmedAwardsStayEarned",
+        "achievements.achievement-data-notes.waitingForSavedHabitsIfHabitsCouldNotLoadTryAgain",
+        "achievements.notes.ignored",
+        "achievements.notes.unreadable"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/consistency-summary.tsx",
+      "keys": [
+        "display.percent",
+        "goals.consistency-summary.habitConsistency",
+        "goals.consistency-summary.habitConsistencyOnCompletedDays",
+        "goals.consistency-summary.linkHabitsToSeeHowConsistentlyYouShowUpForThisGoal",
+        "goals.consistency-summary.loadingCheckInsPending",
+        "goals.consistency-summary.noCompletedDaysYetTheFirstFullDayCountsFromTomorrow",
+        "goals.consistency-summary.nothingLinkedIsScheduledToday",
+        "goals.consistency-summary.todayInProgress",
+        "goals.consistency-summary.unavailableRightNowYourSavedCheckInsCouldnTBeReadNothingWasChanged",
+        "goals.consistency.accessibility",
+        "goals.consistency.finished",
+        "goals.consistency.today",
+        "goals.consistency.unreadable"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/date-picker.tsx",
+      "keys": [
+        "display.headerDate",
+        "goals.date-picker.nextMonth",
+        "goals.date-picker.previousMonth",
+        "goals.target.preset",
+        "goals.target.preset.1month",
+        "goals.target.preset.1year",
+        "goals.target.preset.3months",
+        "goals.target.preset.6months"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/goal-card.tsx",
+      "keys": [
+        "goals.goal-card.opensTheGoalEditor",
+        "goals.linked.count"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/goal-form.tsx",
+      "keys": [
+        "display.ratio",
+        "goals.goal-form.cancel",
+        "goals.goal-form.couldnTDeleteThisGoalNothingWasRemovedTryAgain",
+        "goals.goal-form.couldnTLoadYourHabitsLinkedHabitsCanTBeChangedRightNow",
+        "goals.goal-form.couldnTSaveThisGoalYourChangesAreStillHereTryAgain",
+        "goals.goal-form.deleteGoal",
+        "goals.goal-form.description",
+        "goals.goal-form.eGRunAHalfMarathon",
+        "goals.goal-form.goalDescription",
+        "goals.goal-form.goalTitle",
+        "goals.goal-form.linkedHabits",
+        "goals.goal-form.optional",
+        "goals.goal-form.status",
+        "goals.goal-form.targetDate",
+        "goals.goal-form.title",
+        "goals.goal-form.whyItMattersToYou",
+        "goals.goal-form.youDecideWhenAGoalIsAchievedHabitConsistencyNeverChangesIt",
+        "goals.goal-form.yourHabitsHavenTLoadedSoLinksCanTBeSavedSafelyGoBackAndTryAgain",
+        "goals.linked.selected"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/habit-link-picker.tsx",
+      "keys": [
+        "display.labelValue",
+        "goals.habit-link-picker.createAHabit",
+        "goals.habit-link-picker.youDonTHaveAnyHabitsYetGoalsCanBeSavedWithoutHabitsButHabitConsistencyNeedsAtLeastOneLinkedHabit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/goals/status-picker.tsx",
+      "keys": [
+        "goals.status-picker.active",
+        "goals.status-picker.completed",
+        "goals.status-picker.paused"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/checklist-editor.tsx",
+      "keys": [
+        "habits.checklist-editor.addStep",
+        "habits.checklist-editor.optional",
+        "habits.checklist-editor.required",
+        "habits.checklist-editor.theHabitIsDoneWhenEveryRequiredStepIsCheckedOptionalStepsDonTAffectCompletion",
+        "habits.step.nameAccessibility",
+        "habits.step.placeholder",
+        "habits.step.removeAccessibility",
+        "habits.step.requiredAccessibility",
+        "habits.steps.limit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/count-fields.tsx",
+      "keys": [
+        "habits.count-fields.dailyTarget",
+        "habits.count-fields.glassesPagesMin",
+        "habits.count-fields.unit",
+        "habits.count-fields.unitOptional"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/habit-form.tsx",
+      "keys": [
+        "display.ratio",
+        "habits.habit-form.cancel",
+        "habits.habit-form.color",
+        "habits.habit-form.couldnTDeleteThisHabitNothingWasRemovedTryAgain",
+        "habits.habit-form.couldnTSaveThisHabitYourChangesAreStillHereTryAgain",
+        "habits.habit-form.deleteHabit",
+        "habits.habit-form.description",
+        "habits.habit-form.eGMorningWalk",
+        "habits.habit-form.habitDescription",
+        "habits.habit-form.habitName",
+        "habits.habit-form.icon",
+        "habits.habit-form.name",
+        "habits.habit-form.newHabit",
+        "habits.habit-form.optional",
+        "habits.habit-form.schedule",
+        "habits.habit-form.tracking",
+        "habits.habit-form.whenWhereOrHowMuch"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/habit-row.tsx",
+      "keys": [
+        "display.descriptionPair",
+        "display.labelValue",
+        "habits.habit-row.opensTheHabitEditor"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/tracking-type-picker.tsx",
+      "keys": [
+        "habits.tracking-type-picker.checklist",
+        "habits.tracking-type-picker.completeASetOfSteps",
+        "habits.tracking-type-picker.count",
+        "habits.tracking-type-picker.doneOrNotDone",
+        "habits.tracking-type-picker.reachADailyTarget",
+        "habits.tracking-type-picker.tick"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/habits/weekday-picker.tsx",
+      "keys": [
+        "habits.weekday-picker.everyDay",
+        "habits.weekday-picker.specificDays"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/data-notes.tsx",
+      "keys": [
+        "insights.data-notes.aScheduledDayWithProgressThatDidnTMeetTheTargetPartialCountsAsMissed",
+        "insights.data-notes.aScheduledDayWithoutASavedCheckInCountsAsMissedEvenIfYouDidTheHabitButDidnTLogIt",
+        "insights.data-notes.aboutTheseNumbers",
+        "insights.data-notes.daysBeforeAHabitExistedArenTCountedDeletedHabitsArenTShown",
+        "insights.data-notes.daysFollowYourPhoneSLocalCalendarChangingTimeZonesCanShiftADay",
+        "insights.data-notes.eachScheduledHabitCountsOnceADayTickWhenTickedCountWhenTheTargetIsReachedChecklistWhenEveryRequiredStepIsDone",
+        "insights.data-notes.onlySavedCheckInsCountNothingIsEstimatedInventedOrChanged",
+        "insights.data-notes.pastDaysUseTheTargetAndStepsSavedThatDaySoEditingAHabitDoesnTChangeItsHistoryTodayUsesTheCurrentDefinition",
+        "insights.data-notes.schedulesArenTStoredHistoricallyTheCurrentScheduleIsAppliedToAllPastDaysIfYouChangedASchedulePastScheduledAndMissedCountsFollowTheNewOne",
+        "insights.data-notes.streaksCountScheduledCheckInsInARowDaysAHabitIsnTScheduledAreSkippedAndAStreakOnlyBreaksAfterAScheduledDayEndsWithoutACheckIn",
+        "insights.data-notes.todayIsProvisionalHabitsNotDoneYetAreInProgressNeverMissedFutureDaysAreNeverCounted",
+        "insights.data-notes.todaySProgressHasnTLoadedSoTodayIsnTIncludedYet",
+        "insights.history.inferredStart",
+        "insights.notes.deleted",
+        "insights.notes.ignored",
+        "insights.notes.scheduleChange",
+        "insights.notes.unreadable"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/day-detail-panel.tsx",
+      "keys": [
+        "display.labelValue",
+        "history.day.notStartedAccessibility",
+        "history.day.savedProgress",
+        "history.habit.progress",
+        "history.habit.status",
+        "history.habit.statusProgress",
+        "history.notStarted.habits",
+        "history.step.accessibility",
+        "history.step.done",
+        "insights.day-detail-panel.notDone",
+        "insights.day-detail-panel.notScheduled",
+        "insights.day-detail-panel.notStartedTheHabitDidnTExistYet",
+        "insights.day-detail-panel.notStartedThisHabitDidnTExistYetNothingIsCounted",
+        "insights.day-detail-panel.nothingSaved",
+        "insights.day-detail-panel.optional",
+        "insights.day-detail-panel.optionalVariant",
+        "insights.day-detail-panel.savedProgress",
+        "insights.day-detail-panel.savedRecordCouldNotBeRead",
+        "insights.day-detail-panel.schedule",
+        "insights.day-detail-panel.scheduled",
+        "insights.day-detail-panel.status",
+        "insights.day-detail-panel.thisDaySSavedRecordCouldnTBeReadItSLeftOutOfAllNumbersNothingWasChanged",
+        "insights.day-detail-panel.todayProvisional",
+        "insights.day-detail-panel.todayProvisionalVariant"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/format.ts",
+      "keys": [
+        "display.percent"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/habit-insight-row.tsx",
+      "keys": [
+        "display.uncertainCount",
+        "history.row.accessible",
+        "history.row.accessibleUncertain",
+        "history.streak.length",
+        "insights.habit-insight-row.30Days",
+        "insights.habit-insight-row.best",
+        "insights.habit-insight-row.current",
+        "insights.habit-insight-row.keepItGoingToday",
+        "insights.habit-insight-row.opensThisHabitSHistory",
+        "insights.habit-insight-row.scheduleMayHaveChanged"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/heatmap-calendar.tsx",
+      "keys": [
+        "history.calendar.accessibility",
+        "history.calendar.unreadableRecord",
+        "insights.complete.calendar.finished.readable",
+        "insights.complete.calendar.finished.unreadable",
+        "insights.complete.calendar.today.readable",
+        "insights.complete.calendar.today.unreadable",
+        "insights.heatmap-calendar.all",
+        "insights.heatmap-calendar.beforeThisHabitStarted",
+        "insights.heatmap-calendar.beforeYourHabitsStarted",
+        "insights.heatmap-calendar.done",
+        "insights.heatmap-calendar.most",
+        "insights.heatmap-calendar.noHabitsYet",
+        "insights.heatmap-calendar.none",
+        "insights.heatmap-calendar.notCheckedIn",
+        "insights.heatmap-calendar.notScheduled",
+        "insights.heatmap-calendar.notStarted",
+        "insights.heatmap-calendar.nothingScheduled",
+        "insights.heatmap-calendar.partial",
+        "insights.heatmap-calendar.restDay",
+        "insights.heatmap-calendar.showsDetailsBelowTheCalendar",
+        "insights.heatmap-calendar.some",
+        "insights.heatmap-calendar.tapADayToSeeWhatHappened",
+        "insights.heatmap-calendar.thisMonth",
+        "insights.heatmap-calendar.thisMonthTodayIsProvisional",
+        "insights.heatmap-calendar.today",
+        "insights.heatmap-calendar.todayVariant",
+        "insights.heatmap-calendar.unreadable",
+        "insights.heatmap-calendar.upcoming"
+      ],
+      "dynamicKeys": [
+        "`calendar.weekday.${day}`"
+      ]
+    },
+    {
+      "file": "src/components/insights/period-nav.tsx",
+      "keys": [
+        "display.labelText",
+        "insights.period.earliest",
+        "insights.period.futureUnavailable",
+        "insights.period.jump",
+        "insights.period.next",
+        "insights.period.previous",
+        "period.month",
+        "period.week"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/trend-bars.tsx",
+      "keys": [
+        "display.labelColon",
+        "insights.trend-bars.monthly",
+        "insights.trend-bars.nothingFinishedWasScheduled",
+        "insights.trend-bars.now",
+        "insights.trend-bars.nowSoFarFinishedDaysOnly",
+        "insights.trend-bars.weekly",
+        "insights.trend.accessibility",
+        "insights.trend.currentLabel",
+        "insights.trend.footer"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/insights/weekly-review-card.tsx",
+      "keys": [
+        "display.labelColon",
+        "insights.week.attention",
+        "insights.week.best",
+        "insights.week.delta",
+        "insights.week.partial",
+        "insights.week.todayIncluded",
+        "insights.week.unreadable",
+        "insights.weekly-review-card.achievements",
+        "insights.weekly-review-card.completed",
+        "insights.weekly-review-card.consistency",
+        "insights.weekly-review-card.missed",
+        "insights.weekly-review-card.sameConsistencyAsTheWeekBefore",
+        "insights.weekly-review-card.someCheckInsThisWeekFallOnDaysAHabitIsnTScheduledNowTheyArenTCountedPastWeeksUseCurrentSchedules",
+        "insights.weekly-review-card.stillToCome",
+        "insights.weekly-review-card.thisWeek"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/profile/profile-form.tsx",
+      "keys": [
+        "display.greeting.named",
+        "display.greeting.unnamed",
+        "display.labelValue",
+        "display.profilePreview",
+        "display.ratio",
+        "profile.profile-form.addANameToShowYourInitials",
+        "profile.profile-form.asksBeforeDiscardingYourChanges",
+        "profile.profile-form.avatar",
+        "profile.profile-form.cancel",
+        "profile.profile-form.clearName",
+        "profile.profile-form.color",
+        "profile.profile-form.couldnTSaveYourProfileYourChangesAreStillHereTryAgain",
+        "profile.profile-form.discard",
+        "profile.profile-form.discardChanges",
+        "profile.profile-form.displayName",
+        "profile.profile-form.fromYourName",
+        "profile.profile-form.icon",
+        "profile.profile-form.initials",
+        "profile.profile-form.onToday",
+        "profile.profile-form.optional",
+        "profile.profile-form.optionalShownOnTodayAndStoredOnlyOnThisDevice",
+        "profile.profile-form.pickASymbol",
+        "profile.profile-form.profile",
+        "profile.profile-form.save",
+        "profile.profile-form.saveProfile",
+        "profile.profile-form.shownOnTodayLeaveItEmptyIfYouPreferNoName",
+        "profile.profile-form.whatShouldWeCallYou",
+        "profile.profile-form.yourProfileChangesHavenTBeenSaved",
+        "profile.profile-form.yourProfileIsStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoCloudSync"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/routines/routine-card.tsx",
+      "keys": [
+        "display.descriptionPair",
+        "display.labelValue",
+        "routines.card.habits",
+        "routines.move.down",
+        "routines.move.up",
+        "routines.routine-card.opensTheRoutine"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/routines/routine-form.tsx",
+      "keys": [
+        "display.ratio",
+        "routines.form.deletedHabits",
+        "routines.routine-form.cancel",
+        "routines.routine-form.chooseHabits",
+        "routines.routine-form.color",
+        "routines.routine-form.couldnTDeleteThisRoutineNothingWasRemovedTryAgain",
+        "routines.routine-form.couldnTLoadYourHabitsThisRoutineCanTBeSavedRightNow",
+        "routines.routine-form.couldnTSaveThisRoutineYourChangesAreStillHereTryAgain",
+        "routines.routine-form.deleteRoutine",
+        "routines.routine-form.description",
+        "routines.routine-form.eGMorningRoutine",
+        "routines.routine-form.habits",
+        "routines.routine-form.habitsStayExactlyAsTheyAreARoutineOnlyGroupsThemAHabitCanBeInMoreThanOneRoutineAndIsStillTrackedOnce",
+        "routines.routine-form.icon",
+        "routines.routine-form.newRoutine",
+        "routines.routine-form.optional",
+        "routines.routine-form.order",
+        "routines.routine-form.ordersYourPlanOnTodayAndHighlightsWhatFitsRightNowHabitsAreAlwaysAvailable",
+        "routines.routine-form.preferredTime",
+        "routines.routine-form.routineDescription",
+        "routines.routine-form.routineTitle",
+        "routines.routine-form.title",
+        "routines.routine-form.whatThisRoutineSetsYouUpFor",
+        "routines.routine-form.youDonTHaveAnyHabitsYetSaveThisRoutineNowAndAddHabitsLaterOrCreateAHabitFirstThisFormWillCloseWithoutSaving",
+        "routines.routine-form.yourHabitsHavenTLoadedSoThisRoutineCanTBeSavedSafelyGoBackAndTryAgain"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/routines/routine-habit-order.tsx",
+      "keys": [
+        "routines.habit.moveDown",
+        "routines.habit.moveUp",
+        "routines.habit.remove"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/routines/routines-entry-card.tsx",
+      "keys": [
+        "routines.entry.noCount",
+        "routines.entry.withCount",
+        "routines.routines-entry-card.couldnTLoadRoutinesTapToRetry",
+        "routines.routines-entry-card.groupHabitsIntoAMorningOrEveningRoutine",
+        "routines.routines-entry-card.loadingPending",
+        "routines.routines-entry-card.opensYourRoutines",
+        "routines.routines-entry-card.routines"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/routines/time-of-day-picker.tsx",
+      "keys": [
+        "display.labelValue"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/settings/appearance-selector.tsx",
+      "keys": [
+        "display.labelText",
+        "settings.appearance-selector.alwaysUseADarkAppearance",
+        "settings.appearance-selector.alwaysUseALightAppearance",
+        "settings.appearance-selector.appearance",
+        "settings.appearance-selector.appearanceChangesAreUnavailableWhileDataBackupIsBusy",
+        "settings.appearance-selector.appearanceChoices",
+        "settings.appearance-selector.cancel",
+        "settings.appearance-selector.dark",
+        "settings.appearance-selector.followYourDeviceSLightOrDarkSetting",
+        "settings.appearance-selector.light",
+        "settings.appearance-selector.loadingAppearancePreferences",
+        "settings.appearance-selector.loadingPending",
+        "settings.appearance-selector.retryLoadingPreferences",
+        "settings.appearance-selector.retrySave",
+        "settings.appearance-selector.save",
+        "settings.appearance-selector.savedOnThisDeviceAppearanceIsNotIncludedInBackups",
+        "settings.appearance-selector.savingAppearancePending",
+        "settings.appearance-selector.savingPending",
+        "settings.appearance-selector.system",
+        "settings.appearance-selector.theme",
+        "settings.appearance-selector.waitForDataBackupToFinishBeforeSaving",
+        "settings.appearance.optionSaved",
+        "settings.appearance.savedChoice"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/settings/profile-summary-card.tsx",
+      "keys": [
+        "profile.summary.accessibility",
+        "settings.profile-summary-card.addYourName",
+        "settings.profile-summary-card.addYourNameEditNameAndAvatar",
+        "settings.profile-summary-card.couldnTLoadProfile",
+        "settings.profile-summary-card.editNameAndAvatar",
+        "settings.profile-summary-card.loadingProfile",
+        "settings.profile-summary-card.tryAgain",
+        "settings.profile-summary-card.yourSavedProfileHasnTBeenChanged"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/components/settings/settings-row.tsx",
+      "keys": [
+        "display.labelText",
+        "display.labelValue",
+        "settings.settings-row.comingLater"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/achievement-definitions.ts",
+      "keys": [
+        "achievement-definitions.30ScheduledCheckInsInARow",
+        "achievement-definitions.3ScheduledCheckInsInARow",
+        "achievement-definitions.7ScheduledCheckInsInARow",
+        "achievement-definitions.aDayWellSpent",
+        "achievement-definitions.aReadableFinishedDayWithAtLeastOneHabitDueRestDaysAloneNeverQualify",
+        "achievement-definitions.aWeekWellSpent",
+        "achievement-definitions.allThreeWays",
+        "achievement-definitions.atLeastOneCompletedScheduledHabitOnEachOf30FinishedDaysDaysNeedNotBeConsecutive",
+        "achievement-definitions.atLeastOneCompletedScheduledHabitOnEachOf7FinishedDaysDaysNeedNotBeConsecutive",
+        "achievement-definitions.atLeastOneFinishedScheduledCompletionOfEachSavedTrackingTypeIncludingHistoricalTypesOfAnEditedHabit",
+        "achievement-definitions.buildingMomentum",
+        "achievement-definitions.century",
+        "achievement-definitions.checkInOn30DifferentDays",
+        "achievement-definitions.checkInOn7DifferentDays",
+        "achievement-definitions.checkIns",
+        "achievement-definitions.complete100CheckIns",
+        "achievement-definitions.complete10CheckIns",
+        "achievement-definitions.complete50CheckIns",
+        "achievement-definitions.completeEveryCheckInInAFinishedWeek",
+        "achievement-definitions.completeEveryHabitDueOnADay",
+        "achievement-definitions.completeTickCountAndChecklist",
+        "achievement-definitions.completeYourFirstCheckIn",
+        "achievement-definitions.completedScheduledHabitDatePairsAcrossAllReadableFinishedHistory",
+        "achievement-definitions.eachHabitCountsOncePerScheduledDayExtraCountUnitsAndOptionalStepsDoNotAddCheckIns",
+        "achievement-definitions.findingYourRhythm",
+        "achievement-definitions.firstStep",
+        "achievement-definitions.mondaySundayWithAtLeastOneOpportunityAllDueHabitsMustBeCompleteRestDaysAreNeutralAFirstHabitStartingFridayCanQualifyAfterSundayAnyUnreadableDayDisqualifiesTheWeek",
+        "achievement-definitions.onOneHabitAcrossFinishedDaysTheseAreScheduledOpportunitiesNotConsecutiveCalendarDays",
+        "achievement-definitions.onOneHabitRestDaysAreSkippedMissedPartialAndUnreadableScheduledDaysBreakTheKnownRun",
+        "achievement-definitions.onOneHabitUnknownDaysNeverConnectTwoKnownRuns",
+        "achievement-definitions.oneCompletedHabitOnOneScheduledFinishedLocalDay",
+        "achievement-definitions.perfectDays",
+        "achievement-definitions.showUpSeven",
+        "achievement-definitions.showingUp",
+        "achievement-definitions.stayingPower",
+        "achievement-definitions.steadySeven",
+        "achievement-definitions.streaks",
+        "achievement-definitions.thirtyDaysOfEffort",
+        "achievement-definitions.threeInARow",
+        "achievement-definitions.tracking"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-files.web.ts",
+      "keys": [
+        "backup-files.web.manualDataBackupIsAvailableInTheAndroidIOSApp"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-format.ts",
+      "keys": [
+        "backup-format.achievement",
+        "backup-format.backupContainsUnrelatedOrInvalidStorageKeys",
+        "backup-format.backupDataExceedsSupportedSizeLimits",
+        "backup-format.backupExceedsThe8MiBFileLimit",
+        "backup-format.backupIsIncompleteOrChangedChecksumMismatch",
+        "backup-format.backupNestingIsTooDeep",
+        "backup-format.completionOnlyArchivesCannotBeActivatedDoingSoWouldFabricateDemoHabits",
+        "backup-format.duplicateBackupKey",
+        "backup-format.duplicateJSONMember",
+        "backup-format.eMPTYBACKUPReplacingWillRemoveAllCurrentUserData",
+        "backup-format.emptyHabitID",
+        "backup-format.goal",
+        "backup-format.habit",
+        "backup-format.historyContentsUnknownUnreadableUnsupportedRecordsIncluded",
+        "backup-format.invalidBackupMetadata",
+        "backup-format.invalidLocalDate",
+        "backup-format.invalidMigrationEntry",
+        "backup-format.invalidMigrationSnapshot",
+        "backup-format.notAMOMENTUMBackup",
+        "backup-format.originalPreHabitsMigrationSnapshotIncluded",
+        "backup-format.profile",
+        "backup-format.profileAndNamePromptStateIncluded",
+        "backup-format.routine",
+        "backup-format.someRecordsCannotBeReadSafelyThisLosslessArchiveCannotBeRestoredByThisAppVersion",
+        "backup-format.tooManyBackupRecords",
+        "backup-format.unexpectedJSONContent",
+        "backup-format.unreadableMigrationHistory",
+        "backup-format.unsafeRecordMember",
+        "backup-format.unsupportedBackupSchemaVersionUseACompatibleMOMENTUMVersion",
+        "backup-format.unsupportedStorageVersion",
+        "backup.family.missing",
+        "backup.family.unknown",
+        "backup.record.unreadable",
+        "backup.records.legacy",
+        "backup.references.missing",
+        "backup.summary.awards",
+        "backup.summary.goals",
+        "backup.summary.habits",
+        "backup.summary.history",
+        "backup.summary.records",
+        "backup.summary.routines",
+        "backup.validation.incompleteJSONString",
+        "backup.validation.invalidJSON",
+        "backup.validation.invalidJSONMember",
+        "backup.validation.invalidJSONStructure",
+        "backup.validation.invalidJSONValue"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-io.ts",
+      "keys": [
+        "backup-io.backupExceedsThe8MiBFileLimit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-native-implementation.ts",
+      "keys": [
+        "backup-native-implementation.backupExceedsThe8MiBFileLimit",
+        "backup-native-implementation.backupFile",
+        "backup-native-implementation.exportVerificationFailed",
+        "backup-native-implementation.invalidInternalRecoveryFilename",
+        "backup-native-implementation.noBackupFileSelected",
+        "backup-native-implementation.noSaveFolderWasSelectedOrAccessWasDeniedTryAgainOrUseShare",
+        "backup-native-implementation.notEnoughFreeSpaceToKeepARecoveryCopyNothingCanBeReplacedSafely",
+        "backup-native-implementation.recoveryCopyExceedsSupportedSize",
+        "backup-native-implementation.saveOrShareYourUnencryptedMOMENTUMBackup",
+        "backup-native-implementation.savedFileCouldNotBeVerifiedTryAnotherLocalFolder",
+        "backup-native-implementation.sharingIsUnavailableOnThisDeviceUseSaveToDevice"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-native-loader.ts",
+      "keys": [
+        "backup.runtime.moduleMissing",
+        "backup.runtime.moduleUnavailable"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-runtime-check.ts",
+      "keys": [
+        "backup-runtime-check.sHA256SelfCheckFailed",
+        "backup-runtime-check.updateExpoGoInPlaceToACompatibleSDK58BuildOrUseANewlyCompiledSDK58DevelopmentBuildDoNotUninstallOrClearAppData",
+        "backup.runtime.cryptoBlocked",
+        "backup.runtime.cryptoUnavailable",
+        "backup.runtime.inspectionBlocked"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/backup-service.ts",
+      "keys": [
+        "backup-service.aRestoreIsAlreadyActive",
+        "backup-service.anActiveRecoveryCopyCannotBeRemoved",
+        "backup-service.backupRestoredAndVerifiedALocalRecoveryCopyWasKept",
+        "backup-service.completionVerificationInterruptedStartupRecoveryMustResolveIt",
+        "backup-service.conflictingRecoveryCompletionMarker",
+        "backup-service.currentDataChangedPreviewAgainAndConfirmTheNewComparison",
+        "backup-service.currentDataContainsAnUnsupportedRecordVersionReplacementIsBlocked",
+        "backup-service.currentDataUsesAnUnsupportedSchemaReplacementIsBlocked",
+        "backup-service.dataChangedWhileBeingRead",
+        "backup-service.incompleteStorageRead",
+        "backup-service.recoveryCopiesCannotBeRemovedWhileDataIsLocked",
+        "backup-service.recoveryCouldNotBeVerifiedEditingIsBlockedRetryRecoveryDoNotUninstallOrClearAppData",
+        "backup-service.recoveryCouldNotBeVerifiedRetryRecoveryOrSaveTheAvailableRecoveryCopyDoNotClearAppData",
+        "backup-service.recoveryFileVerificationFailed",
+        "backup-service.recoveryFilesAreMissingKeepTheAppClosedToEditingAndRetryRecovery",
+        "backup-service.recoveryPreparationWasInterruptedRetryRecoveryBeforeEditing",
+        "backup-service.recoveryRequiresALockedApp",
+        "backup-service.recoverySnapshotsChangedBeforeReplacement",
+        "backup-service.restoreFailedYourExactPreviousDataWasRecoveredAndVerified",
+        "backup-service.storedDataDidNotMatchTheVerifiedSnapshot",
+        "backup-service.storedDataExceedsSupportedBackupLimitsNoDataWasTruncated",
+        "backup-service.tooManyStoredRecordsForASupportedBackup",
+        "backup-service.unreadableRecoveryCompletionMarker"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/habit-options.ts",
+      "keys": [
+        "habit-options.amber",
+        "habit-options.blue",
+        "habit-options.coral",
+        "habit-options.creativity",
+        "habit-options.cyan",
+        "habit-options.health",
+        "habit-options.journal",
+        "habit-options.lavender",
+        "habit-options.learning",
+        "habit-options.mindfulness",
+        "habit-options.mint",
+        "habit-options.morning",
+        "habit-options.music",
+        "habit-options.nature",
+        "habit-options.nutrition",
+        "habit-options.pink",
+        "habit-options.reading",
+        "habit-options.running",
+        "habit-options.savings",
+        "habit-options.sky",
+        "habit-options.sleep",
+        "habit-options.strength",
+        "habit-options.violet",
+        "habit-options.walking",
+        "habit-options.water"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/data/persistence-coordinator.ts",
+      "keys": [
+        "backup.validation.anotherBackupRecoveryOperationIsActive",
+        "backup.validation.dataIsLockedForBackupRecoveryPleaseTryAgainAfterwards",
+        "backup.validation.latestChangesAreStillSavingNothingWasReplacedRetryAfterSavingCompletes"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/hooks/use-data-backup.tsx",
+      "keys": [
+        "recovery.runtimeBlocked",
+        "use-data-backup.checkingLocalData",
+        "use-data-backup.couldNotSaveAVerifiedRecoveryCopyKeepAppDataIntactAndRetry",
+        "use-data-backup.dataRecoveryRequired",
+        "use-data-backup.editingIsPausedWhileSavedDataIsVerifiedMultiKeyStorageIsNotAtomicRecoveryFilesProtectInterruptedReplacements",
+        "use-data-backup.interruptedRestoreWasRecoveredAndVerified",
+        "use-data-backup.manualDataBackupIsAvailableInTheAndroidIOSApp",
+        "use-data-backup.noVerifiedRecoveryCopyIsAvailable",
+        "use-data-backup.pleaseWaitForDataVerification",
+        "use-data-backup.previousDataRecoveredAndVerified",
+        "use-data-backup.recoveryCopySavedAndVerifiedEditingRemainsBlockedUntilRecoverySucceeds",
+        "use-data-backup.recoveryCouldNotBeVerifiedEditingRemainsBlockedRetryRecoveryOrSaveTheAvailableRecoveryCopyDoNotUninstallOrClearAppData",
+        "use-data-backup.recoveryFilesAreUnencryptedAndMayContainPersonalRoutines",
+        "use-data-backup.recoveryStillCannotBeVerifiedKeepAppDataIntactAndRetry",
+        "use-data-backup.restoringYourBackup",
+        "use-data-backup.retryRecovery",
+        "use-data-backup.saveCanceledEditingRemainsBlocked",
+        "use-data-backup.saveRecoveryCopyToDevice",
+        "use-data-backup.shareRecoveryCopy",
+        "use-data-backup.shareSheetClosedConfirmTheRecoveryFileWasSavedInYourChosenDestinationEditingRemainsBlocked"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/confirm.ts",
+      "keys": [
+        "confirm.cancel"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/goal-progress.ts",
+      "keys": [
+        "goal-progress.completed",
+        "goal-progress.targetDateIsToday",
+        "goals.timeline.completed",
+        "goals.timeline.daysLeft",
+        "goals.timeline.passed",
+        "goals.timeline.position"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/goal-validation.ts",
+      "keys": [
+        "goal-validation.giveYourGoalATitle",
+        "goal-validation.pickATargetDate",
+        "goal-validation.pickTodayOrAFutureDate",
+        "goal-validation.theTargetDateCanTBeBeforeTheGoalStarted",
+        "validation.goal.descriptionLength",
+        "validation.goal.titleLength"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/habit-progress.ts",
+      "keys": [
+        "habit-progress.checkOff",
+        "habits.tracking.steps",
+        "habits.tracking.target",
+        "habits.tracking.unit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/habit-validation.ts",
+      "keys": [
+        "habit-validation.addAtLeastOneStep",
+        "habit-validation.atLeastOneStepMustBeRequired",
+        "habit-validation.giveYourHabitAName",
+        "habit-validation.nameEveryStepOrRemoveEmptyOnes",
+        "habit-validation.pickAtLeastOneDay",
+        "validation.habit.countRange",
+        "validation.habit.descriptionLength",
+        "validation.habit.nameLength",
+        "validation.habit.stepLength",
+        "validation.habit.stepLimit",
+        "validation.habit.unitLength"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/insights.ts",
+      "keys": [
+        "history.progress.count",
+        "history.progress.optional",
+        "history.progress.required",
+        "insights.atLeast",
+        "insights.beforeYourHabitsStarted",
+        "insights.complete.day.finished.readable",
+        "insights.complete.day.finished.unreadable",
+        "insights.complete.day.today.readable",
+        "insights.complete.day.today.unreadable",
+        "insights.completed",
+        "insights.completedTodayProvisional",
+        "insights.finishedWeek",
+        "insights.highlight.perfectDays",
+        "insights.highlight.perfectHabit",
+        "insights.highlight.streak",
+        "insights.inProgressTodayIsnTOver",
+        "insights.noHabitsHadStartedYet",
+        "insights.notCheckedIn",
+        "insights.notScheduled",
+        "insights.notScheduledDoneAnywayNotCounted",
+        "insights.notStarted",
+        "insights.notStartedThisHabitDidnTExistYet",
+        "insights.notTickedYet",
+        "insights.nothingScheduled",
+        "insights.partialNotComplete",
+        "insights.removedStep",
+        "insights.savedRecordCouldnTBeRead",
+        "insights.soFar",
+        "insights.thisWeekInProgress",
+        "insights.ticked",
+        "insights.todaySProgressHasnTLoaded",
+        "insights.upcoming",
+        "insights.upcomingFutureDaysAreNeverCounted",
+        "insights.upcomingNotScheduled",
+        "insights.upcomingScheduled"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/profile-validation.ts",
+      "keys": [
+        "profile-validation.pickAnIconAndAColor",
+        "validation.profile.nameLength"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/routine-list.ts",
+      "keys": [
+        "routine-list.aRoutineNeedsATitle",
+        "routine-list.thisRoutineNoLongerExists",
+        "validation.routine.countLimit",
+        "validation.routine.habitLimit"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/routine-progress.ts",
+      "keys": [
+        "routine-progress.5AmNoon",
+        "routine-progress.afternoon",
+        "routine-progress.anytime",
+        "routine-progress.evening",
+        "routine-progress.morning",
+        "routine-progress.noHabitsYet",
+        "routine-progress.noPreferredTime",
+        "routine-progress.nothingDueToday",
+        "routines.progress.allDone",
+        "routines.progress.done",
+        "routines.time.afternoonHint",
+        "routines.time.eveningHint"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/routine-validation.ts",
+      "keys": [
+        "routine-validation.giveYourRoutineATitle",
+        "validation.routine.descriptionLength",
+        "validation.routine.habitLimitSentence",
+        "validation.routine.titleLength"
+      ],
+      "dynamicKeys": []
+    },
+    {
+      "file": "src/utils/schedule.ts",
+      "keys": [
+        "schedule.everyDay",
+        "schedule.fri",
+        "schedule.friday",
+        "schedule.mon",
+        "schedule.monday",
+        "schedule.sat",
+        "schedule.saturday",
+        "schedule.sun",
+        "schedule.sunday",
+        "schedule.thu",
+        "schedule.thursday",
+        "schedule.tue",
+        "schedule.tuesday",
+        "schedule.wed",
+        "schedule.wednesday",
+        "schedule.weekdays",
+        "schedule.weekends"
+      ],
+      "dynamicKeys": []
+    }
+  ],
+  "exclusions": [
+    {
+      "scope": "src/data/demo-habits.ts and saved user content",
+      "reason": "Bootstrap record names/descriptions are raw domain defaults. Translating them changes persisted data; existing records remain opaque."
+    },
+    {
+      "scope": "src/utils/date.ts",
+      "reason": "Domain calendar/date keys remain unchanged. Presentation consumers use src/i18n/presentation-date.ts; Today keeps its validated helper."
+    },
+    {
+      "scope": "Storage identifiers, record/schema/checksum validation internals, original Error.message values",
+      "reason": "Machine contracts and developer diagnostics remain raw. Known backup errors attach descriptors without changing class/message/identity. Unknown errors use safe localized fallback; no English message matching."
+    },
+    {
+      "scope": "Platform symbols/routes/styles and OS-owned share/picker/keyboard copy",
+      "reason": "Technical identifiers or external UI; not translation resources."
+    },
+    {
+      "scope": "Unreachable starter components",
+      "reason": "Retained in main inventory; no reachable product route."
+    }
+  ],
+  "limits": "AST source checks cover literal JSX, presentation attributes and prose templates. Generic props, opaque user content and OS surfaces need physical review. Arabic resources are draft and activation/RTL/native linguistic QA remain separate approval gates.",
+  "reviewNotes": [
+    "Final typecheck caught and restored dynamically referenced achievements.{all,earned,locked} and calendar.weekday.{0..6} labels removed by the disposable pruning script. Explicit bilingual regression added."
+  ]
+}

@@ -1,21 +1,12 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text, TextInput} from '@/components/localized-native';
+import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
+
 import { useCallback, useRef, useState, type ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  type ScrollViewInstance,
-  type TextInputInstance,
-  type ViewInstance,
-} from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, View, type ScrollViewInstance, type TextInputInstance, type ViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ChecklistEditor } from '@/components/habits/checklist-editor';
@@ -53,8 +44,7 @@ type Props = {
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
 
 function errorMessage(error: unknown, fallback: string) {
-  const detail = error instanceof Error && error.message ? ` (${error.message})` : '';
-  return `${fallback}${detail}`;
+  return displayError(error, fallback);
 }
 
 export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
@@ -111,7 +101,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
       setBusy(saved === false ? 'idle' : 'done'); // 'done' stays locked while the screen closes
     } catch (error) {
       console.warn('[momentum] Failed to save habit', error);
-      setFailure(errorMessage(error, "Couldn't save this habit. Your changes are still here — try again."));
+      setFailure(errorMessage(error, appLabel("habits.habit-form.couldnTSaveThisHabitYourChangesAreStillHereTryAgain")));
       setBusy('idle');
     }
   };
@@ -125,7 +115,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
       setBusy(deleted ? 'done' : 'idle');
     } catch (error) {
       console.warn('[momentum] Failed to delete habit', error);
-      setFailure(errorMessage(error, "Couldn't delete this habit. Nothing was removed — try again."));
+      setFailure(errorMessage(error, appLabel("habits.habit-form.couldnTDeleteThisHabitNothingWasRemovedTryAgain")));
       setBusy('idle');
     }
   };
@@ -139,7 +129,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
             onPress={onCancel}
             disabled={locked}
             accessibilityRole="button"
-            accessibilityLabel="Cancel"
+            accessibilityLabel={appLabel("habits.habit-form.cancel")}
             hitSlop={8}
             style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}>
             <SymbolView
@@ -186,49 +176,49 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                   <SymbolView name={habitIconSymbol(draft.icon)} size={28} tintColor={readableAccent(draft.color, Palette)} />
                 </View>
                 <Text style={styles.previewName} numberOfLines={1}>
-                  {draft.name.trim() || 'New habit'}
+                  {draft.name.trim() || appLabel("habits.habit-form.newHabit")}
                 </Text>
               </View>
 
-              <Field label="Name" error={visibleErrors.name} counter={`${draft.name.length}/${NAME_MAX_LENGTH}`}>
+              <Field label={appLabel("habits.habit-form.name")} error={visibleErrors.name} counter={appMessage("display.ratio", { value: draft.name.length, maximum: NAME_MAX_LENGTH })}>
                 <TextInput
                   selectionColor={Palette.accent}
                   keyboardAppearance={scheme}
                   value={draft.name}
                   onChangeText={(text) => update('name', text)}
-                  placeholder="e.g. Morning walk"
+                  placeholder={appLabel("habits.habit-form.eGMorningWalk")}
                   placeholderTextColor={Palette.textMuted}
                   maxLength={NAME_MAX_LENGTH}
                   autoCapitalize="sentences"
                   returnKeyType="done"
                   editable={!locked}
-                  accessibilityLabel="Habit name"
+                  accessibilityLabel={appLabel("habits.habit-form.habitName")}
                   style={[styles.input, visibleErrors.name && styles.inputError]}
                 />
               </Field>
 
               <Field
-                label="Description"
+                label={appLabel("habits.habit-form.description")}
                 optional
                 error={visibleErrors.description}
-                counter={`${draft.description.length}/${DESCRIPTION_MAX_LENGTH}`}>
+                counter={appMessage("display.ratio", { value: draft.description.length, maximum: DESCRIPTION_MAX_LENGTH })}>
                 <TextInput
                   selectionColor={Palette.accent}
                   keyboardAppearance={scheme}
                   value={draft.description}
                   onChangeText={(text) => update('description', text)}
-                  placeholder="When, where or how much"
+                  placeholder={appLabel("habits.habit-form.whenWhereOrHowMuch")}
                   placeholderTextColor={Palette.textMuted}
                   maxLength={DESCRIPTION_MAX_LENGTH}
                   multiline
                   textAlignVertical="top"
                   editable={!locked}
-                  accessibilityLabel="Habit description"
+                  accessibilityLabel={appLabel("habits.habit-form.habitDescription")}
                   style={[styles.input, styles.multiline, visibleErrors.description && styles.inputError]}
                 />
               </Field>
 
-              <Field label="Tracking">
+              <Field label={appLabel("habits.habit-form.tracking")}>
                 <TrackingTypePicker value={draft.trackingType} disabled={locked} onChange={changeTrackingType} />
                 {draft.trackingType === 'count' && (
                   <CountFields
@@ -254,7 +244,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                 )}
               </Field>
 
-              <Field label="Schedule" error={visibleErrors.schedule}>
+              <Field label={appLabel("habits.habit-form.schedule")} error={visibleErrors.schedule}>
                 <WeekdayPicker
                   kind={draft.scheduleKind}
                   days={draft.days}
@@ -264,11 +254,11 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                 />
               </Field>
 
-              <Field label="Icon">
+              <Field label={appLabel("habits.habit-form.icon")}>
                 <IconPicker value={draft.icon} color={draft.color} onChange={(icon) => update('icon', icon)} />
               </Field>
 
-              <Field label="Color">
+              <Field label={appLabel("habits.habit-form.color")}>
                 <ColorPicker value={draft.color} onChange={(color) => update('color', color)} />
               </Field>
 
@@ -282,7 +272,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                   {busy === 'deleting' ? (
                     <ActivityIndicator size="small" color={Palette.danger} />
                   ) : (
-                    <Text style={styles.deleteText}>Delete habit</Text>
+                    <Text style={styles.deleteText}>{appLabel("habits.habit-form.deleteHabit")}</Text>
                   )}
                 </Pressable>
               )}
@@ -313,7 +303,7 @@ function Field({
       <View style={styles.fieldHeader}>
         <Text style={styles.label}>
           {label}
-          {optional && <Text style={styles.optional}> · optional</Text>}
+          {optional && <Text style={styles.optional}> {appLabel("habits.habit-form.optional")}</Text>}
         </Text>
         {counter && <Text style={styles.counter}>{counter}</Text>}
       </View>

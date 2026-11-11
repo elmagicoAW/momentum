@@ -1,8 +1,11 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { foregroundOnColor, readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
-import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
@@ -21,7 +24,7 @@ type Props = {
 };
 
 const DEFAULT_EMPTY_TEXT =
-  'You don’t have any habits yet. Goals can be saved without habits, but Habit Consistency needs at least one linked habit.';
+  appLabel("goals.habit-link-picker.youDonTHaveAnyHabitsYetGoalsCanBeSavedWithoutHabitsButHabitConsistencyNeedsAtLeastOneLinkedHabit");
 
 /** Multi-select list of existing habits. Selection order is kept. */
 export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, disabled, emptyText }: Props) {
@@ -35,7 +38,7 @@ export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, 
           disabled={disabled}
           accessibilityRole="button"
           style={({ pressed }) => [styles.emptyButton, pressed && styles.pressed]}>
-          <Text style={styles.emptyButtonText}>Create a habit</Text>
+          <Text style={styles.emptyButtonText}>{appLabel("goals.habit-link-picker.createAHabit")}</Text>
         </Pressable>
       </View>
     );
@@ -59,7 +62,7 @@ export function HabitLinkPicker({ habits, selectedIds, onChange, onCreateHabit, 
             disabled={disabled}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: isOn, disabled }}
-            accessibilityLabel={`${habit.name}, ${schedule}`}
+            accessibilityLabel={appMessage("display.labelValue", { label: String(habit.name), textValue: schedule })}
             android_ripple={{ color: Palette.ripple }}
             style={({ pressed }) => [
               styles.row,

@@ -1,21 +1,24 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {SymbolView, Text} from '@/components/localized-native';
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useLocalSearchParams } from 'expo-router';
-import { SymbolView } from 'expo-symbols';
+
 import { useMemo, type ReactNode } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/habits/empty-state';
 import { DataNotesCard } from '@/components/insights/data-notes';
-import { formatRate, plural, withAlpha } from '@/components/insights/format';
+import { formatRate, withAlpha } from '@/components/insights/format';
 import { HeatmapCalendar } from '@/components/insights/heatmap-calendar';
 import { StatTile } from '@/components/insights/stat-tile';
 import { MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { habitIconSymbol } from '@/data/habit-options';
 import { useInsights } from '@/hooks/use-insights';
-import { formatShortDate } from '@/utils/date';
+import { formatShortDate } from '@/i18n/presentation-date';
 import { describeTracking } from '@/utils/habit-progress';
 import { findHabit, summarizeHabit, type DataNotes } from '@/utils/insights';
 import { closeHabitHistory, openHabitEditor } from '@/utils/navigation';
@@ -35,20 +38,20 @@ export default function HabitHistoryScreen() {
   } else if (status === 'habits-error' || status === 'history-error') {
     body = (
       <EmptyState
-        title="Couldn’t load this history"
-        description="Your saved data hasn’t been changed. Try again, or restart the app."
+        title={appLabel("insights.habit.detail.couldnTLoadThisHistory")}
+        description={appLabel("insights.habit.detail.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp")}
         icon={{ ios: 'exclamationmark.triangle.fill', android: 'warning', web: 'warning' }}
-        actionLabel="Try again"
+        actionLabel={appLabel("insights.habit.detail.tryAgain")}
         onAction={retry}
       />
     );
   } else if (!index || !habitIndex || !summary) {
     body = (
       <EmptyState
-        title="Habit not found"
-        description="It may have been deleted. Its saved check-ins are kept."
+        title={appLabel("insights.habit.detail.habitNotFound")}
+        description={appLabel("insights.habit.detail.itMayHaveBeenDeletedItsSavedCheckInsAreKept")}
         icon={{ ios: 'questionmark.circle.fill', android: 'help', web: 'help' }}
-        actionLabel="Back to Insights"
+        actionLabel={appLabel("insights.habit.detail.backToInsights")}
         onAction={closeHabitHistory}
       />
     );
@@ -64,12 +67,12 @@ export default function HabitHistoryScreen() {
       incomplete: habitIndex.unknownDays > 0 || !index.todayKnown,
     };
     const currentCaption = current.todayDone
-      ? 'Includes today'
+      ? appLabel("insights.habit.detail.includesToday")
       : current.todayPending
         ? current.length > 0
-          ? 'Keep it going today'
-          : 'Start one today'
-        : 'Scheduled check-ins';
+          ? appLabel("insights.habit.detail.keepItGoingToday")
+          : appLabel("insights.habit.detail.startOneToday")
+        : appLabel("insights.habit.detail.scheduledCheckIns");
 
     body = (
       <>
@@ -84,51 +87,49 @@ export default function HabitHistoryScreen() {
             <Text style={styles.meta}>
               {describeSchedule(habit.schedule)} · {describeTracking(habit.tracking)}
             </Text>
-            <Text style={styles.metaMuted}>History from {formatShortDate(summary.startKey)}</Text>
+            <Text style={styles.metaMuted}>{appMessage("history.habit.start", { date: formatShortDate(summary.startKey) })}</Text>
           </View>
         </View>
 
         <View style={styles.tiles}>
           <StatTile
-            label="Current streak"
-            value={`${current.length}${current.uncertain ? '+' : ''}`}
+            label={appLabel("insights.habit.detail.currentStreak")}
+            value={appMessage("display.uncertainCount", { count: current.length, uncertainty: String(current.uncertain ? '+' : '') })}
             caption={currentCaption}
             color={habit.color}
-            badge={current.uncertain ? 'May be longer' : current.todayDone ? 'Provisional' : undefined}
+            badge={current.uncertain ? appLabel("insights.habit.detail.mayBeLonger") : current.todayDone ? appLabel("insights.habit.detail.provisional") : undefined}
           />
           <StatTile
-            label="Best streak"
-            value={`${longest.length}${longest.uncertain ? '+' : ''}`}
+            label={appLabel("insights.habit.detail.bestStreak")}
+            value={appMessage("display.uncertainCount", { count: longest.length, uncertainty: String(longest.uncertain ? '+' : '') })}
             caption={
               !longest.endKey
-                ? 'No streak yet'
+                ? appLabel("insights.habit.detail.noStreakYet")
                 : longest.ongoing
                   ? longest.includesToday
-                    ? 'Current run · includes today'
-                    : 'Current run'
-                  : `Ended ${formatShortDate(longest.endKey)}`
+                    ? appLabel("insights.habit.detail.currentRunIncludesToday")
+                    : appLabel("insights.habit.detail.currentRun")
+                  : appMessage("history.streak.ended", { date: (formatShortDate(longest.endKey)) })
             }
-            badge={longest.uncertain ? 'May be longer' : longest.includesToday ? 'Provisional' : undefined}
+            badge={longest.uncertain ? appLabel("insights.habit.detail.mayBeLonger") : longest.includesToday ? appLabel("insights.habit.detail.provisional") : undefined}
           />
           <StatTile
-            label="All time"
+            label={appLabel("insights.habit.detail.allTime")}
             value={formatRate(allTime.rate)}
             caption={
               allTime.finished > 0
-                ? `${allTime.done} of ${plural(allTime.finished, 'scheduled check-in', 'scheduled check-ins')} · finished days`
-                : 'No finished days yet — today counts once it’s over'
+                ? appMessage("history.allTime.finished", { done: allTime.done, count: allTime.finished })
+                : appLabel("insights.habit.detail.noFinishedDaysYetTodayCountsOnceItSOver")
             }
           />
           <StatTile
-            label="This month"
+            label={appLabel("insights.habit.detail.thisMonth")}
             value={formatRate(thisMonth.rate)}
-            caption={thisMonth.finished > 0 ? `${thisMonth.done} of ${thisMonth.finished} · finished days` : 'No finished days yet'}
+            caption={thisMonth.finished > 0 ? appMessage("history.month.finished", { done: (thisMonth.done), total: (thisMonth.finished) }) : appLabel("insights.habit.detail.noFinishedDaysYet")}
           />
         </View>
         {allTime.partial > 0 && (
-          <Text style={styles.footnote}>
-            {plural(allTime.partial, 'missed day had', 'missed days had')} some progress that didn’t meet the target.
-          </Text>
+          <Text style={styles.footnote}>{appMessage("history.partial.days", { count: allTime.partial })}</Text>
         )}
 
         <View style={styles.card}>
@@ -142,7 +143,7 @@ export default function HabitHistoryScreen() {
           accessibilityRole="button"
           android_ripple={{ color: Palette.rippleSubtle }}
           style={({ pressed }) => [styles.editButton, pressed && styles.pressed]}>
-          <Text style={styles.editText}>Edit habit</Text>
+          <Text style={styles.editText}>{appLabel("insights.habit.detail.editHabit")}</Text>
         </Pressable>
       </>
     );
@@ -156,7 +157,7 @@ export default function HabitHistoryScreen() {
             onPress={closeHabitHistory}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel="Back"
+            accessibilityLabel={appLabel("insights.habit.detail.back")}
             android_ripple={{ color: Palette.rippleSubtle, borderless: true }}
             style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}>
             <SymbolView
@@ -165,7 +166,7 @@ export default function HabitHistoryScreen() {
               tintColor={Palette.text}
             />
           </Pressable>
-          <Text style={styles.topTitle}>Habit history</Text>
+          <Text style={styles.topTitle}>{appLabel("insights.habit.detail.habitHistory")}</Text>
         </View>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           {body}

@@ -1,3 +1,4 @@
+import { appLabel, withErrorMessage, displayError } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,7 +24,7 @@ type BootResult = { changed: boolean; runtime: BackupRuntimeState };
 let startup: Promise<BootResult> | null = null;
 async function checkAndRecover(): Promise<BootResult> {
   const runtime = await checkBackupRuntime(() => journalFiles.list(), hashBackup);
-  if (runtime.kind === 'blocked') throw new RecoveryBlocked(runtime.message);
+  if (runtime.kind === 'blocked') throw withErrorMessage(new RecoveryBlocked(runtime.message), {key: 'recovery.runtimeBlocked', params: {reason: runtime.message}});
   const changed = runtime.kind === 'ready' ? await backupService.recover() : false;
   persistence.release();
   return { changed, runtime };
@@ -40,7 +41,7 @@ export function DataBackupProvider({ children }: { children: ReactNode }) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const [phase, setPhase] = useState<'loading' | 'ready' | 'applying' | 'blocked'>(backupSupported ? 'loading' : 'ready');
   const [epoch, setEpoch] = useState(() => persistence.generation());
-  const [unavailableReason, setUnavailableReason] = useState(backupSupported ? '' : 'Manual Data & Backup is available in the Android/iOS app.');
+  const [unavailableReason, setUnavailableReason] = useState(backupSupported ? '' : appLabel("use-data-backup.manualDataBackupIsAvailableInTheAndroidIOSApp"));
   const [error, setError] = useState(''); const [result, setResult] = useState(''); const [recovering, setRecovering] = useState(false);
   useEffect(() => {
     if (!backupSupported) return;
@@ -48,8 +49,8 @@ export function DataBackupProvider({ children }: { children: ReactNode }) {
     void boot().then(({ changed, runtime }) => {
       if (!alive) return;
       setUnavailableReason(runtime.kind === 'unavailable' ? runtime.message : '');
-      setEpoch(persistence.generation()); if (changed) setResult('Interrupted restore was recovered and verified.'); setPhase('ready');
-    }).catch((cause: unknown) => { if (alive) { setError(cause instanceof RecoveryBlocked ? cause.message : 'Recovery could not be verified. Editing remains blocked. Retry recovery or save the available recovery copy. Do not uninstall or clear app data.'); setPhase('blocked'); } });
+      setEpoch(persistence.generation()); if (changed) setResult(appLabel("use-data-backup.interruptedRestoreWasRecoveredAndVerified")); setPhase('ready');
+    }).catch((cause: unknown) => { if (alive) { setError(cause instanceof RecoveryBlocked ? displayError(cause, appLabel("use-data-backup.recoveryCouldNotBeVerifiedEditingRemainsBlockedRetryRecoveryOrSaveTheAvailableRecoveryCopyDoNotUninstallOrClearAppData")) : appLabel("use-data-backup.recoveryCouldNotBeVerifiedEditingRemainsBlockedRetryRecoveryOrSaveTheAvailableRecoveryCopyDoNotUninstallOrClearAppData")); setPhase('blocked'); } });
     return () => { alive = false; };
   }, []);
   useEffect(() => {
@@ -66,7 +67,7 @@ export function DataBackupProvider({ children }: { children: ReactNode }) {
       setEpoch(persistence.generation()); setResult(outcome.message); setPhase('ready');
       return true;
     } catch (cause) {
-      if (cause instanceof RecoveryBlocked) { setError(cause.message); setPhase('blocked'); return false; }
+      if (cause instanceof RecoveryBlocked) { setError(displayError(cause, appLabel('use-data-backup.recoveryCouldNotBeVerifiedEditingRemainsBlockedRetryRecoveryOrSaveTheAvailableRecoveryCopyDoNotUninstallOrClearAppData'))); setPhase('blocked'); return false; }
       else { setPhase('ready'); throw cause; }
     }
   }, [unavailableReason]);
@@ -76,17 +77,17 @@ export function DataBackupProvider({ children }: { children: ReactNode }) {
       if (persistence.available()) persistence.freeze();
       const recovered = await checkAndRecover();
       startup = Promise.resolve(recovered); setUnavailableReason(recovered.runtime.kind === 'unavailable' ? recovered.runtime.message : '');
-      setEpoch(persistence.generation()); setResult(recovered.changed ? 'Previous data recovered and verified.' : ''); setPhase('ready');
-    } catch (cause) { setError(cause instanceof RecoveryBlocked ? cause.message : 'Recovery still cannot be verified. Keep app data intact and retry.'); }
+      setEpoch(persistence.generation()); setResult(recovered.changed ? appLabel("use-data-backup.previousDataRecoveredAndVerified") : ''); setPhase('ready');
+    } catch (cause) { setError(cause instanceof RecoveryBlocked ? displayError(cause, appLabel("use-data-backup.recoveryStillCannotBeVerifiedKeepAppDataIntactAndRetry")) : appLabel("use-data-backup.recoveryStillCannotBeVerifiedKeepAppDataIntactAndRetry")); }
     finally { setRecovering(false); }
   };
   const saveRecovery = async (share: boolean) => {
     if (recovering) return; setRecovering(true);
     try {
-      const text = await backupService.recoveryCopy(); if (!text) throw new Error('No verified recovery copy is available.');
-      if (share) { await shareBackup(text); setError('Share sheet closed. Confirm the recovery file was saved in your chosen destination. Editing remains blocked.'); }
-      else setError(await saveBackup(text) ? 'Recovery copy saved and verified. Editing remains blocked until recovery succeeds.' : 'Save canceled. Editing remains blocked.');
-    } catch { setError('Could not save a verified recovery copy. Keep app data intact and retry.'); }
+      const text = await backupService.recoveryCopy(); if (!text) throw withErrorMessage(new Error('No verified recovery copy is available.'), { key: "use-data-backup.noVerifiedRecoveryCopyIsAvailable" });
+      if (share) { await shareBackup(text); setError(appLabel("use-data-backup.shareSheetClosedConfirmTheRecoveryFileWasSavedInYourChosenDestinationEditingRemainsBlocked")); }
+      else setError(await saveBackup(text) ? appLabel("use-data-backup.recoveryCopySavedAndVerifiedEditingRemainsBlockedUntilRecoverySucceeds") : appLabel("use-data-backup.saveCanceledEditingRemainsBlocked"));
+    } catch { setError(appLabel("use-data-backup.couldNotSaveAVerifiedRecoveryCopyKeepAppDataIntactAndRetry")); }
     finally { setRecovering(false); }
   };
   return (
@@ -96,14 +97,14 @@ export function DataBackupProvider({ children }: { children: ReactNode }) {
         <View style={styles.overlay} accessibilityViewIsModal>
           <SafeAreaView style={styles.safe}>
             <ScrollView contentContainerStyle={styles.content}>
-              <Text style={styles.title} accessibilityRole="header">{phase === 'blocked' ? 'Data recovery required' : phase === 'applying' ? 'Restoring your backup' : 'Checking local data'}</Text>
-              {phase !== 'blocked' && <ActivityIndicator color={Palette.accent} accessibilityLabel="Please wait for data verification" />}
-              <Text style={styles.text} accessibilityLiveRegion="assertive">{phase === 'blocked' ? error : 'Editing is paused while saved data is verified. Multi-key storage is not atomic; recovery files protect interrupted replacements.'}</Text>
+              <Text style={styles.title} accessibilityRole="header">{phase === 'blocked' ? appLabel("use-data-backup.dataRecoveryRequired") : phase === 'applying' ? appLabel("use-data-backup.restoringYourBackup") : appLabel("use-data-backup.checkingLocalData")}</Text>
+              {phase !== 'blocked' && <ActivityIndicator color={Palette.accent} accessibilityLabel={appLabel("use-data-backup.pleaseWaitForDataVerification")} />}
+              <Text style={styles.text} accessibilityLiveRegion="assertive">{phase === 'blocked' ? error : appLabel("use-data-backup.editingIsPausedWhileSavedDataIsVerifiedMultiKeyStorageIsNotAtomicRecoveryFilesProtectInterruptedReplacements")}</Text>
               {phase === 'blocked' && <>
-                <Text style={styles.text}>Recovery files are unencrypted and may contain personal routines.</Text>
-                <Action label="Retry recovery" disabled={recovering} onPress={() => void recover()} />
-                <Action label="Save recovery copy to device" disabled={recovering} onPress={() => void saveRecovery(false)} />
-                <Action label="Share recovery copy" disabled={recovering} onPress={() => void saveRecovery(true)} />
+                <Text style={styles.text}>{appLabel("use-data-backup.recoveryFilesAreUnencryptedAndMayContainPersonalRoutines")}</Text>
+                <Action label={appLabel("use-data-backup.retryRecovery")} disabled={recovering} onPress={() => void recover()} />
+                <Action label={appLabel("use-data-backup.saveRecoveryCopyToDevice")} disabled={recovering} onPress={() => void saveRecovery(false)} />
+                <Action label={appLabel("use-data-backup.shareRecoveryCopy")} disabled={recovering} onPress={() => void saveRecovery(true)} />
               </>}
             </ScrollView>
           </SafeAreaView>

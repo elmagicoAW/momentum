@@ -1,11 +1,15 @@
+"use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import {Text, NumericText} from '@/components/localized-native';
+import { appLabel, appMessage, appNumber, appRich } from '@/i18n/app-copy';
+import { LocalizedInline } from '@/components/localized-inline';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { PeriodNav } from '@/components/insights/period-nav';
-import { formatRate, plural } from '@/components/insights/format';
+import { formatRate } from '@/components/insights/format';
 import { Radius } from '@/constants/theme';
 import {
   clampWeek,
@@ -22,7 +26,7 @@ import {
  * today's habits are "still to come", never missed.
  */
 export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
-  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { palette: Palette, styles, language } = useAppStyles(createStyles);
   const bounds = weekBounds(index);
   const [chosen, setChosen] = useState(bounds.maxStartKey);
   // Clamp (e.g. after midnight rolls into a new week).
@@ -43,7 +47,7 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
         canNext={startKey < bounds.maxStartKey}
         onPrev={() => setChosen(stepWeek(startKey, -1, bounds))}
         onNext={() => setChosen(stepWeek(startKey, 1, bounds))}
-        resetLabel={review.isCurrent ? undefined : 'This week'}
+        resetLabel={review.isCurrent ? undefined : appLabel("insights.weekly-review-card.thisWeek")}
         onReset={() => setChosen(bounds.maxStartKey)}
       />
 
@@ -53,48 +57,40 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
 
       {nothingScheduled ? null : (
         <>
-          <View style={styles.statsRow}>
-            <Stat label="Completed" value={String(counts.done + review.todayDone)} color={Palette.success} />
-            <Stat label="Missed" value={String(counts.missed)} color={counts.missed > 0 ? Palette.danger : undefined} />
+          <View style={[styles.statsRow,language === 'ar' && {flexWrap:'wrap'}]}>
+            <Stat label={appLabel("insights.weekly-review-card.completed")} value={appNumber(counts.done + review.todayDone)} color={Palette.success} />
+            <Stat label={appLabel("insights.weekly-review-card.missed")} value={appNumber(counts.missed)} color={counts.missed > 0 ? Palette.danger : undefined} />
             <Stat
-              label={review.isCurrent ? 'Still to come' : 'Consistency'}
-              value={review.isCurrent ? String(review.remaining) : formatRate(counts.rate)}
+              label={review.isCurrent ? appLabel("insights.weekly-review-card.stillToCome") : appLabel("insights.weekly-review-card.consistency")}
+              value={review.isCurrent ? appNumber(review.remaining) : formatRate(counts.rate)}
             />
           </View>
 
           <View style={styles.lines}>
             {review.isCurrent && review.todayDone > 0 && (
-              <Line>
-                “Completed” includes {plural(review.todayDone, 'check-in', 'check-ins')} from today (provisional).
-              </Line>
+              <Line>{appMessage("insights.week.todayIncluded", { count: review.todayDone })}</Line>
             )}
             {counts.partial > 0 && (
-              <Line>{plural(counts.partial, 'missed check-in had', 'missed check-ins had')} some progress.</Line>
+              <Line>{appMessage("insights.week.partial", { count: counts.partial })}</Line>
             )}
             {review.deltaPoints !== null && (
               <Line>
                 {review.deltaPoints === 0
-                  ? 'Same consistency as the week before.'
-                  : `${review.deltaPoints > 0 ? '▲' : '▼'} ${Math.abs(review.deltaPoints)} points vs the week before (${formatRate(review.previousRate)}).`}
+                  ? appLabel("insights.weekly-review-card.sameConsistencyAsTheWeekBefore")
+                  : appMessage("insights.week.delta", { arrow: (review.deltaPoints > 0 ? '▲' : '▼'), value: (Math.abs(review.deltaPoints)), rate: (formatRate(review.previousRate)) })}
               </Line>
             )}
             {review.best && (
-              <Line>
-                Strongest: <Text style={styles.strong}>{review.best.habit.name}</Text> · {review.best.counts.done} of{' '}
-                {review.best.counts.finished}
-              </Line>
+              <Line><LocalizedInline message={appRich('insights.week.best', { name: review.best.habit.name, done: review.best.counts.done, total: review.best.counts.finished }, 'name')} slotStyle={styles.strong} /></Line>
             )}
             {review.needsAttention && review.needsAttention.habit.id !== review.best?.habit.id && (
-              <Line>
-                Needs attention: <Text style={styles.strong}>{review.needsAttention.habit.name}</Text> ·{' '}
-                {plural(review.needsAttention.counts.missed, 'miss', 'misses')}
-              </Line>
+              <Line><LocalizedInline message={appRich('insights.week.attention', { name: review.needsAttention.habit.name, count: review.needsAttention.counts.missed }, 'name')} slotStyle={styles.strong} /></Line>
             )}
           </View>
 
           {review.achievements.length > 0 && (
             <View style={styles.achievements}>
-              <Text style={styles.label}>Achievements</Text>
+              <Text style={styles.label}>{appLabel("insights.weekly-review-card.achievements")}</Text>
               {review.achievements.map((a) => (
                 <View key={a} style={styles.achievement}>
                   <Text style={styles.achievementIcon}>★</Text>
@@ -107,27 +103,22 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
       )}
 
       {review.unreadableDays > 0 && (
-        <Text style={styles.warning}>
-          {plural(review.unreadableDays, 'day', 'days')} this week couldn’t be read and {review.unreadableDays === 1 ? 'is' : 'are'}{' '}
-          left out — this review may be incomplete.
-        </Text>
+        <Text style={styles.warning}>{appMessage("insights.week.unreadable", { count: review.unreadableDays })}</Text>
       )}
       {review.possibleScheduleChange && (
         <Text style={styles.muted}>
-          Some check-ins this week fall on days a habit isn’t scheduled now. They aren’t counted; past weeks use current
-          schedules.
-        </Text>
+          {appLabel("insights.weekly-review-card.someCheckInsThisWeekFallOnDaysAHabitIsnTScheduledNowTheyArenTCountedPastWeeksUseCurrentSchedules")}</Text>
       )}
     </View>
   );
 }
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
-  const { palette: Palette, styles } = useAppStyles(createStyles);
+  const { palette: Palette, styles, language } = useAppStyles(createStyles);
   return (
-    <View style={styles.stat} accessible accessibilityLabel={`${label}: ${value}`}>
-      <Text style={[styles.statValue, color ? { color: readableAccent(color, Palette) } : null]}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
+    <View style={[styles.stat,language === 'ar' && {flexBasis:'100%',minWidth:0}]} accessible accessibilityLabel={appMessage("display.labelColon", { label: String(label), textValue: value })}>
+      <NumericText style={[styles.statValue, color ? { color: readableAccent(color, Palette) } : null]}>{value}</NumericText>
+      <Text style={[styles.statLabel,language === 'ar' && {textAlign:'center'}]}>{label}</Text>
     </View>
   );
 }

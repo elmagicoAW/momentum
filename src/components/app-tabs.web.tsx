@@ -1,3 +1,4 @@
+import {SymbolView} from '@/components/localized-native';
 import {
   Tabs,
   TabList,
@@ -6,9 +7,10 @@ import {
   TabTriggerSlotProps,
   TabListProps,
 } from 'expo-router/ui';
-import { SymbolView } from 'expo-symbols';
+
 import { Pressable, View, StyleSheet } from 'react-native';
 import { useTheme } from '@/hooks/use-theme';
+import { useLanguage } from '@/hooks/use-language';
 
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { GOALS_HREF, HABITS_HREF, HOME_HREF, INSIGHTS_HREF } from '@/utils/navigation';
@@ -18,25 +20,26 @@ import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
+  const { t } = useLanguage();
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="index" href={HOME_HREF} asChild>
-            <TabButton>Today</TabButton>
+            <TabButton>{t('navigation.today')}</TabButton>
           </TabTrigger>
           <TabTrigger name="habits" href={HABITS_HREF} asChild>
-            <TabButton>Habits</TabButton>
+            <TabButton>{t('navigation.habits')}</TabButton>
           </TabTrigger>
           <TabTrigger name="goals" href={GOALS_HREF} asChild>
-            <TabButton>Goals</TabButton>
+            <TabButton>{t('navigation.goals')}</TabButton>
           </TabTrigger>
           <TabTrigger name="insights" href={INSIGHTS_HREF} asChild>
-            <TabButton>Insights</TabButton>
+            <TabButton>{t('navigation.insights')}</TabButton>
           </TabTrigger>
           <TabTrigger name="settings" href="/settings" asChild>
-            <TabButton>Settings</TabButton>
+            <TabButton>{t('navigation.settings')}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -66,19 +69,20 @@ export function TabButton({ children, isFocused, ...props }: TabButtonProps) {
 
 export function CustomTabList(props: TabListProps) {
   const colors = useTheme();
+  const { t } = useLanguage();
 
   return (
     <View {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
         <ThemedText type="smallBold" style={styles.brandText}>
-          MOMENTUM
+          {t('navigation.brand')}
         </ThemedText>
 
         {props.children}
 
         <ExternalLink href="https://docs.expo.dev" asChild>
           <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
+            <ThemedText type="link">{t('navigation.docs')}</ThemedText>
             <SymbolView
               tintColor={colors.text}
               name={{ ios: 'arrow.up.right.square', web: 'link' }}

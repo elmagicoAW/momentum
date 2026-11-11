@@ -1,6 +1,12 @@
+import { languageAr } from './language-ar';
 import type { Dictionary } from '@/i18n/types';
+import { todayAr } from './today-ar';
+import { remainingAr } from './remaining-ar';
 
 export const ar = {
+  ...languageAr,
+  ...remainingAr,
+  ...todayAr,
   'preferences.invalid-record': 'تعذّرت قراءة تفضيلات المظهر واللغة المحفوظة. أعد محاولة تحميلها.',
   'preferences.unsupported-version': 'تم حفظ هذه التفضيلات بإصدار غير مدعوم من التطبيق.',
   'preferences.read-failed': 'تعذّر تحميل تفضيلات المظهر واللغة. يرجى إعادة المحاولة.',

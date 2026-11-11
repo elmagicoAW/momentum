@@ -1,3 +1,4 @@
+import { appLabel, appMessage } from '@/i18n/app-copy';
 import { COUNT_VALUE_MAX, type DayRecord, type HabitEntry } from '@/data/completion-storage';
 import type { Habit, HabitTracking } from '@/data/habit-storage';
 
@@ -171,12 +172,12 @@ export function normalizeTodayRecord(record: DayRecord, habits: readonly Habit[]
 export function describeTracking(tracking: HabitTracking): string {
   switch (tracking.type) {
     case 'tick':
-      return 'Check off';
+      return appLabel("habit-progress.checkOff");
     case 'count':
-      return tracking.unit ? `${tracking.target} ${tracking.unit}` : `Target ${tracking.target}`;
+      return tracking.unit ? appMessage("habits.tracking.unit", { target: tracking.target, unit: tracking.unit }) : appMessage("habits.tracking.target", { target: (tracking.target) });
     case 'checklist': {
       const n = tracking.steps.length;
-      return n === 1 ? '1 step' : `${n} steps`;
+      return appMessage("habits.tracking.steps", { count: n });
     }
   }
 }

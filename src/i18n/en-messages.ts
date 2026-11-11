@@ -1,5 +1,9 @@
-/** Complete messages, never English fragments joined around user content. Not wired to screens yet. */
+import { remainingEnMessages } from './remaining-en-messages';
+import { todayEnMessages } from './today-en-messages';
+/** Complete messages, never English fragments joined around user content. */
 export const enMessages = {
+  ...remainingEnMessages,
+  ...todayEnMessages,
   'today.progress': '{completed} of {total} habits',
   'today.greetingNamed': '{greeting}, {name}',
   'today.remaining': { one: '{count} habit left', other: '{count} habits left' },
