@@ -10,6 +10,7 @@ import { ProfileSummaryCard } from '@/components/settings/profile-summary-card';
 import { AchievementsSummaryCard } from '@/components/achievements/achievements-summary-card';
 import { SettingsRow } from '@/components/settings/settings-row';
 import { SettingsSection } from '@/components/settings/settings-section';
+import { AppearanceSelector } from '@/components/settings/appearance-selector';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
@@ -66,13 +67,8 @@ export default function SettingsScreen() {
 
           <AchievementsSummaryCard />
 
-          <SettingsSection title="Appearance" footer="Momentum is designed for dark mode.">
-            <SettingsRow
-              variant="info"
-              icon={{ ios: 'moon.fill', android: 'dark_mode', web: 'dark_mode' }}
-              label="Theme"
-              value="Dark"
-            />
+          <SettingsSection title="Appearance" footer="Choose Light, Dark, or follow your device with System.">
+            <AppearanceSelector />
           </SettingsSection>
 
           <SettingsSection title="Language">

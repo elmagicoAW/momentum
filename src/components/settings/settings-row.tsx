@@ -1,4 +1,5 @@
 import { readableAccent } from '@/utils/theme-color';
+import type { ComponentRef, Ref } from 'react';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
@@ -7,6 +8,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Radius, Spacing } from '@/constants/theme';
 
 type Base = {
+  ref?: Ref<ComponentRef<typeof View>>;
   icon: SymbolViewProps['name'];
   label: string;
   /** Tint for the icon tile. */
@@ -15,7 +17,7 @@ type Base = {
 
 type Props =
   /** Opens something that works today. The only tappable variant. */
-  | (Base & { variant: 'link'; value?: string; onPress: () => void })
+  | (Base & { variant: 'link'; value?: string; onPress: () => void; disabled?: boolean })
   /** A true, read-only value (e.g. Theme: Dark). Not tappable. */
   | (Base & { variant: 'info'; value: string })
   /** A planned feature. Clearly marked, not tappable. */
@@ -29,7 +31,7 @@ const CHEVRON = { ios: 'chevron.right', android: 'chevron_right', web: 'chevron_
  * One settings row. Only `link` rows are buttons: `info`, `soon` and `text`
  * rows are plain views (no ripple, no chevron), so nothing pretends to work.
  */
-export function SettingsRow(props: Props) {
+export function SettingsRow({ ref, ...props }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const tint = props.tint ?? Palette.accent;
   const dimmed = props.variant === 'soon';
@@ -43,11 +45,14 @@ export function SettingsRow(props: Props) {
   if (props.variant === 'link') {
     return (
       <Pressable
+        ref={ref}
         onPress={props.onPress}
+        disabled={props.disabled}
+        accessibilityState={{ disabled: !!props.disabled }}
         accessibilityRole="button"
         accessibilityLabel={props.value ? `${props.label}, ${props.value}` : props.label}
         android_ripple={{ color: Palette.ripple }}
-        style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+        style={({ pressed }) => [styles.row, (pressed || props.disabled) && styles.pressed]}>
         {iconTile}
         <Text style={styles.label}>{props.label}</Text>
         {props.value && (

@@ -17,5 +17,5 @@ export function usePreferences() {
   const store = useContext(PreferencesContext);
   if (!store) throw new Error('usePreferences requires PreferencesProvider');
   const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
-  return { ...snapshot, retryLoad: store.load, updatePreferences: store.update };
+  return { ...snapshot, getPreferencesSnapshot: store.getSnapshot, retryLoad: store.load, updatePreferences: store.update };
 }

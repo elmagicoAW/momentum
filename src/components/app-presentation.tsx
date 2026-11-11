@@ -17,7 +17,7 @@ export function AppPresentation({ children }: PropsWithChildren) {
       card: palette.surface, text: palette.text, border: palette.border } };
   }, [palette, scheme]);
   useEffect(() => {
-    // Root background only: do not unlock native appearance or activate System in this phase.
+    // Edge-to-edge system bars draw over app surfaces; keep the native root in sync.
     void SystemUI.setBackgroundColorAsync(palette.background).catch((error: unknown) => {
       if (__DEV__) console.warn('[momentum] Could not update root presentation background', error);
     });

@@ -43,7 +43,7 @@ test('localized display numbers/percent/date leave local machine keys and Gregor
   assert.equal(key, '2026-12-31');
   assert.equal(formatLocalDate('en', key), 'December 31, 2026');
   const localized = formatLocalDate('ar', key);
-  assert.ok(localized.includes(new Intl.NumberFormat('ar', { useGrouping: false }).format(2026)));
+  assert.ok(localized.includes(new Intl.NumberFormat('ar-EG', { numberingSystem: 'arab', useGrouping: false }).format(2026)));
   assert.equal(key, '2026-12-31');
   assert.throws(() => formatLocalDate('ar', '2026-02-30'), RangeError);
 });
