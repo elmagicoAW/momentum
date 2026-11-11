@@ -1,5 +1,6 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
-import {Text} from '@/components/localized-native';
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
+import {Text, NumericText} from '@/components/localized-native';
 import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
@@ -33,6 +34,7 @@ function sortGoals(goals: readonly Goal[]): Goal[] {
 }
 
 export default function GoalsScreen() {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const GOAL_STATUS_META = goalStatusMeta(Palette);
   const { goals, status, reload } = useGoals();
@@ -54,12 +56,12 @@ export default function GoalsScreen() {
   const completionHistory = history.status === 'ready' && habitsStatus === 'ready' ? history.history : null;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
         <View style={styles.headerWrap}>
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.title} accessibilityRole="header">
+          <View style={[styles.header,arabic.active && arabic.heading]}>
+            <View style={[styles.headerText,arabic.active && arabic.textColumn]}>
+              <Text style={[styles.title,arabic.active && arabic.title]} accessibilityRole="header">
                 {appLabel("goals.index.goals")}</Text>
               {ready && goals.length > 0 && (
                 <Text style={styles.subtitle}>{appMessage("goals.list.activeCount", { count: activeCount })}</Text>
@@ -80,7 +82,7 @@ export default function GoalsScreen() {
           </View>
 
           {ready && goals.length > 0 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={[styles.filters,arabic.active && arabic.filters]}>
               {FILTERS.map((f) => {
                 const selected = f === filter;
                 const count = f === 'all' ? goals.length : goals.filter((g) => g.status === f).length;
@@ -93,9 +95,7 @@ export default function GoalsScreen() {
                     accessibilityState={{ selected }}
                     accessibilityLabel={appMessage("display.labelValue", { label: String(label), textValue: appNumber(count) })}
                     style={({ pressed }) => [styles.chip, selected && styles.chipSelected, pressed && styles.pressed]}>
-                    <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
-                      {label} <Text style={styles.chipCount}>{appNumber(count)}</Text>
-                    </Text>
+                    {arabic.active ? <View style={[arabic.row,{gap:6}]}><Text style={[styles.chipText,selected && styles.chipTextSelected]}>{label}</Text><NumericText style={styles.chipCount}>{appNumber(count)}</NumericText></View> : <Text style={[styles.chipText,selected && styles.chipTextSelected]}>{label} <Text style={styles.chipCount}>{appNumber(count)}</Text></Text>}
                   </Pressable>
                 );
               })}

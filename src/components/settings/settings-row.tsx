@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text} from '@/components/localized-native';
 import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
@@ -35,6 +36,7 @@ const CHEVRON = { ios: 'chevron.right', android: 'chevron_right', web: 'chevron_
  * rows are plain views (no ripple, no chevron), so nothing pretends to work.
  */
 export function SettingsRow({ ref, ...props }: Props) {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles, language } = useAppStyles(createStyles);
   const tint = props.tint ?? Palette.accent;
   const dimmed = props.variant === 'soon';
@@ -55,15 +57,15 @@ export function SettingsRow({ ref, ...props }: Props) {
         accessibilityRole="button"
         accessibilityLabel={props.value ? appMessage("display.labelValue", { label: String(props.label), textValue: props.value }) : props.label}
         android_ripple={{ color: Palette.ripple }}
-        style={({ pressed }) => [styles.row, (pressed || props.disabled) && styles.pressed]}>
+        style={({ pressed }) => [styles.row, arabic.active && arabic.settingsRow, (pressed || props.disabled) && styles.pressed]}>
         {iconTile}
-        {language === 'ar' ? <View style={{flex:1,minWidth:0,gap:4}}><Text style={styles.label}>{props.label}</Text>
+        {language === 'ar' ? <View style={arabic.textColumn}><Text style={[styles.label,arabic.active && {flex:0,alignSelf:'stretch',textAlign:'start'}]}>{props.label}</Text>
         {props.value && (
-          <Text style={[styles.value,language === 'ar' && {maxWidth:'100%',flexShrink:1,textAlign:'left'}]} numberOfLines={1}>
+          <Text style={[styles.value,language === 'ar' && {maxWidth:'100%',flexShrink:1,textAlign:'start'}]} numberOfLines={1}>
             {props.value}
           </Text>
         )}
-        </View> : <><Text style={styles.label}>{props.label}</Text>{props.value && <Text style={styles.value} numberOfLines={1}>{props.value}</Text>}</>}
+        </View> : <><Text style={[styles.label,arabic.active && {flex:0,alignSelf:'stretch',textAlign:'start'}]}>{props.label}</Text>{props.value && <Text style={styles.value} numberOfLines={1}>{props.value}</Text>}</>}
         <SymbolView name={CHEVRON} size={16} tintColor={Palette.textMuted} />
       </Pressable>
     );
@@ -71,10 +73,10 @@ export function SettingsRow({ ref, ...props }: Props) {
 
   if (props.variant === 'text') {
     return (
-      <View style={[styles.row, styles.textRow]} accessible accessibilityLabel={appMessage("display.labelText", { label: String(props.label), text: String(props.text) })}>
+      <View style={[styles.row, arabic.active && arabic.settingsRow, styles.textRow]} accessible accessibilityLabel={appMessage("display.labelText", { label: String(props.label), text: String(props.text) })}>
         {iconTile}
         <View style={styles.textBlock}>
-          <Text style={styles.label}>{props.label}</Text>
+          <Text style={[styles.label,arabic.active && {flex:0,alignSelf:'stretch',textAlign:'start'}]}>{props.label}</Text>
           <Text style={styles.paragraph}>{props.text}</Text>
         </View>
       </View>
@@ -84,14 +86,14 @@ export function SettingsRow({ ref, ...props }: Props) {
   const value = props.variant === 'info' ? props.value : appLabel("settings.settings-row.comingLater");
   return (
     <View
-      style={styles.row}
+      style={[styles.row,arabic.active && arabic.settingsRow]}
       accessible
       accessibilityLabel={appMessage("display.labelValue", { label: String(props.label), textValue: value })}
       accessibilityState={dimmed ? { disabled: true } : undefined}>
       {iconTile}
-      {language === 'ar' ? <View style={{flex:1,minWidth:0,gap:4}}>
-        <Text style={[styles.label,dimmed && styles.labelDimmed]}>{props.label}</Text>
-        <Text style={[styles.value,{maxWidth:'100%',textAlign:'left'}]}>{value}</Text>
+      {language === 'ar' ? <View style={arabic.textColumn}>
+        <Text style={[styles.label,dimmed && styles.labelDimmed,{flex:0,alignSelf:'stretch',textAlign:'start'}]}>{props.label}</Text>
+        <Text style={[styles.value,{maxWidth:'100%',textAlign:'start'}]}>{value}</Text>
       </View> : <><Text style={[styles.label, dimmed && styles.labelDimmed]}>{props.label}</Text>
       {dimmed ? (
         <View style={styles.badge}>

@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, NumericText} from '@/components/localized-native';
 import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
@@ -26,7 +27,8 @@ export function streakText(summary: HabitSummary): string {
 }
 
 export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
-  const { palette: Palette, styles, language } = useAppStyles(createStyles);
+  const arabic = useArabicComposition();
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const { habit, current, longest, last30 } = summary;
   const label = appMessage(current.uncertain ? 'history.row.accessibleUncertain' : 'history.row.accessible', {name:habit.name, schedule:describeSchedule(habit.schedule), streak:streakText(summary), best:appNumber(longest.length), rate:formatRate(last30.rate)});
 
@@ -37,16 +39,16 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
       accessibilityLabel={label}
       accessibilityHint={appLabel("insights.habit-insight-row.opensThisHabitSHistory")}
       android_ripple={{ color: Palette.ripple }}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
-      <View style={styles.top}>
+      style={({ pressed }) => [styles.card,arabic.active && arabic.surface, pressed && styles.pressed]}>
+      <View style={[styles.top,arabic.active && arabic.row]}>
         <View style={[styles.iconWrap, { backgroundColor: withAlpha(habit.color, 0.14, Palette.accent) }]}>
           <SymbolView name={habitIconSymbol(habit.icon)} size={20} tintColor={readableAccent(habit.color, Palette)} />
         </View>
         <View style={[styles.body,{minWidth:0,flexShrink:1}]}>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={[styles.title,arabic.active && arabic.title]} numberOfLines={1}>
             {habit.name}
           </Text>
-          <Text style={styles.schedule} numberOfLines={1}>
+          <Text style={[styles.schedule,arabic.active && arabic.supporting]} numberOfLines={1}>
             {describeSchedule(habit.schedule)}
             {summary.possibleScheduleChange ? appLabel("insights.habit-insight-row.scheduleMayHaveChanged") : ''}
           </Text>
@@ -58,7 +60,7 @@ export function HabitInsightRow({ summary, todayKey, onPress }: Props) {
         />
       </View>
 
-      <View style={[styles.metrics,language === 'ar' && {flexWrap:'wrap'}]}>
+      <View style={[styles.metrics,arabic.active && arabic.metrics]}>
         <Metric value={streakText(summary)} label={current.todayPending && current.length > 0 ? appLabel("insights.habit-insight-row.keepItGoingToday") : appLabel("insights.habit-insight-row.current")} />
         <Metric value={appMessage("display.uncertainCount", { count: longest.length, uncertainty: String(longest.uncertain ? '+' : '') })} label={appLabel("insights.habit-insight-row.best")} />
         <Metric value={formatRate(last30.rate)} label={appLabel("insights.habit-insight-row.30Days")} />
@@ -95,13 +97,14 @@ function dotStyle(status: number, color: string, isToday: boolean, Palette: AppP
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
-  const { styles, language } = useAppStyles(createStyles);
+  const { styles } = useAppStyles(createStyles);
+  const arabic = useArabicComposition();
   return (
-    <View style={[styles.metric,language === 'ar' && {flexBasis:'100%',minWidth:0}]}>
+    <View style={[styles.metric,arabic.active && arabic.metric]}>
       <NumericText style={[styles.metricValue,{width:'100%'}]} numberOfLines={1}>
         {value}
       </NumericText>
-      <Text style={styles.metricLabel} numberOfLines={1}>
+      <Text style={[styles.metricLabel,arabic.active && {textAlign:'center',alignSelf:'stretch'}]} numberOfLines={1}>
         {label}
       </Text>
     </View>

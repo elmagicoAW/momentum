@@ -1,5 +1,6 @@
 "use no memo";
-import { stackProgress } from '@/utils/rtl-presentation';
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
+import { arabicTodayProgress } from '@/utils/today-presentation';
 import { useState } from 'react';
 import {Text} from '@/components/localized-native';
 import type { AppPalette } from '@/constants/palettes';
@@ -45,11 +46,12 @@ function progressMessageKey(done: number, total: number): MessageKey {
 }
 
 export default function TodayScreen() {
+  const arabic = useArabicComposition();
+  const { fontScale } = useWindowDimensions();
+  const [progressWidth, setProgressWidth] = useState<number | null>(null);
+  const progressLayout = arabicTodayProgress(progressWidth, fontScale);
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { language } = useLanguage();
-  const {width, fontScale} = useWindowDimensions();
-  const [progressWidth, setProgressWidth] = useState<number | null>(null);
-  const stacked = stackProgress(language === 'ar', progressWidth ?? width, fontScale);
   const { t, m } = todayCopy(language);
   const now = useCurrentDate();
   const daily = useDailyProgress();
@@ -85,16 +87,16 @@ export default function TodayScreen() {
   const avatarLabel = displayName ? m('accessibility.profileNamed', { name: displayName }) : t('profile.setup');
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <ScrollView
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}>
           {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.date}>{todayDate(language, now)}</Text>
-              <Text style={styles.greeting} accessibilityRole="header">
+          <View style={[styles.header, arabic.active && { direction: 'rtl', gap: 12 }]}>
+            <View style={[styles.headerText, arabic.active && { minWidth: 0, alignItems: 'stretch' }]}>
+              <Text style={[styles.date, arabic.active && arabic.title]}>{todayDate(language, now)}</Text>
+              <Text style={[styles.greeting, arabic.active && arabic.title]} accessibilityRole="header">
                 {displayName ? (
                   <LocalizedInline message={todayRich(language, 'today.greetingLine', { greeting, name: displayName }, 'name')} slotStyle={styles.name} />
                 ) : (
@@ -113,16 +115,27 @@ export default function TodayScreen() {
           </View>
 
           {/* Progress */}
-          <View onLayout={event => setProgressWidth(event.nativeEvent.layout.width)} style={[styles.progressCard, stacked && {flexDirection:'column', alignItems:'center'}]}>
+          {arabic.active ? <View onLayout={event => {
+            const width = event.nativeEvent.layout.width;
+            // Height changes must not feed back into layout; ignore subpixel width jitter.
+            setProgressWidth(previous => previous !== null && Math.abs(previous - width) < 0.5 ? previous : width);
+          }} style={[styles.progressCard, progressLayout.container]}>
+            <View style={progressLayout.text}>
+              <Text style={[styles.cardLabel,arabic.title]}>{t('today.dailyProgress')}</Text>
+              <Text style={[styles.progressTitle,arabic.title,{fontSize:20}]}>{m('today.progress',{completed:doneCount,total})}</Text>
+              <Text style={[styles.progressSubtitle,arabic.supporting]}>{t(progressMessageKey(doneCount,total))}</Text>
+            </View>
+            <View style={{alignSelf:'center'}}><ProgressRing completed={doneCount} total={total} size={progressLayout.ringSize} strokeWidth={8} captionBelow={progressLayout.captionBelow} /></View>
+          </View> : <View style={styles.progressCard}>
             <ProgressRing completed={doneCount} total={total} />
-            <View style={[styles.progressText, stacked && {flex:0, width:'100%', minWidth:0}]}>
+            <View style={styles.progressText}>
               <Text style={styles.cardLabel}>{t('today.dailyProgress')}</Text>
               <Text style={styles.progressTitle}>
                 {m('today.progress', { completed: doneCount, total })}
               </Text>
               <Text style={styles.progressSubtitle}>{t(progressMessageKey(doneCount, total))}</Text>
             </View>
-          </View>
+          </View>}
 
           {/* Optional first-run name card — below the progress, so habits stay in view */}
           {showNamePrompt && <NamePromptCard onAdd={openProfileEditor} onDismiss={dismissNamePrompt} />}

@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {Text} from '@/components/localized-native';
 import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
@@ -23,6 +24,7 @@ import { HABITS_HREF, openHabitHistory } from '@/utils/navigation';
 
 /** Insights tab — strictly read-only. */
 export default function InsightsScreen() {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { status, index, todayKey, retry } = useInsights();
 
@@ -131,7 +133,7 @@ export default function InsightsScreen() {
   }
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top']} style={styles.flex}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>

@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {Text, NumericText} from '@/components/localized-native';
 import { appLabel, appMessage, appNumber, appRich } from '@/i18n/app-copy';
 import { LocalizedInline } from '@/components/localized-inline';
@@ -26,7 +27,8 @@ import {
  * today's habits are "still to come", never missed.
  */
 export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
-  const { palette: Palette, styles, language } = useAppStyles(createStyles);
+  const arabic = useArabicComposition();
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   const bounds = weekBounds(index);
   const [chosen, setChosen] = useState(bounds.maxStartKey);
   // Clamp (e.g. after midnight rolls into a new week).
@@ -57,7 +59,7 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
 
       {nothingScheduled ? null : (
         <>
-          <View style={[styles.statsRow,language === 'ar' && {flexWrap:'wrap'}]}>
+          <View style={[styles.statsRow,arabic.active && arabic.metrics]}>
             <Stat label={appLabel("insights.weekly-review-card.completed")} value={appNumber(counts.done + review.todayDone)} color={Palette.success} />
             <Stat label={appLabel("insights.weekly-review-card.missed")} value={appNumber(counts.missed)} color={counts.missed > 0 ? Palette.danger : undefined} />
             <Stat
@@ -114,11 +116,12 @@ export function WeeklyReviewCard({ index }: { index: InsightsIndex }) {
 }
 
 function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
-  const { palette: Palette, styles, language } = useAppStyles(createStyles);
+  const arabic = useArabicComposition();
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
-    <View style={[styles.stat,language === 'ar' && {flexBasis:'100%',minWidth:0}]} accessible accessibilityLabel={appMessage("display.labelColon", { label: String(label), textValue: value })}>
+    <View style={[styles.stat,arabic.active && arabic.metric]} accessible accessibilityLabel={appMessage("display.labelColon", { label: String(label), textValue: value })}>
       <NumericText style={[styles.statValue, color ? { color: readableAccent(color, Palette) } : null]}>{value}</NumericText>
-      <Text style={[styles.statLabel,language === 'ar' && {textAlign:'center'}]}>{label}</Text>
+      <Text style={[styles.statLabel,arabic.active && {textAlign:'center',alignSelf:'stretch'}]}>{label}</Text>
     </View>
   );
 }

@@ -6,7 +6,7 @@ import { remainingArMessages } from './remaining-ar-messages';
 export const arMessages = {
   ...remainingArMessages,
   ...todayArMessages,
-  'today.progress': 'أُنجزت {completed} من أصل {total} من العادات',
+  'today.progress': 'أكملت {completed} من أصل {total} اليوم.',
   'today.greetingNamed': '{greeting}، {name}',
   'today.remaining': { zero: 'لا توجد عادات متبقية', one: 'تبقت عادة واحدة', two: 'تبقت عادتان', few: 'تبقت {count} عادات', many: 'تبقت {count} عادة', other: 'تبقى {count} من العادات' },
   'habits.count': { zero: 'لا توجد عادات', one: 'عادة واحدة', two: 'عادتان', few: '{count} عادات', many: '{count} عادة', other: '{count} من العادات' },

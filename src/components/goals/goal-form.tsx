@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
@@ -58,6 +59,7 @@ export function GoalForm({
   onCancel,
   onDelete,
 }: Props) {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const { habits, status: habitsStatus } = useHabits();
   const [draft, setDraft] = useState<GoalDraft>(initialDraft);
@@ -117,7 +119,7 @@ export function GoalForm({
   const minDate = todayKey;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
         <View style={styles.header}>
           <Pressable

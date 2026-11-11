@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError, appRich } from '@/i18n/app-copy';
 import { LocalizedInline } from '@/components/localized-inline';
@@ -56,6 +57,7 @@ function errorMessage(error: unknown, fallback: string) {
 }
 
 export function ProfileForm({ profile, onSave, onClose }: Props) {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const [initialDraft] = useState<ProfileDraft>(() =>
     profileToDraft(profile, { icon: DEFAULT_HABIT_ICON, color: DEFAULT_HABIT_COLOR }),
@@ -156,7 +158,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
   const greeting = todayGreeting(ACTIVE_PRESENTATION.language, now);
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
         {/* Header */}
         <View style={styles.header}>

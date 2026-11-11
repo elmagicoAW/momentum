@@ -19,13 +19,15 @@ type Props = {
   total: number;
   size?: number;
   strokeWidth?: number;
+  /** Keep scaled Arabic prose outside fixed artwork; the full summary remains font-scalable. */
+  captionBelow?: boolean;
 };
 
 /**
  * Circular progress ring built from plain Views (no SVG dependency).
  * Two half-ring clips are rotated to reveal the arc clockwise from 12 o'clock.
  */
-export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }: Props) {
+export function ProgressRing({ completed, total, size = 148, strokeWidth = 12, captionBelow = false }: Props) {
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { language } = useLanguage();
   const { m } = todayCopy(language);
@@ -70,7 +72,7 @@ export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }:
 
   const percent = Math.round(ratio * 100);
 
-  return (
+  const ring = (
     <View style={{ width: size, height: size, direction: 'ltr', flexShrink:0 }}>
       <View style={[ringBase, styles.track]} />
 
@@ -97,13 +99,17 @@ export function ProgressRing({ completed, total, size = 148, strokeWidth = 12 }:
       </View>
 
       <View style={styles.center}>
-        {language === 'ar' ? <NumericText style={[styles.count,{maxWidth:size-strokeWidth*2-12, fontSize:28}]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.65}>{m('today.ringCounter',{completed,denominator:m('today.ringDenominator',{total})})}</NumericText> : <Text style={styles.count}>
+        {language === 'ar' ? <NumericText style={[styles.count,{maxWidth:size-strokeWidth*2-12, fontSize:28}]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5} maxFontSizeMultiplier={1.2}>{m('today.ringCounter',{completed,denominator:m('today.ringDenominator',{total})})}</NumericText> : <Text style={styles.count}>
           <LocalizedInline message={todayRich(language, 'today.ringCounter', { completed, denominator: m('today.ringDenominator', { total }) }, 'denominator')} slotStyle={styles.total} />
         </Text>}
-        <Text style={[styles.caption,{textAlign:'center',maxWidth:size-strokeWidth*2-12}]}>{m('today.percentDone', { percent })}</Text>
+        {!captionBelow && <Text style={[styles.caption,{textAlign:'center',maxWidth:size-strokeWidth*2-12}]}>{m('today.percentDone', { percent })}</Text>}
       </View>
     </View>
   );
+  return captionBelow ? <View style={{ alignItems: 'center', gap: 6, width: size }}>
+    {ring}
+    <Text style={[styles.caption, { textAlign: 'center', alignSelf: 'stretch' }]}>{m('today.percentDone', { percent })}</Text>
+  </View> : ring;
 }
 
 const createStyles = (Palette: AppPalette) => StyleSheet.create({

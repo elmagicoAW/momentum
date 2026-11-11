@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text} from '@/components/localized-native';
 import { appLabel, appMessage, appNumber } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress }: Props) {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const linked = consistency?.linkedHabits ?? [];
   const color = linked[0]?.color ?? Palette.accent;
@@ -35,8 +37,8 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
       accessibilityRole="button"
       accessibilityHint={appLabel("goals.goal-card.opensTheGoalEditor")}
       android_ripple={{ color: Palette.ripple }}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
-      <View style={styles.header}>
+      style={({ pressed }) => [styles.card,arabic.active && arabic.surface, pressed && styles.pressed]}>
+      <View style={[styles.header,arabic.active && arabic.row]}>
         <View style={[styles.headerText,{minWidth:0,flexShrink:1}]}>
           <Text style={[styles.title, dimmed && styles.titleDimmed]} numberOfLines={2}>
             {goal.title}
@@ -47,7 +49,7 @@ export function GoalCard({ goal, todayKey, consistency, historyLoading, onPress 
       </View>
 
       {goal.description ? (
-        <Text style={styles.description} numberOfLines={2}>
+        <Text style={[styles.description,arabic.active && arabic.supporting]} numberOfLines={2}>
           {goal.description}
         </Text>
       ) : null}

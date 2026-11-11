@@ -8,6 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { AppPresentation } from '@/components/app-presentation';
 import { DevThemePreviewControls } from '@/components/dev-theme-preview';
+import { DevQaTools } from '@/components/dev-qa-tools';
 
 import { AchievementsProvider } from '@/hooks/use-achievements';
 import { DailyProgressProvider } from '@/hooks/use-daily-progress';
@@ -77,6 +78,7 @@ function RootNavigator() {
           </DailyProgressProvider>
         </HabitsProvider>
       </ProfileProvider>
+      <DevQaTools />
       </DataBackupProvider>
   );
 }

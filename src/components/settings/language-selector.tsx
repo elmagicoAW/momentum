@@ -56,7 +56,7 @@ export function LanguageSelector() {
   return (
     <>
       <SettingsRow variant="link" label={appLabel("settings.language-selector.theme")} value={status === 'loading' ? appLabel("settings.language-selector.loadingPending") : labelFor(preferences.language)}
-        icon={{ ios: 'moon.fill', android: 'dark_mode', web: 'dark_mode' }}
+        icon={{ ios: 'globe', android: 'language', web: 'language' }}
         ref={trigger} disabled={disabled} onPress={editor.open} />
       {status === 'loading' && <ActivityIndicator color={Palette.accent} accessibilityLabel={appLabel("settings.language-selector.loadingLanguagePreferences")} />}
       {status === 'load-error' && (

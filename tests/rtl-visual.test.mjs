@@ -10,8 +10,8 @@ test('RTL spacing leaves geometry, ring borders, direction and text policy untou
  const before=JSON.stringify(source),rtl=directionStyles(source,true);
  assert.equal(rtl.row.marginStart,8);assert.equal(rtl.row.paddingEnd,12);assert.equal(rtl.row.flexDirection,'row');assert.deepEqual(rtl.arc,source.arc);assert.equal(rtl.row.direction,undefined);assert.equal(rtl.text.textAlign,'center');assert.equal(directionStyles(source,false),source);assert.equal(JSON.stringify(source),before);assert.equal(directionStyles(source,true),rtl);
 });
-test('alignment mirrors logical text once and preserves explicit centering and English',()=>{
- assert.equal(textAlignment(true),'right');assert.equal(textAlignment(true,'right'),'left');assert.equal(textAlignment(true,'center'),'center');assert.equal(textAlignment(false,'right'),'right');assert.equal(textAlignment(false,'auto'),'auto');assert.equal(textAlignment(true,'start'),'right');assert.equal(textAlignment(true,'end'),'left');
+test('alignment resolves logical intent without mirroring physical edges and preserves centering and English',()=>{
+ assert.equal(textAlignment(true),'right');assert.equal(textAlignment(true,'right'),'right');assert.equal(textAlignment(true,'center'),'center');assert.equal(textAlignment(false,'right'),'right');assert.equal(textAlignment(false,'auto'),'auto');assert.equal(textAlignment(true,'start'),'right');assert.equal(textAlignment(true,'end'),'left');
 });
 test('complete numeric runs isolate percent and ratio order without treating mixed user text as numbers',()=>{
  for(const value of ['٨٣٪','١٢ / ٣٤','-١٫٥','١٬٢٣٤','+12']){assert.ok(isNumericDisplay(value));assert.equal(numericRun(value,true),'\u2066'+value+'\u2069');assert.equal(numericRun(value,false),value);}
@@ -23,12 +23,12 @@ test('Arabic progress stacks on compact or large-type screens; English keeps its
 });
 test('key screen layout boundaries protect wrapping, geometry and numeric presentation',()=>{
  const source=f=>readFileSync(f,'utf8');
- assert.match(source('src/app/(tabs)/index.tsx'),/stackProgress/);
- assert.match(source('src/app/(tabs)/index.tsx'),/setProgressWidth\(event.nativeEvent.layout.width\)/);
+ assert.match(source('src/app/(tabs)/index.tsx'),/progressLayout.container/);
+ assert.match(source('src/app/(tabs)/index.tsx'),/size=\{progressLayout.ringSize\}/);
  assert.match(source('src/components/today/progress-ring.tsx'),/direction: 'ltr'/);
  assert.match(source('src/components/today/progress-ring.tsx'),/NumericText/);
  assert.match(source('src/components/settings/settings-row.tsx'),/language === 'ar' \? <View/);
- for(const f of ['stat-tile','habit-insight-row','weekly-review-card']){const s=source(`src/components/insights/${f}.tsx`);assert.match(s,/NumericText/);assert.match(s,/flexBasis:'100%'/);}
+ for(const f of ['stat-tile','habit-insight-row','weekly-review-card']){const s=source(`src/components/insights/${f}.tsx`);assert.match(s,/NumericText/);assert.match(s,/arabic\.(gridTile|metric)/);}
  assert.match(source('src/components/goals/consistency-summary.tsx'),/NumericText/);
  const input=source('src/components/localized-native.tsx');assert.doesNotMatch(input,/normalize|onChangeText=|value=/);
 });

@@ -4,11 +4,11 @@
   "method": "All Expo Router route files are roots; local static imports/re-exports/literal dynamic imports, including platform variants, form an intentionally conservative dependency graph. Type-only imports may overstate reachability. Candidates are not automatic translation instructions.",
   "limitations": "May include developer errors/identifiers/URLs and miss one-word lowercase copy, computed copy, OS-owned strings, external dependencies and arbitrary runtime imports. Dynamic JSX expressions require manual data-producer review. No user/device data is read.",
   "summary": {
-    "sourceFiles": 179,
+    "sourceFiles": 183,
     "routeRoots": 22,
-    "reachableFiles": 172,
-    "candidateFiles": 117,
-    "candidates": 1489
+    "reachableFiles": 176,
+    "candidateFiles": 118,
+    "candidates": 1502
   },
   "files": [
     {
@@ -140,9 +140,10 @@
     },
     {
       "file": "src/app/(tabs)/goals/index.tsx",
-      "sourceSha256": "8432cb2a53266f985643525f239ef09f8cc3282251370065d7fa6808f1d0b222",
+      "sourceSha256": "ade262054289721e8bc59d5841e2f4f9a58176f2bef3f276e05c58f726e2a1c9",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/constants/palettes.ts",
@@ -165,37 +166,37 @@
           "text": "use no memo"
         },
         {
-          "line": 63,
+          "line": 65,
           "kind": "copy-or-technical-review",
           "text": "goals.index.goals"
         },
         {
-          "line": 65,
+          "line": 67,
           "kind": "copy-or-technical-review",
           "text": "goals.list.activeCount"
         },
         {
-          "line": 72,
+          "line": 74,
           "kind": "copy-or-technical-review",
           "text": "goals.index.newGoal"
         },
         {
-          "line": 73,
+          "line": 75,
           "kind": "copy-or-technical-review",
           "text": "goals.index.opensTheFormToCreateANewGoal"
         },
         {
-          "line": 78,
+          "line": 80,
           "kind": "copy-or-technical-review",
           "text": "goals.index.addnewGoal"
         },
         {
-          "line": 87,
+          "line": 89,
           "kind": "copy-or-technical-review",
           "text": "goals.index.all"
         },
         {
-          "line": 94,
+          "line": 96,
           "kind": "copy-or-technical-review",
           "text": "display.labelValue"
         },
@@ -454,9 +455,10 @@
     },
     {
       "file": "src/app/(tabs)/habits/index.tsx",
-      "sourceSha256": "d81e759ca1291acf0daaa0abfe927b3ca5790785dddccbc680dd8ee90704ff0a",
+      "sourceSha256": "1ed19fbf3170b65509c1f541961075e3af29bc87028b71c096fc07460614b80b",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/constants/palettes.ts",
@@ -474,62 +476,62 @@
           "text": "use no memo"
         },
         {
-          "line": 32,
+          "line": 34,
           "kind": "copy-or-technical-review",
           "text": "habits.index.habits"
         },
         {
-          "line": 34,
+          "line": 36,
           "kind": "copy-or-technical-review",
           "text": "habits.list.count"
         },
         {
-          "line": 43,
+          "line": 45,
           "kind": "copy-or-technical-review",
           "text": "habits.index.addHabit"
         },
         {
-          "line": 44,
+          "line": 46,
           "kind": "copy-or-technical-review",
           "text": "habits.index.opensTheFormToCreateANewHabit"
         },
         {
-          "line": 53,
+          "line": 55,
           "kind": "copy-or-technical-review",
           "text": "habits.index.addaddHabit"
         },
         {
-          "line": 70,
+          "line": 72,
           "kind": "copy-or-technical-review",
           "text": "habits.index.couldnTLoadYourHabits"
         },
         {
-          "line": 71,
+          "line": 73,
           "kind": "copy-or-technical-review",
           "text": "habits.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp"
         },
         {
-          "line": 72,
+          "line": 74,
           "kind": "copy-or-technical-review",
           "text": "exclamationmark.triangle.fill"
         },
         {
-          "line": 73,
+          "line": 75,
           "kind": "copy-or-technical-review",
           "text": "habits.index.tryAgain"
         },
         {
-          "line": 80,
+          "line": 82,
           "kind": "copy-or-technical-review",
           "text": "habits.index.startYourFirstHabit"
         },
         {
-          "line": 81,
+          "line": 83,
           "kind": "copy-or-technical-review",
           "text": "habits.index.pickSomethingSmallYouWantToDoRegularlyYouCanChooseTheDaysAnIconAndAColor"
         },
         {
-          "line": 82,
+          "line": 84,
           "kind": "copy-or-technical-review",
           "text": "habits.index.createAHabit"
         }
@@ -704,10 +706,11 @@
     },
     {
       "file": "src/app/(tabs)/index.tsx",
-      "sourceSha256": "1f34dfc8d555912ac67cbae2c168c2f6eb7f072c37e0919cafbadf911865d668",
+      "sourceSha256": "c414bb90518d9af015a29369f855fc62095651cc6fb6a87b5588371a39141a71",
       "reachable": true,
       "imports": [
-        "src/utils/rtl-presentation.ts",
+        "src/hooks/use-arabic-composition.ts",
+        "src/utils/today-presentation.ts",
         "src/components/localized-native.tsx",
         "src/constants/palettes.ts",
         "src/hooks/use-app-styles.ts",
@@ -746,142 +749,152 @@
           "text": "use no memo"
         },
         {
-          "line": 40,
+          "line": 41,
           "kind": "copy-or-technical-review",
           "text": "today.restDay"
         },
         {
-          "line": 41,
+          "line": 42,
           "kind": "copy-or-technical-review",
           "text": "today.getStarted"
         },
         {
-          "line": 42,
+          "line": 43,
           "kind": "copy-or-technical-review",
           "text": "today.allDone"
         },
         {
-          "line": 43,
+          "line": 44,
           "kind": "copy-or-technical-review",
           "text": "today.halfway"
         },
         {
-          "line": 44,
+          "line": 45,
           "kind": "copy-or-technical-review",
           "text": "today.greatStart"
         },
         {
-          "line": 85,
+          "line": 87,
           "kind": "copy-or-technical-review",
           "text": "accessibility.profileNamed"
         },
         {
-          "line": 85,
+          "line": 87,
           "kind": "copy-or-technical-review",
           "text": "profile.setup"
         },
         {
-          "line": 99,
+          "line": 101,
           "kind": "copy-or-technical-review",
           "text": "today.greetingLine"
         },
         {
-          "line": 101,
+          "line": 103,
           "kind": "copy-or-technical-review",
           "text": "today.greetingOnly"
         },
         {
-          "line": 119,
+          "line": 124,
           "kind": "copy-or-technical-review",
           "text": "today.dailyProgress"
         },
         {
-          "line": 121,
+          "line": 125,
           "kind": "copy-or-technical-review",
           "text": "today.progress"
         },
         {
-          "line": 145,
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.dailyProgress"
+        },
+        {
+          "line": 134,
+          "kind": "copy-or-technical-review",
+          "text": "today.progress"
+        },
+        {
+          "line": 158,
           "kind": "copy-or-technical-review",
           "text": "today.habits"
         },
         {
-          "line": 148,
+          "line": 161,
           "kind": "copy-or-technical-review",
           "text": "today.remainingSaved"
         },
         {
-          "line": 149,
+          "line": 162,
           "kind": "copy-or-technical-review",
           "text": "today.remainingCount"
         },
         {
-          "line": 162,
+          "line": 175,
           "kind": "copy-or-technical-review",
           "text": "today.loadHabits.title"
         },
         {
-          "line": 163,
+          "line": 176,
           "kind": "copy-or-technical-review",
           "text": "today.loadHabits.body"
         },
         {
-          "line": 164,
+          "line": 177,
           "kind": "copy-or-technical-review",
           "text": "exclamationmark.triangle.fill"
         },
         {
-          "line": 165,
+          "line": 178,
           "kind": "copy-or-technical-review",
           "text": "today.retry"
         },
         {
-          "line": 172,
+          "line": 185,
           "kind": "copy-or-technical-review",
           "text": "habits.empty.title"
         },
         {
-          "line": 173,
+          "line": 186,
           "kind": "copy-or-technical-review",
           "text": "habits.empty.description"
         },
         {
-          "line": 174,
+          "line": 187,
           "kind": "copy-or-technical-review",
           "text": "habits.create"
         },
         {
-          "line": 181,
+          "line": 194,
           "kind": "copy-or-technical-review",
           "text": "today.noneScheduled"
         },
         {
-          "line": 182,
+          "line": 195,
           "kind": "copy-or-technical-review",
           "text": "today.noneOnDay"
         },
         {
-          "line": 183,
+          "line": 196,
           "kind": "copy-or-technical-review",
           "text": "moon.stars.fill"
         },
         {
-          "line": 184,
+          "line": 197,
           "kind": "copy-or-technical-review",
           "text": "habits.manage"
         },
         {
-          "line": 214,
+          "line": 227,
           "kind": "copy-or-technical-review",
           "text": "today.motivation"
         },
         {
-          "line": 215,
+          "line": 228,
           "kind": "copy-or-technical-review",
           "text": "today.motivation.quote"
         },
         {
-          "line": 216,
+          "line": 229,
           "kind": "copy-or-technical-review",
           "text": "today.motivation.author"
         }
@@ -1117,9 +1130,10 @@
     },
     {
       "file": "src/app/(tabs)/insights/index.tsx",
-      "sourceSha256": "2e3312f301d2582ebc31e6b781669f5658423c4dfe46b0235554cd68b398580b",
+      "sourceSha256": "c7b6830ba7d2985bf3de6b569a53d8157573fb030bda6bda3047a77f94f6b55c",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/constants/palettes.ts",
@@ -1144,192 +1158,192 @@
           "text": "use no memo"
         },
         {
-          "line": 45,
+          "line": 47,
           "kind": "copy-or-technical-review",
           "text": "insights.index.couldnTLoadYourHabits"
         },
         {
-          "line": 45,
+          "line": 47,
           "kind": "copy-or-technical-review",
           "text": "insights.index.couldnTReadYourHistory"
         },
         {
-          "line": 46,
+          "line": 48,
           "kind": "copy-or-technical-review",
           "text": "insights.index.yourSavedDataHasnTBeenChangedTryAgainOrRestartTheApp"
         },
         {
-          "line": 47,
+          "line": 49,
           "kind": "copy-or-technical-review",
           "text": "exclamationmark.triangle.fill"
         },
         {
-          "line": 48,
+          "line": 50,
           "kind": "copy-or-technical-review",
           "text": "insights.index.tryAgain"
         },
         {
-          "line": 55,
+          "line": 57,
           "kind": "copy-or-technical-review",
           "text": "insights.index.noHabitsYet"
         },
         {
-          "line": 56,
+          "line": 58,
           "kind": "copy-or-technical-review",
           "text": "insights.index.addAHabitAndCheckInOnTodayYourStreaksAndTrendsWillAppearHere"
         },
         {
-          "line": 57,
+          "line": 59,
           "kind": "copy-or-technical-review",
           "text": "chart.line.uptrend.xyaxis"
         },
         {
-          "line": 58,
+          "line": 60,
           "kind": "copy-or-technical-review",
           "text": "insights.index.goToHabits"
         },
         {
-          "line": 70,
+          "line": 72,
           "kind": "copy-or-technical-review",
           "text": "insights.index.insightsFillInAfterYourFirstFullDayTodayCountsOnceItSOver"
         },
         {
-          "line": 76,
+          "line": 78,
           "kind": "copy-or-technical-review",
           "text": "insights.index.consistency"
         },
         {
-          "line": 78,
+          "line": 80,
           "kind": "copy-or-technical-review",
           "text": "insights.overview.window"
         },
         {
-          "line": 78,
+          "line": 80,
           "kind": "copy-or-technical-review",
           "text": "insights.index.startsAfterYourFirstFullDay"
         },
         {
-          "line": 80,
+          "line": 82,
           "kind": "copy-or-technical-review",
           "text": "insights.index.mayBeIncomplete"
         },
         {
-          "line": 83,
+          "line": 85,
           "kind": "copy-or-technical-review",
           "text": "insights.index.finishedCheckIns"
         },
         {
-          "line": 84,
+          "line": 86,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
-        },
-        {
-          "line": 87,
-          "kind": "copy-or-technical-review",
-          "text": "insights.index.noFinishedDaysYet"
         },
         {
           "line": 89,
           "kind": "copy-or-technical-review",
+          "text": "insights.index.noFinishedDaysYet"
+        },
+        {
+          "line": 91,
+          "kind": "copy-or-technical-review",
           "text": "insights.overview.missed"
         },
         {
-          "line": 90,
+          "line": 92,
           "kind": "copy-or-technical-review",
           "text": "insights.index.noneMissed"
         },
         {
-          "line": 94,
+          "line": 96,
           "kind": "copy-or-technical-review",
           "text": "insights.index.bestStreakNow"
         },
         {
-          "line": 95,
+          "line": 97,
           "kind": "copy-or-technical-review",
           "text": "display.uncertainCount"
         },
         {
-          "line": 96,
+          "line": 98,
           "kind": "copy-or-technical-review",
           "text": "insights.streak.habit"
         },
         {
-          "line": 96,
+          "line": 98,
           "kind": "copy-or-technical-review",
           "text": "insights.index.completeAScheduledHabitToStartOne"
         },
         {
-          "line": 98,
+          "line": 100,
           "kind": "copy-or-technical-review",
           "text": "insights.index.includesToday"
         },
         {
-          "line": 101,
+          "line": 103,
           "kind": "copy-or-technical-review",
           "text": "insights.index.today"
         },
         {
-          "line": 102,
+          "line": 104,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 103,
+          "line": 105,
           "kind": "copy-or-technical-review",
           "text": "insights.index.nothingScheduled"
         },
         {
-          "line": 103,
+          "line": 105,
           "kind": "copy-or-technical-review",
           "text": "insights.index.checkedInSoFar"
         },
         {
-          "line": 103,
+          "line": 105,
           "kind": "copy-or-technical-review",
           "text": "insights.index.notLoadedYet"
         },
         {
-          "line": 104,
+          "line": 106,
           "kind": "copy-or-technical-review",
           "text": "insights.index.provisional"
         },
         {
-          "line": 107,
+          "line": 109,
           "kind": "copy-or-technical-review",
           "text": "insights.overview.perfect"
         },
         {
-          "line": 107,
+          "line": 109,
           "kind": "copy-or-technical-review",
           "text": "insights.overview.unreadable"
         },
         {
-          "line": 109,
+          "line": 111,
           "kind": "copy-or-technical-review",
           "text": "insights.index.calendar"
         },
         {
-          "line": 113,
+          "line": 115,
           "kind": "copy-or-technical-review",
           "text": "insights.index.weeklyReview"
         },
         {
-          "line": 117,
+          "line": 119,
           "kind": "copy-or-technical-review",
           "text": "insights.index.trends"
         },
         {
-          "line": 121,
+          "line": 123,
           "kind": "copy-or-technical-review",
           "text": "insights.index.habits"
         },
         {
-          "line": 139,
+          "line": 141,
           "kind": "copy-or-technical-review",
           "text": "insights.index.insights"
         },
         {
-          "line": 140,
+          "line": 142,
           "kind": "copy-or-technical-review",
           "text": "insights.index.basedOnlyOnYourSavedCheckIns"
         }
@@ -1337,9 +1351,10 @@
     },
     {
       "file": "src/app/(tabs)/settings.tsx",
-      "sourceSha256": "16b872ea6ebcbd23a6716caadaa161a21fd89ec94a4cadbef7c01a28064367b7",
+      "sourceSha256": "ff887eee7f40a1b5b28330e5e37dd951826747c9603a267d515cc647f43d09ec",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/components/settings/language-selector.tsx",
         "src/i18n/app-copy.ts",
@@ -1365,122 +1380,122 @@
           "text": "use no memo"
         },
         {
-          "line": 60,
+          "line": 62,
           "kind": "copy-or-technical-review",
           "text": "settings.settings"
         },
         {
-          "line": 73,
+          "line": 75,
           "kind": "copy-or-technical-review",
           "text": "settings.appearance"
         },
         {
-          "line": 73,
+          "line": 75,
           "kind": "copy-or-technical-review",
           "text": "settings.chooseLightDarkOrFollowYourDeviceWithSystem"
         },
         {
-          "line": 77,
+          "line": 79,
           "kind": "copy-or-technical-review",
           "text": "settings.language"
         },
         {
-          "line": 79,
+          "line": 81,
           "kind": "copy-or-technical-review",
           "text": "settings.dataBackup"
         },
         {
-          "line": 84,
+          "line": 86,
           "kind": "copy-or-technical-review",
           "text": "settings.storage"
         },
         {
-          "line": 85,
+          "line": 87,
           "kind": "copy-or-technical-review",
           "text": "settings.thisDevice"
         },
         {
-          "line": 89,
+          "line": 91,
           "kind": "copy-or-technical-review",
           "text": "square.stack.3d.up.fill"
         },
         {
-          "line": 91,
+          "line": 93,
           "kind": "copy-or-technical-review",
           "text": "settings.yourData"
         },
         {
-          "line": 97,
+          "line": 99,
           "kind": "copy-or-technical-review",
           "text": "square.and.arrow.up"
         },
         {
-          "line": 98,
+          "line": 100,
           "kind": "copy-or-technical-review",
           "text": "settings.exportBackup"
         },
         {
-          "line": 100,
+          "line": 102,
           "kind": "copy-or-technical-review",
           "text": "square.and.arrow.down"
         },
         {
-          "line": 100,
+          "line": 102,
           "kind": "copy-or-technical-review",
           "text": "settings.importBackup"
         },
         {
-          "line": 103,
+          "line": 105,
           "kind": "copy-or-technical-review",
           "text": "settings.privacy"
         },
         {
-          "line": 106,
+          "line": 108,
           "kind": "copy-or-technical-review",
           "text": "lock.fill"
         },
         {
-          "line": 108,
+          "line": 110,
           "kind": "copy-or-technical-review",
           "text": "settings.storedLocally"
         },
         {
-          "line": 109,
+          "line": 111,
           "kind": "copy-or-technical-review",
           "text": "settings.yourHabitsGoalsRoutinesCheckInsProfileAndAchievementsAreStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoInAppCloudSync"
         },
         {
-          "line": 113,
+          "line": 115,
           "kind": "copy-or-technical-review",
           "text": "info.circle.fill"
         },
         {
-          "line": 115,
+          "line": 117,
           "kind": "copy-or-technical-review",
           "text": "settings.deviceBackups"
         },
         {
-          "line": 116,
+          "line": 118,
           "kind": "copy-or-technical-review",
           "text": "settings.whetherAppDataIsIncludedInYourPhoneSOwnBackupsDependsOnYourDeviceAndItsSettings"
         },
         {
-          "line": 120,
+          "line": 122,
           "kind": "copy-or-technical-review",
           "text": "settings.about"
         },
         {
-          "line": 124,
+          "line": 126,
           "kind": "copy-or-technical-review",
           "text": "settings.momentum"
         },
         {
-          "line": 125,
+          "line": 127,
           "kind": "copy-or-technical-review",
           "text": "settings.personalGrowth"
         },
         {
-          "line": 131,
+          "line": 133,
           "kind": "copy-or-technical-review",
           "text": "settings.version"
         }
@@ -1488,7 +1503,7 @@
     },
     {
       "file": "src/app/_layout.tsx",
-      "sourceSha256": "379cf34722805f9f4b793d29c237f1eb1a38c990261a1f317a070807a085a85c",
+      "sourceSha256": "ba51ca378e9fb7c224881514dadee6ab4f3473f0e6777029cc690db4d137d7ec",
       "reachable": true,
       "imports": [
         "src/utils/presentation.ts",
@@ -1498,6 +1513,7 @@
         "src/components/animated-icon.web.tsx",
         "src/components/app-presentation.tsx",
         "src/components/dev-theme-preview.tsx",
+        "src/components/dev-qa-tools.tsx",
         "src/hooks/use-achievements.tsx",
         "src/hooks/use-daily-progress.tsx",
         "src/hooks/use-goals.tsx",
@@ -2507,7 +2523,7 @@
     },
     {
       "file": "src/components/achievements/achievements-summary-card.tsx",
-      "sourceSha256": "1fa7eed816b2ed424e829effa8238bb9e65feb3ab8ff5c423fb0dcd12040e80e",
+      "sourceSha256": "0d53473977fbc5fe120f40620d056ac8c092a3f51061ce2ee5aab4da7206c0bc",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -2551,14 +2567,9 @@
           "text": "today.achievement.dismiss"
         },
         {
-          "line": 52,
+          "line": 54,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.eyebrow"
-        },
-        {
-          "line": 53,
-          "kind": "copy-or-technical-review",
-          "text": "arrow.up.right"
         },
         {
           "line": 55,
@@ -2566,42 +2577,92 @@
           "text": "navigation.achievements"
         },
         {
-          "line": 57,
+          "line": 58,
           "kind": "copy-or-technical-review",
-          "text": "today.achievement.count"
-        },
-        {
-          "line": 57,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.unavailable"
-        },
-        {
-          "line": 57,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.loading"
+          "text": "chevron.right"
         },
         {
           "line": 60,
           "kind": "copy-or-technical-review",
+          "text": "today.achievement.count"
+        },
+        {
+          "line": 60,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.unavailable"
+        },
+        {
+          "line": 60,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.loading"
+        },
+        {
+          "line": 64,
+          "kind": "copy-or-technical-review",
           "text": "today.achievement.next"
         },
         {
-          "line": 61,
+          "line": 65,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.complete"
         },
         {
-          "line": 62,
+          "line": 66,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.view"
         },
         {
-          "line": 64,
+          "line": 69,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.eyebrow"
+        },
+        {
+          "line": 70,
+          "kind": "copy-or-technical-review",
+          "text": "arrow.up.right"
+        },
+        {
+          "line": 72,
+          "kind": "copy-or-technical-review",
+          "text": "navigation.achievements"
+        },
+        {
+          "line": 74,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.count"
+        },
+        {
+          "line": 74,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.unavailable"
+        },
+        {
+          "line": 74,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.loading"
+        },
+        {
+          "line": 77,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.next"
+        },
+        {
+          "line": 78,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.complete"
+        },
+        {
+          "line": 79,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.view"
+        },
+        {
+          "line": 82,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.firstEffort"
         },
         {
-          "line": 64,
+          "line": 82,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.effort"
         }
@@ -2782,6 +2843,24 @@
           "line": 88,
           "kind": "copy-or-technical-review",
           "text": "arrow.up.right.square"
+        }
+      ]
+    },
+    {
+      "file": "src/components/dev-qa-tools.tsx",
+      "sourceSha256": "3ccb720bafe32f0534ec378fe112f30ebeb0e3749602672c9534e8b861ebd4ce",
+      "reachable": true,
+      "imports": [],
+      "candidates": [
+        {
+          "line": 9,
+          "kind": "copy-or-technical-review",
+          "text": "ExpoDevMenu"
+        },
+        {
+          "line": 11,
+          "kind": "copy-or-technical-review",
+          "text": "[momentum] DevMenu tools-button visibility is unavailable in this binary."
         }
       ]
     },
@@ -2973,9 +3052,10 @@
     },
     {
       "file": "src/components/goals/goal-card.tsx",
-      "sourceSha256": "e3d2b82a049852a8b9cd7d23c3447301997a5da81a0842cb5cc2d5c95fb339ff",
+      "sourceSha256": "c780dd1c906b17e74d9cf2476aaf5bbcb7c5ef396a46b2450702b76e861f15c8",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/utils/theme-color.ts",
@@ -2995,17 +3075,17 @@
           "text": "use no memo"
         },
         {
-          "line": 36,
+          "line": 38,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-card.opensTheGoalEditor"
         },
         {
-          "line": 61,
+          "line": 63,
           "kind": "dynamic-template",
           "text": "${habit.color}22"
         },
         {
-          "line": 68,
+          "line": 70,
           "kind": "copy-or-technical-review",
           "text": "goals.linked.count"
         }
@@ -3013,9 +3093,10 @@
     },
     {
       "file": "src/components/goals/goal-form.tsx",
-      "sourceSha256": "8a330fe27dd5942a85d082b5bbd69aad1154af88af1dfffbb12c5d65d2378abc",
+      "sourceSha256": "aadbeb3053a9531b2a1b0685e9ec810b8b0fc0211d27119bd7c5b8d1bee30ac9",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/constants/palettes.ts",
@@ -3036,112 +3117,112 @@
           "text": "use no memo"
         },
         {
-          "line": 83,
+          "line": 85,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.yourHabitsHavenTLoadedSoLinksCanTBeSavedSafelyGoBackAndTryAgain"
         },
         {
-          "line": 96,
+          "line": 98,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to save goal"
         },
         {
-          "line": 97,
+          "line": 99,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.couldnTSaveThisGoalYourChangesAreStillHereTryAgain"
         },
         {
-          "line": 110,
+          "line": 112,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to delete goal"
         },
         {
-          "line": 111,
+          "line": 113,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.couldnTDeleteThisGoalNothingWasRemovedTryAgain"
         },
         {
-          "line": 127,
+          "line": 129,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.cancel"
         },
         {
-          "line": 166,
+          "line": 168,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.title"
         },
         {
-          "line": 166,
+          "line": 168,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 172,
+          "line": 174,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.eGRunAHalfMarathon"
         },
         {
-          "line": 178,
+          "line": 180,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.goalTitle"
         },
         {
-          "line": 184,
+          "line": 186,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.description"
         },
         {
-          "line": 187,
+          "line": 189,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 193,
+          "line": 195,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.whyItMattersToYou"
         },
         {
-          "line": 199,
+          "line": 201,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.goalDescription"
         },
         {
-          "line": 205,
+          "line": 207,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.targetDate"
         },
         {
-          "line": 217,
+          "line": 219,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.status"
         },
         {
-          "line": 217,
+          "line": 219,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.youDecideWhenAGoalIsAchievedHabitConsistencyNeverChangesIt"
         },
         {
-          "line": 222,
+          "line": 224,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.linkedHabits"
         },
         {
-          "line": 224,
+          "line": 226,
           "kind": "copy-or-technical-review",
           "text": "goals.linked.selected"
         },
         {
-          "line": 236,
+          "line": 238,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.couldnTLoadYourHabitsLinkedHabitsCanTBeChangedRightNow"
         },
         {
-          "line": 252,
+          "line": 254,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.deleteGoal"
         },
         {
-          "line": 284,
+          "line": 286,
           "kind": "copy-or-technical-review",
           "text": "goals.goal-form.optional"
         }
@@ -3367,9 +3448,10 @@
     },
     {
       "file": "src/components/habits/habit-form.tsx",
-      "sourceSha256": "0b919abf5ba4c4481841419502aa7bc90623db2e007b097c19c1afe11ac22659",
+      "sourceSha256": "e774f6c37a7fbe867a3489217bcf709f35e002daa2f0a3ba1a88aff91bdfc2d7",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/utils/theme-color.ts",
@@ -3393,107 +3475,107 @@
           "text": "use no memo"
         },
         {
-          "line": 103,
+          "line": 105,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to save habit"
         },
         {
-          "line": 104,
+          "line": 106,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.couldnTSaveThisHabitYourChangesAreStillHereTryAgain"
         },
         {
-          "line": 117,
+          "line": 119,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to delete habit"
         },
         {
-          "line": 118,
+          "line": 120,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.couldnTDeleteThisHabitNothingWasRemovedTryAgain"
         },
         {
-          "line": 132,
+          "line": 134,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.cancel"
         },
         {
-          "line": 175,
+          "line": 177,
           "kind": "dynamic-template",
           "text": "${draft.color}22"
         },
         {
-          "line": 179,
+          "line": 181,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.newHabit"
         },
         {
-          "line": 183,
+          "line": 185,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.name"
         },
         {
-          "line": 183,
+          "line": 185,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 189,
+          "line": 191,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.eGMorningWalk"
         },
         {
-          "line": 195,
+          "line": 197,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.habitName"
         },
         {
-          "line": 201,
+          "line": 203,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.description"
         },
         {
-          "line": 204,
+          "line": 206,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 210,
+          "line": 212,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.whenWhereOrHowMuch"
         },
         {
-          "line": 216,
+          "line": 218,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.habitDescription"
         },
         {
-          "line": 221,
+          "line": 223,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.tracking"
         },
         {
-          "line": 247,
+          "line": 249,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.schedule"
         },
         {
-          "line": 257,
+          "line": 259,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.icon"
         },
         {
-          "line": 261,
+          "line": 263,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.color"
         },
         {
-          "line": 275,
+          "line": 277,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.deleteHabit"
         },
         {
-          "line": 306,
+          "line": 308,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.optional"
         }
@@ -3501,9 +3583,10 @@
     },
     {
       "file": "src/components/habits/habit-row.tsx",
-      "sourceSha256": "8a72e5d26542640a0a340bb94d201b8e15daf25ec0a2b70d4362390b5d6d2c93",
+      "sourceSha256": "8437f469e9f355cee8dfa0121ff168057298543d32eb30d4a22caad76bddc83e",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/utils/theme-color.ts",
@@ -3522,27 +3605,27 @@
           "text": "use no memo"
         },
         {
-          "line": 23,
+          "line": 25,
           "kind": "copy-or-technical-review",
           "text": "display.descriptionPair"
         },
         {
-          "line": 28,
+          "line": 30,
           "kind": "copy-or-technical-review",
           "text": "display.labelValue"
         },
         {
-          "line": 29,
+          "line": 31,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-row.opensTheHabitEditor"
         },
         {
-          "line": 32,
+          "line": 34,
           "kind": "dynamic-template",
           "text": "${habit.color}22"
         },
         {
-          "line": 54,
+          "line": 56,
           "kind": "copy-or-technical-review",
           "text": "chevron.right"
         }
@@ -3958,9 +4041,10 @@
     },
     {
       "file": "src/components/insights/habit-insight-row.tsx",
-      "sourceSha256": "ccc3b8cf14d3a7593e6d556325002d9ff821aee1f36abdadc4238b0b12f643de",
+      "sourceSha256": "5f93a1009cc153787024729228e1e0259b2d83a51aa55d64cecd966ac95e323a",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/utils/theme-color.ts",
@@ -3980,57 +4064,57 @@
           "text": "use no memo"
         },
         {
-          "line": 25,
+          "line": 26,
           "kind": "copy-or-technical-review",
           "text": "history.streak.length"
         },
         {
-          "line": 31,
+          "line": 33,
           "kind": "copy-or-technical-review",
           "text": "history.row.accessibleUncertain"
         },
         {
-          "line": 31,
+          "line": 33,
           "kind": "copy-or-technical-review",
           "text": "history.row.accessible"
         },
         {
-          "line": 38,
+          "line": 40,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.opensThisHabitSHistory"
         },
         {
-          "line": 51,
+          "line": 53,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.scheduleMayHaveChanged"
         },
         {
-          "line": 55,
+          "line": 57,
           "kind": "copy-or-technical-review",
           "text": "chevron.right"
         },
         {
-          "line": 62,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.keepItGoingToday"
         },
         {
-          "line": 62,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.current"
         },
         {
-          "line": 63,
+          "line": 65,
           "kind": "copy-or-technical-review",
           "text": "display.uncertainCount"
         },
         {
-          "line": 63,
+          "line": 65,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.best"
         },
         {
-          "line": 64,
+          "line": 66,
           "kind": "copy-or-technical-review",
           "text": "insights.habit-insight-row.30Days"
         }
@@ -4318,9 +4402,10 @@
     },
     {
       "file": "src/components/insights/stat-tile.tsx",
-      "sourceSha256": "0fce8a740f9d931f97cbfe16718f4a67934181199457aa5bbc551ece755376f7",
+      "sourceSha256": "fbbd61704d8334d232d484350dbda5734cf18d824572a3ce530140e1a240bdb0",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/utils/theme-color.ts",
         "src/constants/palettes.ts",
@@ -4398,9 +4483,10 @@
     },
     {
       "file": "src/components/insights/weekly-review-card.tsx",
-      "sourceSha256": "c1c2890e1785f4af66d1f69dd39017966af47628705861c54c788c610052a673",
+      "sourceSha256": "f559772fa28718057c0a8585744f5876036c353e3e298e483f72cb5fba2ac9c6",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/components/localized-inline.tsx",
@@ -4419,77 +4505,77 @@
           "text": "use no memo"
         },
         {
-          "line": 50,
+          "line": 52,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.thisWeek"
         },
         {
-          "line": 61,
+          "line": 63,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.completed"
         },
         {
-          "line": 62,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.missed"
         },
         {
-          "line": 64,
+          "line": 66,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.stillToCome"
         },
         {
-          "line": 64,
+          "line": 66,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.consistency"
         },
         {
-          "line": 71,
+          "line": 73,
           "kind": "copy-or-technical-review",
           "text": "insights.week.todayIncluded"
         },
         {
-          "line": 74,
+          "line": 76,
           "kind": "copy-or-technical-review",
           "text": "insights.week.partial"
         },
         {
-          "line": 79,
+          "line": 81,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.sameConsistencyAsTheWeekBefore"
         },
         {
-          "line": 80,
+          "line": 82,
           "kind": "copy-or-technical-review",
           "text": "insights.week.delta"
         },
         {
-          "line": 84,
+          "line": 86,
           "kind": "copy-or-technical-review",
           "text": "insights.week.best"
         },
         {
-          "line": 87,
+          "line": 89,
           "kind": "copy-or-technical-review",
           "text": "insights.week.attention"
         },
         {
-          "line": 93,
+          "line": 95,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.achievements"
         },
         {
-          "line": 106,
+          "line": 108,
           "kind": "copy-or-technical-review",
           "text": "insights.week.unreadable"
         },
         {
-          "line": 110,
+          "line": 112,
           "kind": "copy-or-technical-review",
           "text": "insights.weekly-review-card.someCheckInsThisWeekFallOnDaysAHabitIsnTScheduledNowTheyArenTCountedPastWeeksUseCurrentSchedules"
         },
         {
-          "line": 119,
+          "line": 122,
           "kind": "copy-or-technical-review",
           "text": "display.labelColon"
         }
@@ -4506,7 +4592,7 @@
     },
     {
       "file": "src/components/localized-native.tsx",
-      "sourceSha256": "ff25c5570970d657070323910263e82f952bcb5a8bb4e2395b1ae1e40d63b186",
+      "sourceSha256": "bc46298cb0fe8880469cb64aa3a369910babac247ec07ee2ded6542aaca24c82",
       "reachable": true,
       "imports": [
         "src/hooks/use-presentation-language.ts",
@@ -4625,9 +4711,10 @@
     },
     {
       "file": "src/components/profile/profile-form.tsx",
-      "sourceSha256": "654ecbfb0267601e9fb05ebacbf2bfbd8db6889503ffacfb7d54e746bf62b7ca",
+      "sourceSha256": "2ffd9ecd1a968331ee886a04cff16ec3a1809f7e4dc3aa7c1bb673a86cba3be7",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/components/localized-inline.tsx",
@@ -4652,182 +4739,182 @@
           "text": "use no memo"
         },
         {
-          "line": 44,
+          "line": 45,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.initials"
         },
         {
-          "line": 44,
+          "line": 45,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.fromYourName"
         },
         {
-          "line": 45,
+          "line": 46,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.icon"
         },
         {
-          "line": 45,
+          "line": 46,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.pickASymbol"
         },
         {
-          "line": 49,
+          "line": 50,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.discardChanges"
         },
         {
-          "line": 50,
+          "line": 51,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.yourProfileChangesHavenTBeenSaved"
         },
         {
-          "line": 51,
+          "line": 52,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.discard"
         },
         {
-          "line": 146,
+          "line": 148,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to save profile"
         },
         {
-          "line": 147,
+          "line": 149,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.couldnTSaveYourProfileYourChangesAreStillHereTryAgain"
         },
         {
-          "line": 167,
+          "line": 169,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.cancel"
         },
         {
-          "line": 168,
+          "line": 170,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.asksBeforeDiscardingYourChanges"
         },
         {
-          "line": 178,
+          "line": 180,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.profile"
         },
         {
-          "line": 183,
+          "line": 185,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.saveProfile"
         },
         {
-          "line": 190,
+          "line": 192,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.save"
         },
         {
-          "line": 213,
+          "line": 215,
           "kind": "copy-or-technical-review",
           "text": "display.profilePreview"
         },
         {
-          "line": 213,
+          "line": 215,
           "kind": "copy-or-technical-review",
           "text": "display.greeting.named"
         },
         {
-          "line": 213,
+          "line": 215,
           "kind": "copy-or-technical-review",
           "text": "display.greeting.unnamed"
         },
         {
-          "line": 216,
+          "line": 218,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.onToday"
         },
         {
-          "line": 217,
+          "line": 219,
           "kind": "copy-or-technical-review",
           "text": "display.greeting.named"
         },
         {
-          "line": 217,
+          "line": 219,
           "kind": "copy-or-technical-review",
           "text": "display.greeting.unnamed"
         },
         {
-          "line": 222,
+          "line": 224,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.displayName"
         },
         {
-          "line": 225,
+          "line": 227,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 234,
+          "line": 236,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.whatShouldWeCallYou"
         },
         {
-          "line": 243,
+          "line": 245,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.displayName"
         },
         {
-          "line": 244,
+          "line": 246,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.optionalShownOnTodayAndStoredOnlyOnThisDevice"
         },
         {
-          "line": 251,
+          "line": 253,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.clearName"
         },
         {
-          "line": 255,
+          "line": 257,
           "kind": "copy-or-technical-review",
           "text": "xmark.circle.fill"
         },
         {
-          "line": 262,
+          "line": 264,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.shownOnTodayLeaveItEmptyIfYouPreferNoName"
         },
         {
-          "line": 265,
+          "line": 267,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.avatar"
         },
         {
-          "line": 276,
+          "line": 278,
           "kind": "copy-or-technical-review",
           "text": "display.labelValue"
         },
         {
-          "line": 286,
+          "line": 288,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.addANameToShowYourInitials"
         },
         {
-          "line": 292,
+          "line": 294,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.icon"
         },
         {
-          "line": 295,
+          "line": 297,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.color"
         },
         {
-          "line": 303,
+          "line": 305,
           "kind": "copy-or-technical-review",
           "text": "lock.fill"
         },
         {
-          "line": 308,
+          "line": 310,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.yourProfileIsStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoCloudSync"
         },
         {
-          "line": 337,
+          "line": 339,
           "kind": "copy-or-technical-review",
           "text": "profile.profile-form.optional"
         }
@@ -4940,9 +5027,10 @@
     },
     {
       "file": "src/components/routines/routine-form.tsx",
-      "sourceSha256": "b085e7e32f82a502c1c9a6dc0dcd1eafef2eb41a5f609654f959bb291dc56723",
+      "sourceSha256": "a6876df6878b6f301123476cc69864f549002b6582b55f6d5fa6809e10aab2e2",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/constants/palettes.ts",
@@ -4965,147 +5053,147 @@
           "text": "use no memo"
         },
         {
-          "line": 74,
+          "line": 76,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.yourHabitsHavenTLoadedSoThisRoutineCanTBeSavedSafelyGoBackAndTryAgain"
         },
         {
-          "line": 87,
+          "line": 89,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to save routine"
         },
         {
-          "line": 88,
+          "line": 90,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.couldnTSaveThisRoutineYourChangesAreStillHereTryAgain"
         },
         {
-          "line": 101,
+          "line": 103,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to delete routine"
         },
         {
-          "line": 102,
+          "line": 104,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.couldnTDeleteThisRoutineNothingWasRemovedTryAgain"
         },
         {
-          "line": 115,
+          "line": 117,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.cancel"
         },
         {
-          "line": 158,
+          "line": 160,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.newRoutine"
         },
         {
-          "line": 163,
+          "line": 165,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.title"
         },
         {
-          "line": 165,
+          "line": 167,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 171,
+          "line": 173,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.eGMorningRoutine"
         },
         {
-          "line": 177,
+          "line": 179,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.routineTitle"
         },
         {
-          "line": 183,
+          "line": 185,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.description"
         },
         {
-          "line": 186,
+          "line": 188,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 192,
+          "line": 194,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.whatThisRoutineSetsYouUpFor"
         },
         {
-          "line": 198,
+          "line": 200,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.routineDescription"
         },
         {
-          "line": 204,
+          "line": 206,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.preferredTime"
         },
         {
-          "line": 205,
+          "line": 207,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.ordersYourPlanOnTodayAndHighlightsWhatFitsRightNowHabitsAreAlwaysAvailable"
         },
         {
-          "line": 209,
+          "line": 211,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.icon"
         },
         {
-          "line": 213,
+          "line": 215,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.color"
         },
         {
-          "line": 218,
+          "line": 220,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.habits"
         },
         {
-          "line": 221,
+          "line": 223,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 222,
+          "line": 224,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.habitsStayExactlyAsTheyAreARoutineOnlyGroupsThemAHabitCanBeInMoreThanOneRoutineAndIsStillTrackedOnce"
         },
         {
-          "line": 227,
+          "line": 229,
           "kind": "copy-or-technical-review",
           "text": "routines.form.deletedHabits"
         },
         {
-          "line": 231,
+          "line": 233,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.order"
         },
         {
-          "line": 238,
+          "line": 240,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.chooseHabits"
         },
         {
-          "line": 247,
+          "line": 249,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.youDonTHaveAnyHabitsYetSaveThisRoutineNowAndAddHabitsLaterOrCreateAHabitFirstThisFormWillCloseWithoutSaving"
         },
         {
-          "line": 253,
+          "line": 255,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.couldnTLoadYourHabitsThisRoutineCanTBeSavedRightNow"
         },
         {
-          "line": 267,
+          "line": 269,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.deleteRoutine"
         },
         {
-          "line": 299,
+          "line": 301,
           "kind": "copy-or-technical-review",
           "text": "routines.routine-form.optional"
         }
@@ -5508,7 +5596,7 @@
     },
     {
       "file": "src/components/settings/language-selector.tsx",
-      "sourceSha256": "496220154e4920ada53701c9b554353a8bbb4b8a6a8770cba16c9380fe6ee4ff",
+      "sourceSha256": "10f9a38f279ae59b57f1bee433cd58a33edeb2a4685d6230988f3020e13d5c44",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -5563,11 +5651,6 @@
           "line": 58,
           "kind": "copy-or-technical-review",
           "text": "settings.language-selector.loadingPending"
-        },
-        {
-          "line": 59,
-          "kind": "copy-or-technical-review",
-          "text": "moon.fill"
         },
         {
           "line": 61,
@@ -5720,9 +5803,10 @@
     },
     {
       "file": "src/components/settings/settings-row.tsx",
-      "sourceSha256": "ac081ac5321c2515ed0e5f445d0cc50a96c330aec13c9653a41650a10ecd71de",
+      "sourceSha256": "fa64fc0418dc2cfa9abc44d45771f0275bb61a21b87115ef9626e12e3a43a974",
       "reachable": true,
       "imports": [
+        "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
         "src/utils/theme-color.ts",
@@ -5737,32 +5821,32 @@
           "text": "use no memo"
         },
         {
-          "line": 31,
+          "line": 32,
           "kind": "copy-or-technical-review",
           "text": "chevron.right"
         },
         {
-          "line": 56,
+          "line": 58,
           "kind": "copy-or-technical-review",
           "text": "display.labelValue"
         },
         {
-          "line": 74,
+          "line": 76,
           "kind": "copy-or-technical-review",
           "text": "display.labelText"
         },
         {
-          "line": 84,
+          "line": 86,
           "kind": "copy-or-technical-review",
           "text": "settings.settings-row.comingLater"
         },
         {
-          "line": 89,
+          "line": 91,
           "kind": "copy-or-technical-review",
           "text": "display.labelValue"
         },
         {
-          "line": 98,
+          "line": 100,
           "kind": "copy-or-technical-review",
           "text": "settings.settings-row.comingLater"
         }
@@ -6001,7 +6085,7 @@
     },
     {
       "file": "src/components/today/progress-ring.tsx",
-      "sourceSha256": "5cd27a80936044bd73e817235d40f01ced1da6a3392d18c583b1bc9e8d5dd452",
+      "sourceSha256": "86799d196e3cf57d83e2633ccd61dc959cade1adfc9fc80a7b3012c4822edc56",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -6018,27 +6102,32 @@
           "text": "use no memo"
         },
         {
-          "line": 100,
+          "line": 102,
           "kind": "copy-or-technical-review",
           "text": "today.ringCounter"
         },
         {
-          "line": 100,
-          "kind": "copy-or-technical-review",
-          "text": "today.ringDenominator"
-        },
-        {
-          "line": 101,
-          "kind": "copy-or-technical-review",
-          "text": "today.ringCounter"
-        },
-        {
-          "line": 101,
+          "line": 102,
           "kind": "copy-or-technical-review",
           "text": "today.ringDenominator"
         },
         {
           "line": 103,
+          "kind": "copy-or-technical-review",
+          "text": "today.ringCounter"
+        },
+        {
+          "line": 103,
+          "kind": "copy-or-technical-review",
+          "text": "today.ringDenominator"
+        },
+        {
+          "line": 105,
+          "kind": "copy-or-technical-review",
+          "text": "today.percentDone"
+        },
+        {
+          "line": 111,
           "kind": "copy-or-technical-review",
           "text": "today.percentDone"
         }
@@ -8207,6 +8296,16 @@
       "candidates": []
     },
     {
+      "file": "src/hooks/use-arabic-composition.ts",
+      "sourceSha256": "2f2e77332286479f13afe946da144a7d5579ceeeb904113db9c79ef83a930f4d",
+      "reachable": true,
+      "imports": [
+        "src/hooks/use-presentation-language.ts",
+        "src/utils/arabic-composition.ts"
+      ],
+      "candidates": []
+    },
+    {
       "file": "src/hooks/use-color-scheme.ts",
       "sourceSha256": "33beb965500ae5fdfe5c8699805a6be94c8c126a751fbe2ed7bcae87df394882",
       "reachable": false,
@@ -8637,7 +8736,7 @@
     },
     {
       "file": "src/i18n/ar-messages.ts",
-      "sourceSha256": "1220b160ad5cb7ada3f79f0f9e59a1fb77ee0343cdd7ddd026cf6349197a8573",
+      "sourceSha256": "cf0b3cd0c525055eca888ea2c83b405712986a8fafa9d415cb23da3043c957ba",
       "reachable": true,
       "imports": [
         "src/i18n/types.ts",
@@ -8909,6 +9008,13 @@
         "src/data/preferences-storage.ts",
         "src/utils/presentation.ts"
       ],
+      "candidates": []
+    },
+    {
+      "file": "src/utils/arabic-composition.ts",
+      "sourceSha256": "dff9af7b64926ddfeb5e6365f1de4596f790619264e63f5ac37afb4091e44d82",
+      "reachable": true,
+      "imports": [],
       "candidates": []
     },
     {
@@ -9772,7 +9878,7 @@
     },
     {
       "file": "src/utils/rtl-presentation.ts",
-      "sourceSha256": "89c8e0e47f6f5b1e1939e20a870e8f4209589bed0db274bc1413fda9e26c4025",
+      "sourceSha256": "931725afe62f72f91576ad6b116711717772d8018dae3ccc2ef657ed7c921509",
       "reachable": true,
       "imports": [],
       "candidates": []
@@ -9900,6 +10006,13 @@
       "imports": [
         "src/constants/palettes.ts"
       ],
+      "candidates": []
+    },
+    {
+      "file": "src/utils/today-presentation.ts",
+      "sourceSha256": "d1f6b3cb50d40f1be31a548f884efbaa6d36916fd069a35fa5957cc3837d4e23",
+      "reachable": true,
+      "imports": [],
       "candidates": []
     }
   ]

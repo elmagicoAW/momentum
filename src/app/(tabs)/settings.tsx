@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {Text} from '@/components/localized-native';
 import { LanguageSelector } from '@/components/settings/language-selector';
 import { appLabel, appMessage } from '@/i18n/app-copy';
@@ -39,6 +40,7 @@ const APP_VERSION = Constants.expoConfig?.version;
  * Habits, routines and reminders are managed in their own tabs, not here.
  */
 export default function SettingsScreen() {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { result } = useDataBackup();
   const { profile, status: profileStatus, reload: reloadProfile } = useProfile();
@@ -53,7 +55,7 @@ export default function SettingsScreen() {
   ].join(' · ');
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <Text style={styles.title} accessibilityRole="header">

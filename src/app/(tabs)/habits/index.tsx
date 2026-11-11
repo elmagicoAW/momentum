@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {Text} from '@/components/localized-native';
 import { appLabel, appMessage } from '@/i18n/app-copy';
 import type { AppPalette } from '@/constants/palettes';
@@ -14,6 +15,7 @@ import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/th
 import { useHabits } from '@/hooks/use-habits';
 
 export default function HabitsScreen() {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const { habits, status, reload } = useHabits();
   const ready = status === 'ready';
@@ -22,13 +24,13 @@ export default function HabitsScreen() {
   const openEdit = (id: string) => router.push({ pathname: '/habits/[id]', params: { id } });
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen,arabic.active && arabic.surface]}>
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
         {/* Fixed header: stays put while the list scrolls, so "Add Habit" is always reachable. */}
         <View style={styles.headerWrap}>
-          <View style={styles.header}>
-            <View style={styles.headerText}>
-              <Text style={styles.title} accessibilityRole="header">
+          <View style={[styles.header,arabic.active && arabic.heading]}>
+            <View style={[styles.headerText,arabic.active && arabic.textColumn]}>
+              <Text style={[styles.title,arabic.active && arabic.title]} accessibilityRole="header">
                 {appLabel("habits.index.habits")}</Text>
               {ready && habits.length > 0 && (
                 <Text style={styles.subtitle}>{appMessage("habits.list.count", { count: habits.length })}</Text>

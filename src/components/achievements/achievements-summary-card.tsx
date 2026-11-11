@@ -46,8 +46,25 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
     acknowledge(earned.filter((badge) => !collection.seenBadgeIds.includes(badge.id)).map((badge) => badge.id));
     openAchievements();
   };
-  return <View style={styles.card}>
+  return <View style={[styles.card, language === 'ar' && { direction: 'rtl' }]}>
     <Pressable accessibilityRole="button" onPress={open} style={({ pressed }) => [styles.body, pressed && { opacity: 0.75 }]}>
+      {language === 'ar' ? <>
+        <View style={{ direction: 'rtl', flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+          <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
+            <Text style={styles.eyebrow}>{t('today.achievement.eyebrow')}</Text>
+            <Text style={styles.title}>{t('navigation.achievements')}</Text>
+          </View>
+          {/* This component mirrors this right chevron once; no hardcoded diagonal arrow. */}
+          <SymbolView name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }} size={18} tintColor={Palette.accentBlue} accessible={false} />
+        </View>
+        <Text style={styles.count}>{storeReady ? m('today.achievement.count', { completed: earned.length, total: ACHIEVEMENTS.length }) : t(status === 'store-error' ? 'today.achievement.unavailable' : 'today.achievement.loading')}</Text>
+        {recent.length > 0 && <View style={[styles.symbols, { direction: 'rtl', flexWrap: 'wrap', alignSelf: 'flex-start' }]} accessible={false} importantForAccessibility="no-hide-descendants">
+          {recent.map((badge) => <SymbolView key={badge.id} name={habitIconSymbol(badge.icon)} size={20} tintColor={Palette.accent} />)}
+        </View>}
+        {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
+        {storeReady && !next && <Text style={styles.copy}>{t('today.achievement.complete')}</Text>}
+        <Text style={styles.link}>{t('today.achievement.view')}</Text>
+      </> : <>
       <View style={styles.row}>
         <Text style={styles.eyebrow}>{t('today.achievement.eyebrow')}</Text>
         <SymbolView name={{ ios: 'arrow.up.right', android: 'north_east', web: 'north_east' }} size={18} tintColor={Palette.accentBlue} />
@@ -60,6 +77,7 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
       {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
       {storeReady && !next && <Text style={styles.copy}>{t('today.achievement.complete')}</Text>}
       <Text style={styles.link}>{t('today.achievement.view')}</Text>
+      </>}
     </Pressable>
     {encouraging && <Text style={styles.encouragement}>{t(earned.length === 0 ? 'today.achievement.firstEffort' : 'today.achievement.effort')}</Text>}
     {today && <AchievementCelebration />}

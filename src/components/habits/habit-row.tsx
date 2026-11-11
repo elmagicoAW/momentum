@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text} from '@/components/localized-native';
 import { appLabel, appMessage } from '@/i18n/app-copy';
 import { readableAccent } from '@/utils/theme-color';
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export function HabitRow({ habit, onPress }: Props) {
+  const arabic = useArabicComposition();
   const { palette: Palette, styles } = useAppStyles(createStyles);
   const schedule = appMessage("display.descriptionPair", { first: String(describeTracking(habit.tracking)), second: String(describeSchedule(habit.schedule)) });
   return (
@@ -28,23 +30,23 @@ export function HabitRow({ habit, onPress }: Props) {
       accessibilityLabel={appMessage("display.labelValue", { label: String(habit.name), textValue: schedule })}
       accessibilityHint={appLabel("habits.habit-row.opensTheHabitEditor")}
       android_ripple={{ color: Palette.ripple }}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+      style={({ pressed }) => [styles.card,arabic.active && arabic.row, pressed && styles.pressed]}>
       <View style={[styles.iconWrap, { backgroundColor: `${habit.color}22` }]}>
         <SymbolView name={habitIconSymbol(habit.icon)} size={22} tintColor={readableAccent(habit.color, Palette)} />
       </View>
 
       <View style={[styles.body,{minWidth:0,flexShrink:1}]}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={[styles.title,arabic.active && arabic.title]} numberOfLines={1}>
           {habit.name}
         </Text>
         {habit.description ? (
-          <Text style={styles.description} numberOfLines={1}>
+          <Text style={[styles.description,arabic.active && arabic.supporting]} numberOfLines={1}>
             {habit.description}
           </Text>
         ) : null}
         <View style={styles.scheduleRow}>
           <View style={[styles.dot, { backgroundColor: habit.color }]} />
-          <Text style={styles.schedule} numberOfLines={1}>
+          <Text style={[styles.schedule,arabic.active && arabic.supporting]} numberOfLines={1}>
             {schedule}
           </Text>
         </View>

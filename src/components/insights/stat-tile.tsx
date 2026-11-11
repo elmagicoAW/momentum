@@ -1,3 +1,4 @@
+import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {Text, NumericText} from '@/components/localized-native';
 import { readableAccent } from '@/utils/theme-color';
 import type { AppPalette } from '@/constants/palettes';
@@ -17,17 +18,18 @@ type Props = {
 };
 
 export function StatTile({ label, value, caption, color, badge }: Props) {
-  const { palette: Palette, styles, language } = useAppStyles(createStyles);
+  const arabic = useArabicComposition();
+  const { palette: Palette, styles } = useAppStyles(createStyles);
   return (
-    <View style={[styles.tile,language === 'ar' && {flexBasis:'100%',minWidth:0}]} accessible accessibilityLabel={`${label}: ${value}${caption ? `, ${caption}` : ''}${badge ? `, ${badge}` : ''}`}>
-      <Text style={styles.label} numberOfLines={1}>
+    <View style={[styles.tile,arabic.active && arabic.gridTile]} accessible accessibilityLabel={`${label}: ${value}${caption ? `, ${caption}` : ''}${badge ? `, ${badge}` : ''}`}>
+      <Text style={[styles.label,arabic.active && arabic.title]} numberOfLines={1}>
         {label}
       </Text>
-      <NumericText style={[styles.value, color ? { color: readableAccent(color, Palette) } : null]} numberOfLines={1} adjustsFontSizeToFit>
+      <NumericText align="start" style={[styles.value, color ? { color: readableAccent(color, Palette) } : null]} numberOfLines={1} adjustsFontSizeToFit>
         {value}
       </NumericText>
       {caption ? (
-        <Text style={styles.caption} numberOfLines={2}>
+        <Text style={[styles.caption,arabic.active && arabic.supporting]} numberOfLines={2}>
           {caption}
         </Text>
       ) : null}
