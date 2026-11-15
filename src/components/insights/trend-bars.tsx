@@ -1,6 +1,6 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
 import {Text} from '@/components/localized-native';
-import { appLabel, appMessage, appRich } from '@/i18n/app-copy';
+import { appLabel, appMessage, appNumber, appRich } from '@/i18n/app-copy';
 import { LocalizedInline } from '@/components/localized-inline';
 import type { AppPalette } from '@/constants/palettes';
 import { useAppStyles } from '@/hooks/use-app-styles';
@@ -47,7 +47,7 @@ export function TrendBars({ index }: { index: InsightsIndex }) {
               style={styles.column}
               accessible
               accessibilityLabel={appMessage("display.labelColon", { label: String(p.isCurrent ? appMessage("insights.trend.currentLabel", { label: (p.label) }) : p.label), textValue: pct === null ? appLabel("insights.trend-bars.nothingFinishedWasScheduled") : appMessage("insights.trend.accessibility", { percent: (pct), done: (p.done), total: (p.finished) }) })}>
-              <Text style={styles.value}>{pct === null ? '' : `${pct}`}</Text>
+              <Text style={styles.value}>{pct === null ? '' : appNumber(pct)}</Text>
               <View style={styles.track}>
                 {pct === null ? (
                   <View style={styles.gap} />

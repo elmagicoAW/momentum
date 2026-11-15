@@ -155,7 +155,7 @@ export const remainingEnMessages = {
     "other": "{count} habits building momentum"
   },
   "routines.list.limit": "You’ve reached {limit} routines. Delete one to add another.",
-  "goals.consistency.explanation": "Counted from {date}, using saved check-ins for this goal’s current linked habits. Past days use each habit’s current schedule — earlier schedules aren’t recorded, so if you changed a schedule, past counts may differ from what was actually planned. Today stays provisional until the day ends.",
+  "goals.consistency.explanation": "Counted from {date}, but never before each habit’s evidenced start (creation or an earlier saved entry). Uses this goal’s current linked habits and their current schedules; historical link dates, schedules and pause intervals are not recorded. Paused days remain included. Today stays provisional until the day ends.",
   "history.habit.start": "History from {date}",
   "history.partial.days": {
     "one": "{count} missed day had some progress that didn’t meet the target.",

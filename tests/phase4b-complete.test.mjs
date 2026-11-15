@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {sourceTextHash} from '../scripts/source-text-hash.mjs';
 import test from 'node:test';
 import {execFileSync} from 'node:child_process';
 import {weekSummary} from '../src/i18n/insight-summary.ts';
@@ -111,9 +112,9 @@ test('known service errors retain identity, class, original message and classifi
  assert.equal(displayError(new Error('C:/private/SECRET.json'),'safe fallback'),'safe fallback');
 });
 
-test('Phase 3B/3C/4A reports/config/storage and validated Phase 4B-1 runtime/source fixtures remain byte-identical',()=>{
+test('Phase 3B/3C/4A reports/config/storage and validated Phase 4B-1 runtime/source fixtures preserve LF-normalized content',()=>{
  const activated = new Set(['src/hooks/use-app-theme.ts','src/hooks/use-language.ts','src/hooks/use-preferences.tsx','src/data/preferences-store.ts','src/i18n/today.ts']);
- for(const [file,expected]of Object.entries(baseline.protectedFiles).filter(([file])=>!activated.has(file)))assert.equal(hash(readFileSync(file)),expected,file);
+ for(const [file,expected]of Object.entries(baseline.protectedFiles).filter(([file])=>!activated.has(file)))assert.equal(sourceTextHash(readFileSync(file,'utf8')),expected,file);
  assert.deepEqual(ACTIVE_PRESENTATION,{scheme:'dark',language:'en',direction:'ltr'});
 });
 
@@ -123,7 +124,7 @@ test('all migrated screen/component stylesheet declarations retain checkpoint vi
  }
 });
 
-test('backup wire/recovery and business calculations retain their complete original AST after presentation annotations are removed',()=>{
+test('backup wire/recovery and business calculations retain reviewed AST contracts after presentation annotations are removed',()=>{
  for(const [file,functions]of Object.entries(baseline.pure)){
   const source=readFileSync(file,'utf8'),tree=ts.createSourceFile(file,source,99,true);
   for(const [name,expected]of Object.entries(functions)){
@@ -134,7 +135,13 @@ test('backup wire/recovery and business calculations retain their complete origi
     if(ts.isStringLiteral(n))return ts.factory.createStringLiteral(n.text);
     return ts.visitEachChild(n,visit,context);
    };return ts.visitNode(root,visit);}]);
-   const actual=ts.createPrinter({removeComments:true}).printNode(ts.EmitHint.Unspecified,result.transformed[0],tree);result.dispose();assert.equal(hash(actual),expected,`${file}:${name}`);
+   const actual=ts.createPrinter({removeComments:true}).printNode(ts.EmitHint.Unspecified,result.transformed[0],tree);result.dispose();
+   // Batch 1 explicitly changes only this formula; numeric fixtures cover its
+   // evidence bounds. Keep exact AST protection for the new formula AND every
+   // other original backup/domain function; the historical baseline stays intact.
+   const reviewed = file === 'src/utils/goal-progress.ts' && name === 'computeHabitConsistency'
+     ? 'e6a85b11a19eda38b75a57d5a109f226e47fab9f3a053c3aebb2bb5c370cdfc7' : expected;
+   assert.equal(hash(actual),reviewed,`${file}:${name}`);
   }
  }
 });

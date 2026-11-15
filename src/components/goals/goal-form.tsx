@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useFormNavigation } from '@/hooks/use-form-navigation';
 import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
@@ -40,6 +41,7 @@ type Props = {
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
+  onDeleted?: () => void;
 };
 
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
@@ -58,10 +60,12 @@ export function GoalForm({
   onSubmit,
   onCancel,
   onDelete,
+  onDeleted,
 }: Props) {
   const arabic = useArabicComposition();
   const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const { habits, status: habitsStatus } = useHabits();
+  const [originalDraft] = useState(() => initialDraft);
   const [draft, setDraft] = useState<GoalDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState<Busy>('idle');
@@ -71,6 +75,7 @@ export function GoalForm({
   const errors = validateGoalDraft(draft, { todayKey, startDate, savedTargetDate });
   const visibleErrors = showErrors ? errors : {};
   const locked = busy !== 'idle';
+  const navigation = useFormNavigation(JSON.stringify(draft) !== JSON.stringify(originalDraft), onCancel);
   // Saving without loaded habits would drop every link, so wait for them.
   const habitsReady = habitsStatus === 'ready';
   // Links to deleted habits are ignored (and dropped on save).
@@ -89,12 +94,17 @@ export function GoalForm({
       setShowErrors(true);
       return;
     }
+    if (!navigation.begin()) return;
     setBusy('saving');
     setFailure(null);
     try {
       await onSubmit(goalDraftToInput(draft, new Set(habits.map((h) => h.id))));
-      setBusy('done'); // stays locked while the screen closes
+      if (!navigation.active()) return;
+      setBusy('done');
+      navigation.finish();
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to save goal', error);
       setFailure(errorMessage(error, appLabel("goals.goal-form.couldnTSaveThisGoalYourChangesAreStillHereTryAgain")));
       setBusy('idle');
@@ -103,12 +113,17 @@ export function GoalForm({
 
   const handleDelete = async () => {
     if (locked || !onDelete) return;
+    if (!navigation.begin()) return;
     setBusy('deleting');
     setFailure(null);
     try {
       const deleted = await onDelete();
-      setBusy(deleted ? 'done' : 'idle');
+      if (!navigation.active()) return;
+      if (deleted) { setBusy('done'); navigation.finish(onDeleted ?? onCancel); }
+      else { navigation.failed(); setBusy('idle'); }
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to delete goal', error);
       setFailure(errorMessage(error, appLabel("goals.goal-form.couldnTDeleteThisGoalNothingWasRemovedTryAgain")));
       setBusy('idle');
@@ -123,7 +138,7 @@ export function GoalForm({
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
         <View style={styles.header}>
           <Pressable
-            onPress={onCancel}
+            onPress={() => navigation.request()}
             disabled={locked}
             accessibilityRole="button"
             accessibilityLabel={appLabel("goals.goal-form.cancel")}
@@ -229,7 +244,7 @@ export function GoalForm({
                   habits={habits}
                   selectedIds={draft.habitIds}
                   onChange={(ids) => update('habitIds', ids)}
-                  onCreateHabit={() => router.push('/habits/new')}
+                  onCreateHabit={() => navigation.request(() => { onCancel(); router.push('/habits/new'); })}
                   disabled={locked}
                 />
               ) : habitsStatus === 'loading' ? (

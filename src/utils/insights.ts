@@ -1,4 +1,5 @@
 import { appLabel, appMessage } from '@/i18n/app-copy';
+import { evidencedHabitStart } from '@/utils/habit-start';
 import { weekSummary } from '@/i18n/insight-summary';
 import type { CompletionHistory, DayRecord, HabitEntry } from '@/data/completion-storage';
 import type { Habit } from '@/data/habit-storage';
@@ -70,9 +71,6 @@ export type DayStatusCode = (typeof DayStatus)[keyof typeof DayStatus];
 
 const S = DayStatus;
 
-/** Habits whose saved creation date is before this are treated as having no reliable creation date. */
-const MIN_RELIABLE_YEAR = 2000;
-
 export type HabitIndex = {
   habit: Habit;
   /** First day the habit counts (see header). */
@@ -109,12 +107,6 @@ export type InsightsIndex = {
   history: CompletionHistory;
   todayRecord: DayRecord | undefined;
 };
-
-function reliableCreatedKey(createdAt: string): string | null {
-  const date = new Date(createdAt);
-  if (Number.isNaN(date.getTime()) || date.getFullYear() < MIN_RELIABLE_YEAR) return null;
-  return toLocalDateKey(date);
-}
 
 /**
  * Builds the per-habit day-status index in one pass per habit.
@@ -157,15 +149,7 @@ export function buildInsightsIndex(
   const unreadable = new Set(unreadableDays);
 
   // Habit starts.
-  const starts = habits.map((habit) => {
-    const created = reliableCreatedKey(habit.createdAt);
-    const entry = firstEntry.get(habit.id);
-    let startKey = todayKey;
-    if (created !== null && created < startKey) startKey = created;
-    if (entry !== undefined && entry < startKey) startKey = entry;
-    const startFromEntries = entry !== undefined && entry === startKey && (created === null || entry < created);
-    return { startKey, startFromEntries };
-  });
+  const starts = habits.map(habit => evidencedHabitStart(habit, firstEntry.get(habit.id), todayKey));
   const startKey = starts.reduce((min, s) => (s.startKey < min ? s.startKey : min), todayKey);
   const todayOffset = daysBetween(startKey, todayKey);
   const dayCount = todayOffset + 1;

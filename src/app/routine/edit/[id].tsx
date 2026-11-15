@@ -65,9 +65,9 @@ export default function EditRoutineScreen() {
         habitIds: routine.habitIds,
       }}
       onCancel={closeRoutineEditor}
+      onDeleted={closeAfterRoutineDeleted}
       onSubmit={async (input) => {
         await updateRoutine(routine.id, input); // throws on failure → form stays open
-        closeRoutineEditor();
       }}
       onDelete={async () => {
         const confirmed = await confirmDestructive({
@@ -83,7 +83,6 @@ export default function EditRoutineScreen() {
           setDeleting(null);
           throw error; // form stays open and shows the error
         }
-        closeAfterRoutineDeleted();
         return true;
       }}
     />

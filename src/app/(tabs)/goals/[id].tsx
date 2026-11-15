@@ -13,7 +13,7 @@ import { GoalForm } from '@/components/goals/goal-form';
 import { EmptyState } from '@/components/habits/empty-state';
 import { Radius, Spacing } from '@/constants/theme';
 import type { Goal } from '@/data/goal-storage';
-import { useCompletionHistory } from '@/hooks/use-completion-history';
+import { useGoalHistory } from '@/hooks/use-goal-history';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
@@ -27,7 +27,7 @@ export default function EditGoalScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { goals, status, updateGoal, deleteGoal, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
-  const history = useCompletionHistory();
+  const history = useGoalHistory();
   const daily = useDailyProgress();
   const todayKey = daily.dateKey;
   const todayRecord = daily.status === 'ready' ? daily.record : undefined;
@@ -96,7 +96,6 @@ export default function EditGoalScreen() {
       onCancel={closeGoalEditor}
       onSubmit={async (input) => {
         await updateGoal(goal.id, input); // throws on failure → form stays open
-        closeGoalEditor();
       }}
       onDelete={async () => {
         const confirmed = await confirmDestructive({
@@ -112,7 +111,6 @@ export default function EditGoalScreen() {
           setDeleting(null);
           throw error; // form stays open and shows the error
         }
-        closeGoalEditor();
         return true;
       }}
     />

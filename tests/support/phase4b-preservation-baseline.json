@@ -1,7 +1,7 @@
 {
   "checkpoint": "2ed299cba1ff9b65408915c7f49ee124fc993389",
   "protectedFiles": {
-    "ACHIEVEMENTS_PLAN.md": "914a28edba257761b7258b7df0a363aa9242f49f2b372c34764288caca879b72",
+    "ACHIEVEMENTS_PLAN.md": "e7c8205281f5e1df0db657e89f7acda203aa63dacc752b22a2010acec40ea81c",
     "ADVANCED_HABITS_PLAN.md": "b4c8bbbd21fc2e900de08c71a247650821d6e7cffa3133567545913410a83b53",
     "ANDROID_DEV_BUILD_PLAN.md": "b0f9b36974e2bb46de43655edb2d8805fa1d2c0da192bdde44ffa59da3803fdd",
     "app.json": "4af0fc5477e63eb9d81cee06cab3f3936f2e600dd1defdc5020aa8bf928ba506",
@@ -269,6 +269,14 @@
     "src/utils/schedule.ts": {
       "isScheduledOn": "d273b434b4a0303754a42c9479a578f7e11f8f444486f052ccd3d88634b96540",
       "isScheduledOnWeekday": "3289470f52af1d1b176c1fcd76bf7a27066e298a4dbf6399f097fe35f0022b4f"
+    }
+  },
+  "reviewedCorrections": {
+    "ACHIEVEMENTS_PLAN.md": {
+      "previousHash": "914a28edba257761b7258b7df0a363aa9242f49f2b372c34764288caca879b72",
+      "sourceCommit": "5482e08",
+      "checkpoint": "2ed299cba1ff9b65408915c7f49ee124fc993389",
+      "reason": "Original addition, phase checkpoint and pre-Batch-1 HEAD contain identical LF text. Previous hash matches neither LF nor CRLF text; corrected against historical committed content, not regenerated from working changes."
     }
   }
 }

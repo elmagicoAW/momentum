@@ -23,7 +23,6 @@ export default function NewRoutineScreen() {
       onCancel={closeRoutineEditor}
       onSubmit={async (input) => {
         await createRoutine(input); // throws on failure → form stays open with an error
-        closeRoutineEditor();
       }}
     />
   );

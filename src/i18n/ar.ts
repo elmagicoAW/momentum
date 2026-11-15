@@ -4,6 +4,9 @@ import { todayAr } from './today-ar';
 import { remainingAr } from './remaining-ar';
 
 export const ar = {
+  'forms.discardTitle': "تجاهل التغييرات؟",
+  'forms.discardMessage': "لم تُحفظ تغييراتك بعد.",
+  'forms.discard': "تجاهل",
   ...languageAr,
   ...remainingAr,
   ...todayAr,

@@ -7,6 +7,7 @@ import { useRef } from 'react';
 import { StyleSheet, View, type TextInputInstance } from 'react-native';
 
 import { Radius, Spacing } from '@/constants/theme';
+import { normalizeNumericInput } from '@/i18n/format';
 import { UNIT_MAX_LENGTH } from '@/utils/habit-validation';
 
 type Props = {
@@ -43,7 +44,7 @@ export function CountFields({
             keyboardAppearance={scheme}
             value={target}
             // Digits only, so pasted text can't sneak in letters or decimals.
-            onChangeText={(text) => onTargetChange(text.replace(/\D/g, '').slice(0, 4))}
+            onChangeText={(text) => onTargetChange(normalizeNumericInput(text).replace(/\D/g, '').slice(0, 4))}
             ref={targetRef}
             onFocus={() => onInputFocus?.(targetRef.current)}
             keyboardType="number-pad"

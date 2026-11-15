@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useFormNavigation } from '@/hooks/use-form-navigation';
 import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
@@ -40,6 +41,7 @@ type Props = {
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
+  onDeleted?: () => void;
 };
 
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
@@ -48,9 +50,10 @@ function errorMessage(error: unknown, fallback: string) {
   return displayError(error, fallback);
 }
 
-export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
+export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete, onDeleted }: Props) {
   const arabic = useArabicComposition();
   const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
+  const [originalDraft] = useState(() => initialDraft);
   const [draft, setDraft] = useState<HabitDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState<Busy>('idle');
@@ -59,6 +62,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
   const errors = validateHabitDraft(draft);
   const visibleErrors = showErrors ? errors : {};
   const locked = busy !== 'idle';
+  const navigation = useFormNavigation(JSON.stringify(draft) !== JSON.stringify(originalDraft), onCancel);
 
   const update = <K extends keyof HabitDraft>(key: K, value: HabitDraft[K]) =>
     setDraft((d) => ({ ...d, [key]: value }));
@@ -96,12 +100,17 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
       setShowErrors(true);
       return;
     }
+    if (!navigation.begin()) return;
     setBusy('saving');
     setFailure(null);
     try {
       const saved = await onSubmit(draftToInput(draft));
-      setBusy(saved === false ? 'idle' : 'done'); // 'done' stays locked while the screen closes
+      if (!navigation.active()) return;
+      if (saved === false) { navigation.failed(); setBusy('idle'); }
+      else { setBusy('done'); navigation.finish(); }
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to save habit', error);
       setFailure(errorMessage(error, appLabel("habits.habit-form.couldnTSaveThisHabitYourChangesAreStillHereTryAgain")));
       setBusy('idle');
@@ -110,12 +119,17 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
 
   const handleDelete = async () => {
     if (locked || !onDelete) return;
+    if (!navigation.begin()) return;
     setBusy('deleting');
     setFailure(null);
     try {
       const deleted = await onDelete();
-      setBusy(deleted ? 'done' : 'idle');
+      if (!navigation.active()) return;
+      if (deleted) { setBusy('done'); navigation.finish(onDeleted ?? onCancel); }
+      else { navigation.failed(); setBusy('idle'); }
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to delete habit', error);
       setFailure(errorMessage(error, appLabel("habits.habit-form.couldnTDeleteThisHabitNothingWasRemovedTryAgain")));
       setBusy('idle');
@@ -128,7 +142,7 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
         {/* Header */}
         <View style={styles.header}>
           <Pressable
-            onPress={onCancel}
+            onPress={() => navigation.request()}
             disabled={locked}
             accessibilityRole="button"
             accessibilityLabel={appLabel("habits.habit-form.cancel")}

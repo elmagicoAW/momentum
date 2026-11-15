@@ -25,6 +25,7 @@ import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/th
 import { getDailyMotivation } from '@/data/demo-habits';
 import { shouldShowNamePrompt } from '@/data/profile-storage';
 import { useCurrentDate } from '@/hooks/use-current-date';
+import { useGreetingDate } from '@/hooks/use-greeting-date';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
 import { useProfile } from '@/hooks/use-profile';
@@ -54,6 +55,7 @@ export default function TodayScreen() {
   const { language } = useLanguage();
   const { t, m } = todayCopy(language);
   const now = useCurrentDate();
+  const greetingDate = useGreetingDate();
   const daily = useDailyProgress();
   const { record, status, saveState, canEdit } = daily;
   // The provider's date decides which habits are "today", so cards and saves always agree.
@@ -82,7 +84,7 @@ export default function TodayScreen() {
   const { profile, status: profileStatus, dismissNamePrompt } = useProfile();
   const profileReady = profileStatus === 'ready';
   const displayName = profileReady ? profile.displayName : undefined;
-  const greeting = todayGreeting(language, now);
+  const greeting = todayGreeting(language, greetingDate);
   const showNamePrompt = profileReady && shouldShowNamePrompt(profile);
   const avatarLabel = displayName ? m('accessibility.profileNamed', { name: displayName }) : t('profile.setup');
 

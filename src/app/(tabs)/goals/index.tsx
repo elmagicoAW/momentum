@@ -14,7 +14,7 @@ import { goalStatusMeta } from '@/components/goals/status-picker';
 import { EmptyState } from '@/components/habits/empty-state';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import type { Goal, GoalStatus } from '@/data/goal-storage';
-import { useCompletionHistory } from '@/hooks/use-completion-history';
+import { useGoalHistory } from '@/hooks/use-goal-history';
 import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useGoals } from '@/hooks/use-goals';
 import { useHabits } from '@/hooks/use-habits';
@@ -39,7 +39,7 @@ export default function GoalsScreen() {
   const GOAL_STATUS_META = goalStatusMeta(Palette);
   const { goals, status, reload } = useGoals();
   const { habits, status: habitsStatus } = useHabits();
-  const history = useCompletionHistory();
+  const history = useGoalHistory();
   const daily = useDailyProgress();
   const todayKey = daily.dateKey;
   // Today's live progress, so the provisional count matches the Today ring even mid-save.

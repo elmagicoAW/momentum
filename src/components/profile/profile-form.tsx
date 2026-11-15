@@ -17,7 +17,7 @@ import { ProfileAvatar } from '@/components/profile/profile-avatar';
 import { BottomTabInset, MaxContentWidth, Radius, Spacing } from '@/constants/theme';
 import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
 import { draftToProfileInput, profileToDraft, type Profile, type ProfileInput } from '@/data/profile-storage';
-import { useCurrentDate } from '@/hooks/use-current-date';
+import { useGreetingDate } from '@/hooks/use-greeting-date';
 import { confirmDestructive } from '@/utils/confirm';
 import { todayGreeting } from '@/i18n/today';
 import { ACTIVE_PRESENTATION } from '@/utils/presentation';
@@ -69,7 +69,7 @@ export function ProfileForm({ profile, onSave, onClose }: Props) {
   const [leaving, setLeaving] = useState(false);
   const askingRef = useRef(false);
 
-  const now = useCurrentDate();
+  const now = useGreetingDate();
   const errors = validateProfileDraft(draft);
   const visibleErrors = showErrors ? errors : {};
   const locked = busy !== 'idle';

@@ -5,6 +5,8 @@ import type { Habit } from '@/data/habit-storage';
 import { addDays, daysBetween, formatShortDate, parseLocalDateKey, toLocalDateKey } from '@/i18n/presentation-date';
 import { isHabitCompleteOn } from '@/utils/habit-progress';
 import { isScheduledOn } from '@/utils/schedule';
+import { isLocalDateKey } from '@/utils/date';
+import { evidencedHabitStart } from '@/utils/habit-start';
 
 /**
  * HABIT CONSISTENCY
@@ -16,6 +18,8 @@ import { isScheduledOn } from '@/utils/schedule';
  * Window: goal.startDate … endDate,
  *   endDate = targetDate, or completedAt if the goal is marked completed (whichever is earlier).
  *
+ * Each habit starts at its evidenced start (creation or an earlier saved entry),
+ * matching Insights. No opportunities are invented before that evidence.
  * For each linked habit that still exists and each day in the window on which
  * that habit is scheduled, there is one "scheduled check-in", whatever the
  * habit's tracking type, so a habit never contributes more than one unit a day.
@@ -43,7 +47,8 @@ import { isScheduledOn } from '@/utils/schedule';
  * habit's *current* schedule. That schedule is applied to every past day, so if
  * a schedule was changed, past "scheduled" counts reflect the current schedule,
  * not the one that was actually in effect then.
- * Days while a goal was paused are also still counted (pauses aren't recorded).
+ * Historical link dates and pause intervals aren't recorded: current links apply
+ * retrospectively within this evidence-bounded window, including paused days.
  */
 export type CheckInCount = { completed: number; scheduled: number };
 
@@ -55,7 +60,7 @@ export type HabitConsistency = {
     /** completed / scheduled, or null when nothing was scheduled yet. */
     rate: number | null;
   };
-  /** Today's check-ins — provisional. null when today is outside the window. */
+  /** Today's live check-ins — provisional. null outside the window or until loaded. */
   today: CheckInCount | null;
   /** Days in the finished window whose saved completions couldn't be read (left out of the counts). */
   unreadableDays: number;
@@ -83,11 +88,20 @@ export function computeHabitConsistency(
   const yesterdayKey = toLocalDateKey(addDays(parseLocalDateKey(todayKey), -1));
   const finishedEndKey = minKey(endKey, yesterdayKey);
   const unreadable = new Set(history.unreadableDays);
+  const firstEntries = new Map<string, string>();
+  for (const [key, day] of history.days) {
+    if (!isLocalDateKey(key) || key > todayKey || unreadable.has(key)) continue;
+    for (const id of Object.keys(day.entries)) {
+      if (!firstEntries.has(id) || key < firstEntries.get(id)!) firstEntries.set(id, key);
+    }
+  }
+  const starts = new Map(linkedHabits.map(habit => [habit.id, evidencedHabitStart(habit, firstEntries.get(habit.id), todayKey).startKey]));
 
   const count = (dateKey: string, into: CheckInCount) => {
     const date = parseLocalDateKey(dateKey);
     const record = dateKey === todayKey && todayRecord ? todayRecord : history.days.get(dateKey);
     for (const habit of linkedHabits) {
+      if (dateKey < starts.get(habit.id)!) continue;
       if (!isScheduledOn(habit, date)) continue;
       into.scheduled += 1;
       if (isHabitCompleteOn(record, habit, dateKey, todayKey)) into.completed += 1;
@@ -99,7 +113,7 @@ export function computeHabitConsistency(
   if (linkedHabits.length > 0) {
     for (let key = goal.startDate; key <= finishedEndKey; key = toLocalDateKey(addDays(parseLocalDateKey(key), 1))) {
       if (unreadable.has(key)) {
-        unreadableDays += 1;
+        if (linkedHabits.some(habit => key >= starts.get(habit.id)! && isScheduledOn(habit, parseLocalDateKey(key)))) unreadableDays += 1;
         continue; // excluded from both completed and scheduled
       }
       count(key, finished);
@@ -107,7 +121,7 @@ export function computeHabitConsistency(
   }
 
   let today: CheckInCount | null = null;
-  const todayReadable = todayRecord !== undefined || !unreadable.has(todayKey);
+  const todayReadable = todayRecord !== undefined;
   if (linkedHabits.length > 0 && goal.startDate <= todayKey && todayKey <= endKey && todayReadable) {
     today = { completed: 0, scheduled: 0 };
     count(todayKey, today);

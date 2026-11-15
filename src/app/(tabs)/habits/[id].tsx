@@ -92,7 +92,6 @@ export default function EditHabitScreen() {
           }
         }
         await updateHabit(habit.id, input); // throws on failure → form stays open
-        closeHabitEditor();
       }}
       onDelete={async () => {
         const linkedGoals = goals.filter((g) => g.habitIds.includes(habit.id)).length;
@@ -119,7 +118,6 @@ export default function EditHabitScreen() {
           setDeleting(null);
           throw error; // form stays open and shows the error
         }
-        closeHabitEditor();
         return true;
       }}
     />

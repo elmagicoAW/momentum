@@ -1,4 +1,6 @@
 import {SymbolView} from '@/components/localized-native';
+import { router, type Href } from 'expo-router';
+import { formNavigation } from '@/utils/form-navigation';
 import {
   Tabs,
   TabList,
@@ -27,19 +29,19 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="index" href={HOME_HREF} asChild>
-            <TabButton>{t('navigation.today')}</TabButton>
+            <TabButton destination={HOME_HREF}>{t('navigation.today')}</TabButton>
           </TabTrigger>
           <TabTrigger name="habits" href={HABITS_HREF} asChild>
-            <TabButton>{t('navigation.habits')}</TabButton>
+            <TabButton destination={HABITS_HREF}>{t('navigation.habits')}</TabButton>
           </TabTrigger>
           <TabTrigger name="goals" href={GOALS_HREF} asChild>
-            <TabButton>{t('navigation.goals')}</TabButton>
+            <TabButton destination={GOALS_HREF}>{t('navigation.goals')}</TabButton>
           </TabTrigger>
           <TabTrigger name="insights" href={INSIGHTS_HREF} asChild>
-            <TabButton>{t('navigation.insights')}</TabButton>
+            <TabButton destination={INSIGHTS_HREF}>{t('navigation.insights')}</TabButton>
           </TabTrigger>
           <TabTrigger name="settings" href="/settings" asChild>
-            <TabButton>{t('navigation.settings')}</TabButton>
+            <TabButton destination="/settings">{t('navigation.settings')}</TabButton>
           </TabTrigger>
         </CustomTabList>
       </TabList>
@@ -51,11 +53,17 @@ export default function AppTabs() {
 // component type, not an instance type. Type the ref as what Pressable actually receives.
 type TabButtonProps = Omit<TabTriggerSlotProps, 'ref'> & {
   ref?: React.Ref<React.ComponentRef<typeof Pressable>>;
+  destination?: Href;
 };
 
-export function TabButton({ children, isFocused, ...props }: TabButtonProps) {
+export function TabButton({ children, isFocused, destination, ...props }: TabButtonProps) {
   return (
-    <Pressable {...props} style={({ pressed }) => pressed && styles.pressed}>
+    <Pressable {...props} onPress={event => {
+      if (destination && formNavigation.protected()) {
+        event.preventDefault();
+        formNavigation.requestTab(() => router.navigate(destination));
+      } else props.onPress?.(event);
+    }} style={({ pressed }) => pressed && styles.pressed}>
       <ThemedView
         type={isFocused ? 'backgroundSelected' : 'backgroundElement'}
         style={styles.tabButtonView}>

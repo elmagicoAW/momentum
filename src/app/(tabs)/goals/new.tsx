@@ -25,7 +25,6 @@ export default function NewGoalScreen() {
       onCancel={closeGoalEditor}
       onSubmit={async (input) => {
         await createGoal(input); // throws on failure → form stays open with an error
-        closeGoalEditor();
       }}
     />
   );

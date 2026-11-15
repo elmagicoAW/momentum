@@ -16,7 +16,6 @@ export default function NewHabitScreen() {
       onCancel={closeHabitEditor}
       onSubmit={async (input) => {
         await createHabit(input); // throws on failure → form stays open with an error
-        closeHabitEditor();
       }}
     />
   );

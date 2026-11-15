@@ -3,6 +3,9 @@ import { todayEn } from './today-en';
 import { remainingEn } from './remaining-en';
 /** Fixed labels. Public language remains English/LTR. */
 export const en = {
+  'forms.discardTitle': "Discard changes?",
+  'forms.discardMessage': "Your changes have not been saved.",
+  'forms.discard': "Discard",
   ...languageEn,
   ...remainingEn,
   ...todayEn,

@@ -1,4 +1,5 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
+import { useFormNavigation } from '@/hooks/use-form-navigation';
 import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
@@ -40,6 +41,7 @@ type Props = {
   onCancel: () => void;
   /** Edit mode only. Resolves true when deleted, false when the user cancelled. */
   onDelete?: () => Promise<boolean>;
+  onDeleted?: () => void;
 };
 
 type Busy = 'idle' | 'saving' | 'deleting' | 'done';
@@ -48,10 +50,11 @@ function errorMessage(error: unknown, fallback: string) {
   return displayError(error, fallback);
 }
 
-export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete }: Props) {
+export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCancel, onDelete, onDeleted }: Props) {
   const arabic = useArabicComposition();
   const { palette: Palette, styles, scheme } = useAppStyles(createStyles);
   const { habits, status: habitsStatus } = useHabits();
+  const [originalDraft] = useState(() => initialDraft);
   const [draft, setDraft] = useState<RoutineDraft>(initialDraft);
   const [showErrors, setShowErrors] = useState(false);
   const [busy, setBusy] = useState<Busy>('idle');
@@ -62,6 +65,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
   const errors = validateRoutineDraft(draft, existingIds);
   const visibleErrors = showErrors ? errors : {};
   const locked = busy !== 'idle';
+  const navigation = useFormNavigation(JSON.stringify(draft) !== JSON.stringify(originalDraft), onCancel);
   const linkedCount = new Set(draft.habitIds.filter((id) => existingIds.has(id))).size;
   // Only meaningful once habits are loaded — before that every ID would look "missing".
   const missingCount = habitsReady ? draft.habitIds.filter((id) => !existingIds.has(id)).length : 0;
@@ -80,12 +84,17 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
       setShowErrors(true);
       return;
     }
+    if (!navigation.begin()) return;
     setBusy('saving');
     setFailure(null);
     try {
       await onSubmit(routineDraftToInput(draft, existingIds));
-      setBusy('done'); // stays locked while the screen closes
+      if (!navigation.active()) return;
+      setBusy('done');
+      navigation.finish();
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to save routine', error);
       setFailure(errorMessage(error, appLabel("routines.routine-form.couldnTSaveThisRoutineYourChangesAreStillHereTryAgain")));
       setBusy('idle');
@@ -94,12 +103,17 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
 
   const handleDelete = async () => {
     if (locked || !onDelete) return;
+    if (!navigation.begin()) return;
     setBusy('deleting');
     setFailure(null);
     try {
       const deleted = await onDelete();
-      setBusy(deleted ? 'done' : 'idle');
+      if (!navigation.active()) return;
+      if (deleted) { setBusy('done'); navigation.finish(onDeleted ?? onCancel); }
+      else { navigation.failed(); setBusy('idle'); }
     } catch (error) {
+      if (!navigation.active()) return;
+      navigation.failed();
       console.warn('[momentum] Failed to delete routine', error);
       setFailure(errorMessage(error, appLabel("routines.routine-form.couldnTDeleteThisRoutineNothingWasRemovedTryAgain")));
       setBusy('idle');
@@ -111,7 +125,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
       <SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.flex}>
         <View style={styles.header}>
           <Pressable
-            onPress={onCancel}
+            onPress={() => navigation.request()}
             disabled={locked}
             accessibilityRole="button"
             accessibilityLabel={appLabel("routines.routine-form.cancel")}
@@ -244,7 +258,7 @@ export function RoutineForm({ title, initialDraft, submitLabel, onSubmit, onCanc
                     habits={habits}
                     selectedIds={draft.habitIds}
                     onChange={(ids) => update('habitIds', ids)}
-                    onCreateHabit={() => router.navigate('/habits/new')}
+                    onCreateHabit={() => navigation.request(() => { onCancel(); router.navigate('/habits/new'); })}
                     disabled={locked}
                     emptyText={appLabel("routines.routine-form.youDonTHaveAnyHabitsYetSaveThisRoutineNowAndAddHabitsLaterOrCreateAHabitFirstThisFormWillCloseWithoutSaving")}
                   />
