@@ -4,11 +4,11 @@
   "method": "All Expo Router route files are roots; local static imports/re-exports/literal dynamic imports, including platform variants, form an intentionally conservative dependency graph. Type-only imports may overstate reachability. Candidates are not automatic translation instructions.",
   "limitations": "May include developer errors/identifiers/URLs and miss one-word lowercase copy, computed copy, OS-owned strings, external dependencies and arbitrary runtime imports. Dynamic JSX expressions require manual data-producer review. No user/device data is read.",
   "summary": {
-    "sourceFiles": 188,
+    "sourceFiles": 189,
     "routeRoots": 22,
-    "reachableFiles": 181,
+    "reachableFiles": 182,
     "candidateFiles": 120,
-    "candidates": 1506
+    "candidates": 1521
   },
   "files": [
     {
@@ -706,7 +706,7 @@
     },
     {
       "file": "src/app/(tabs)/index.tsx",
-      "sourceSha256": "fa6a0eec6a1250fce048cca483671e5e911409b6ba1cbc90b3a453ee3e5a070b",
+      "sourceSha256": "4a53aecc198975a303e57ac489795ebe48ecaf4fb942e76faf3cac77b0d89da4",
       "reachable": true,
       "imports": [
         "src/hooks/use-arabic-composition.ts",
@@ -718,6 +718,7 @@
         "src/i18n/today.ts",
         "src/i18n/format.ts",
         "src/components/localized-inline.tsx",
+        "src/components/stable-text.tsx",
         "src/components/habits/empty-state.tsx",
         "src/components/achievements/achievements-summary-card.tsx",
         "src/components/profile/name-prompt-card.tsx",
@@ -750,152 +751,207 @@
           "text": "use no memo"
         },
         {
-          "line": 42,
+          "line": 43,
           "kind": "copy-or-technical-review",
           "text": "today.restDay"
         },
         {
-          "line": 43,
+          "line": 44,
           "kind": "copy-or-technical-review",
           "text": "today.getStarted"
         },
         {
-          "line": 44,
+          "line": 45,
           "kind": "copy-or-technical-review",
           "text": "today.allDone"
         },
         {
-          "line": 45,
+          "line": 46,
           "kind": "copy-or-technical-review",
           "text": "today.halfway"
         },
         {
-          "line": 46,
+          "line": 47,
           "kind": "copy-or-technical-review",
           "text": "today.greatStart"
         },
         {
-          "line": 89,
+          "line": 90,
           "kind": "copy-or-technical-review",
           "text": "accessibility.profileNamed"
         },
         {
-          "line": 89,
+          "line": 90,
           "kind": "copy-or-technical-review",
           "text": "profile.setup"
         },
         {
-          "line": 103,
+          "line": 104,
           "kind": "copy-or-technical-review",
           "text": "today.greetingLine"
         },
         {
-          "line": 105,
+          "line": 106,
           "kind": "copy-or-technical-review",
           "text": "today.greetingOnly"
         },
         {
-          "line": 126,
+          "line": 128,
           "kind": "copy-or-technical-review",
           "text": "today.dailyProgress"
         },
         {
-          "line": 127,
+          "line": 130,
           "kind": "copy-or-technical-review",
           "text": "today.progress"
         },
         {
-          "line": 134,
+          "line": 130,
+          "kind": "copy-or-technical-review",
+          "text": "today.progress"
+        },
+        {
+          "line": 130,
+          "kind": "copy-or-technical-review",
+          "text": "today.progress"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.restDay"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.getStarted"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.greatStart"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.halfway"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
+          "text": "today.allDone"
+        },
+        {
+          "line": 137,
           "kind": "copy-or-technical-review",
           "text": "today.dailyProgress"
         },
         {
-          "line": 136,
+          "line": 139,
           "kind": "copy-or-technical-review",
           "text": "today.progress"
-        },
-        {
-          "line": 160,
-          "kind": "copy-or-technical-review",
-          "text": "today.habits"
         },
         {
           "line": 163,
           "kind": "copy-or-technical-review",
-          "text": "today.remainingSaved"
+          "text": "today.habits"
         },
         {
-          "line": 164,
+          "line": 166,
           "kind": "copy-or-technical-review",
           "text": "today.remainingCount"
         },
         {
-          "line": 177,
+          "line": 166,
+          "kind": "copy-or-technical-review",
+          "text": "common.saving"
+        },
+        {
+          "line": 166,
+          "kind": "copy-or-technical-review",
+          "text": "today.saved"
+        },
+        {
+          "line": 166,
+          "kind": "copy-or-technical-review",
+          "text": "today.remainingSaved"
+        },
+        {
+          "line": 167,
+          "kind": "copy-or-technical-review",
+          "text": "today.remainingSaved"
+        },
+        {
+          "line": 168,
+          "kind": "copy-or-technical-review",
+          "text": "today.remainingCount"
+        },
+        {
+          "line": 181,
           "kind": "copy-or-technical-review",
           "text": "today.loadHabits.title"
         },
         {
-          "line": 178,
+          "line": 182,
           "kind": "copy-or-technical-review",
           "text": "today.loadHabits.body"
         },
         {
-          "line": 179,
+          "line": 183,
           "kind": "copy-or-technical-review",
           "text": "exclamationmark.triangle.fill"
         },
         {
-          "line": 180,
+          "line": 184,
           "kind": "copy-or-technical-review",
           "text": "today.retry"
         },
         {
-          "line": 187,
+          "line": 191,
           "kind": "copy-or-technical-review",
           "text": "habits.empty.title"
         },
         {
-          "line": 188,
+          "line": 192,
           "kind": "copy-or-technical-review",
           "text": "habits.empty.description"
         },
         {
-          "line": 189,
+          "line": 193,
           "kind": "copy-or-technical-review",
           "text": "habits.create"
         },
         {
-          "line": 196,
+          "line": 200,
           "kind": "copy-or-technical-review",
           "text": "today.noneScheduled"
         },
         {
-          "line": 197,
+          "line": 201,
           "kind": "copy-or-technical-review",
           "text": "today.noneOnDay"
         },
         {
-          "line": 198,
+          "line": 202,
           "kind": "copy-or-technical-review",
           "text": "moon.stars.fill"
         },
         {
-          "line": 199,
+          "line": 203,
           "kind": "copy-or-technical-review",
           "text": "habits.manage"
         },
         {
-          "line": 229,
+          "line": 233,
           "kind": "copy-or-technical-review",
           "text": "today.motivation"
         },
         {
-          "line": 230,
+          "line": 234,
           "kind": "copy-or-technical-review",
           "text": "today.motivation.quote"
         },
         {
-          "line": 231,
+          "line": 235,
           "kind": "copy-or-technical-review",
           "text": "today.motivation.author"
         }
@@ -2524,7 +2580,7 @@
     },
     {
       "file": "src/components/achievements/achievements-summary-card.tsx",
-      "sourceSha256": "0d53473977fbc5fe120f40620d056ac8c092a3f51061ce2ee5aab4da7206c0bc",
+      "sourceSha256": "feb565fc7d249d83ad702288534be3730afce05053d3442c005b5903b8e33de9",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -2539,7 +2595,8 @@
         "src/hooks/use-daily-progress.tsx",
         "src/hooks/use-habits.tsx",
         "src/utils/achievements.ts",
-        "src/utils/navigation.ts"
+        "src/utils/navigation.ts",
+        "src/components/stable-text.tsx"
       ],
       "candidates": [
         {
@@ -2548,122 +2605,132 @@
           "text": "use no memo"
         },
         {
-          "line": 28,
+          "line": 29,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.found"
         },
         {
-          "line": 28,
+          "line": 29,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.confirmed"
         },
         {
-          "line": 30,
+          "line": 31,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.dismissA11y"
         },
         {
-          "line": 30,
+          "line": 31,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.dismiss"
         },
         {
-          "line": 54,
+          "line": 58,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.eyebrow"
         },
         {
-          "line": 55,
+          "line": 59,
           "kind": "copy-or-technical-review",
           "text": "navigation.achievements"
         },
         {
-          "line": 58,
+          "line": 62,
           "kind": "copy-or-technical-review",
           "text": "chevron.right"
         },
         {
-          "line": 60,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.count"
-        },
-        {
-          "line": 60,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.unavailable"
-        },
-        {
-          "line": 60,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.loading"
         },
         {
           "line": 64,
           "kind": "copy-or-technical-review",
-          "text": "today.achievement.next"
-        },
-        {
-          "line": 65,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.complete"
-        },
-        {
-          "line": 66,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.view"
-        },
-        {
-          "line": 69,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.eyebrow"
-        },
-        {
-          "line": 70,
-          "kind": "copy-or-technical-review",
-          "text": "arrow.up.right"
-        },
-        {
-          "line": 72,
-          "kind": "copy-or-technical-review",
-          "text": "navigation.achievements"
-        },
-        {
-          "line": 74,
-          "kind": "copy-or-technical-review",
-          "text": "today.achievement.count"
-        },
-        {
-          "line": 74,
-          "kind": "copy-or-technical-review",
           "text": "today.achievement.unavailable"
         },
         {
-          "line": 74,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.loading"
         },
         {
-          "line": 77,
+          "line": 68,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.next"
         },
         {
-          "line": 78,
+          "line": 69,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.complete"
         },
         {
-          "line": 79,
+          "line": 70,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.view"
         },
         {
+          "line": 73,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.eyebrow"
+        },
+        {
+          "line": 74,
+          "kind": "copy-or-technical-review",
+          "text": "arrow.up.right"
+        },
+        {
+          "line": 76,
+          "kind": "copy-or-technical-review",
+          "text": "navigation.achievements"
+        },
+        {
+          "line": 78,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.count"
+        },
+        {
+          "line": 78,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.unavailable"
+        },
+        {
+          "line": 78,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.loading"
+        },
+        {
+          "line": 81,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.next"
+        },
+        {
           "line": 82,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.complete"
+        },
+        {
+          "line": 83,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.view"
+        },
+        {
+          "line": 88,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.firstEffort"
         },
         {
-          "line": 82,
+          "line": 88,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.effort"
+        },
+        {
+          "line": 88,
+          "kind": "copy-or-technical-review",
+          "text": "today.achievement.firstEffort"
+        },
+        {
+          "line": 88,
           "kind": "copy-or-technical-review",
           "text": "today.achievement.effort"
         }
@@ -5873,6 +5940,15 @@
       "candidates": []
     },
     {
+      "file": "src/components/stable-text.tsx",
+      "sourceSha256": "e4369714b7d8a3e23279089cacd0ccd70b37f0cb527a0f048f1a94cf4278a7ec",
+      "reachable": true,
+      "imports": [
+        "src/components/localized-native.tsx"
+      ],
+      "candidates": []
+    },
+    {
       "file": "src/components/themed-text.tsx",
       "sourceSha256": "4e026c1120460d8adbaebea06d66ad5521dfa7a1a66cab04afee35f179362b2f",
       "reachable": true,
@@ -5930,7 +6006,7 @@
     },
     {
       "file": "src/components/today/count-control.tsx",
-      "sourceSha256": "0f2036a965a6371b9ccb72c083e865e65b598896bd91cda66be72d598a9f23a2",
+      "sourceSha256": "1f73dfa5ee6c9b81761d62d0385bee246af3453677071377faa95d309cdfdc87",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -5944,7 +6020,7 @@
     },
     {
       "file": "src/components/today/habit-card.tsx",
-      "sourceSha256": "2515da244f77cc161d2dbecd5507eb8785581411478c43fcf348befe9d425805",
+      "sourceSha256": "89b32b31e80f3b511c12054f34c24be991042967197456b3b9e307948aca690f",
       "reachable": true,
       "imports": [
         "src/components/localized-native.tsx",
@@ -5955,6 +6031,7 @@
         "src/i18n/today.ts",
         "src/components/today/checklist-steps.tsx",
         "src/components/today/count-control.tsx",
+        "src/components/stable-text.tsx",
         "src/constants/theme.ts",
         "src/data/completion-storage.ts",
         "src/data/habit-options.ts",
@@ -5968,77 +6045,87 @@
           "text": "use no memo"
         },
         {
-          "line": 45,
+          "line": 46,
           "kind": "dynamic-template",
           "text": "${habit.color}22"
         },
         {
-          "line": 110,
+          "line": 111,
           "kind": "copy-or-technical-review",
           "text": "today.countValueUnit"
         },
         {
-          "line": 110,
+          "line": 111,
           "kind": "copy-or-technical-review",
           "text": "today.countValue"
         },
         {
-          "line": 126,
+          "line": 123,
+          "kind": "copy-or-technical-review",
+          "text": "today.countValueUnit"
+        },
+        {
+          "line": 123,
+          "kind": "copy-or-technical-review",
+          "text": "today.countValue"
+        },
+        {
+          "line": 127,
           "kind": "copy-or-technical-review",
           "text": "checkmark.circle.fill"
         },
         {
-          "line": 135,
+          "line": 137,
           "kind": "copy-or-technical-review",
           "text": "today.habitDoneA11y"
         },
         {
-          "line": 135,
+          "line": 137,
           "kind": "copy-or-technical-review",
           "text": "today.habitA11y"
         },
         {
-          "line": 165,
+          "line": 167,
           "kind": "copy-or-technical-review",
           "text": "today.checklistProgress"
         },
         {
-          "line": 166,
+          "line": 168,
           "kind": "copy-or-technical-review",
           "text": "today.checklistMixedProgress"
         },
         {
-          "line": 174,
+          "line": 176,
           "kind": "copy-or-technical-review",
           "text": "today.habitDoneA11y"
         },
         {
-          "line": 174,
+          "line": 176,
           "kind": "copy-or-technical-review",
           "text": "today.habitA11y"
         },
         {
-          "line": 175,
+          "line": 177,
           "kind": "copy-or-technical-review",
           "text": "today.steps.hide"
         },
         {
-          "line": 175,
+          "line": 177,
           "kind": "copy-or-technical-review",
           "text": "today.steps.show"
         },
         {
-          "line": 193,
+          "line": 195,
           "kind": "dynamic-template",
           "text": "${(requiredDone / Math.max(required.length, 1)) * 100}%"
         },
         {
-          "line": 201,
+          "line": 203,
           "kind": "copy-or-technical-review",
           "text": "chevron.up"
         },
         {
-          "line": 202,
+          "line": 204,
           "kind": "copy-or-technical-review",
           "text": "chevron.down"
         }
@@ -10090,7 +10177,7 @@
     },
     {
       "file": "src/utils/today-presentation.ts",
-      "sourceSha256": "d1f6b3cb50d40f1be31a548f884efbaa6d36916fd069a35fa5957cc3837d4e23",
+      "sourceSha256": "732612b6e4de907b1ced2a2cdb1082c7b870b649edabfc7c71adb792ce0cafce",
       "reachable": true,
       "imports": [],
       "candidates": []

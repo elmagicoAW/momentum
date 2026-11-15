@@ -80,6 +80,5 @@ const createStyles = (Palette: AppPalette) => StyleSheet.create({
   },
   pressed: {
     opacity: 0.7,
-    transform: [{ scale: 0.95 }],
   },
 });

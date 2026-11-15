@@ -15,6 +15,7 @@ import { useDailyProgress } from '@/hooks/use-daily-progress';
 import { useHabits } from '@/hooks/use-habits';
 import { hasProvisionalEffort } from '@/utils/achievements';
 import { openAchievements } from '@/utils/navigation';
+import { StableText } from '@/components/stable-text';
 
 export function AchievementCelebration() {
   const { styles } = useAppStyles(createStyles);
@@ -41,6 +42,9 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
   const earned = ACHIEVEMENTS.filter((badge) => collection.awards[badge.id]);
   const recent = [...earned].sort((a, b) => collection.awards[b.id].awardedAt.localeCompare(collection.awards[a.id].awardedAt)).slice(0, 3);
   const next = ACHIEVEMENTS.find((badge) => !collection.awards[badge.id]);
+  // Waiting retains the last saved evaluation. Do not remove this copy on each
+  // optimistic check-in and add it back after the same-day save drains.
+  const showNext = storeReady && (status === 'ready' || status === 'waiting') && evaluation && next;
   const encouraging = today && storeReady && next && habitsStatus === 'ready' && daily.status === 'ready' && hasProvisionalEffort(habits, daily.record, daily.dateKey);
   const open = () => {
     acknowledge(earned.filter((badge) => !collection.seenBadgeIds.includes(badge.id)).map((badge) => badge.id));
@@ -61,7 +65,7 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
         {recent.length > 0 && <View style={[styles.symbols, { direction: 'rtl', flexWrap: 'wrap', alignSelf: 'flex-start' }]} accessible={false} importantForAccessibility="no-hide-descendants">
           {recent.map((badge) => <SymbolView key={badge.id} name={habitIconSymbol(badge.icon)} size={20} tintColor={Palette.accent} />)}
         </View>}
-        {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
+        {showNext && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
         {storeReady && !next && <Text style={styles.copy}>{t('today.achievement.complete')}</Text>}
         <Text style={styles.link}>{t('today.achievement.view')}</Text>
       </> : <>
@@ -74,12 +78,14 @@ export function AchievementsSummaryCard({ today = false }: { today?: boolean }) 
         <Text style={styles.count}>{storeReady ? m('today.achievement.count', { completed: earned.length, total: ACHIEVEMENTS.length }) : t(status === 'store-error' ? 'today.achievement.unavailable' : 'today.achievement.loading')}</Text>
         <View style={styles.symbols} accessible={false} importantForAccessibility="no-hide-descendants">{recent.map((badge) => <SymbolView key={badge.id} name={habitIconSymbol(badge.icon)} size={20} tintColor={Palette.accent} />)}</View>
       </View>
-      {storeReady && status === 'ready' && evaluation && next && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
+      {showNext && <Text style={styles.copy}>{m('today.achievement.next', { name: todayBadgeName(language, next), progress: todayAchievementProgress(language, next, evaluation) })}</Text>}
       {storeReady && !next && <Text style={styles.copy}>{t('today.achievement.complete')}</Text>}
       <Text style={styles.link}>{t('today.achievement.view')}</Text>
       </>}
     </Pressable>
-    {encouraging && <Text style={styles.encouragement}>{t(earned.length === 0 ? 'today.achievement.firstEffort' : 'today.achievement.effort')}</Text>}
+    {today && storeReady && next && habitsStatus === 'ready' && daily.status === 'ready' && habits.length > 0 &&
+      <StableText visible={!!encouraging} textStyle={styles.encouragement}
+        alternatives={[t('today.achievement.firstEffort'), t('today.achievement.effort')]}>{t(earned.length === 0 ? 'today.achievement.firstEffort' : 'today.achievement.effort')}</StableText>}
     {today && <AchievementCelebration />}
   </View>;
 }

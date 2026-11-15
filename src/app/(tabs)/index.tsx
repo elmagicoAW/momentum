@@ -9,6 +9,7 @@ import { useLanguage } from '@/hooks/use-language';
 import { todayCopy, todayDate, todayGreeting, todayMotivation, todayRich } from '@/i18n/today';
 import { formatLocalWeekday } from '@/i18n/format';
 import { LocalizedInline } from '@/components/localized-inline';
+import { StableText } from '@/components/stable-text';
 import { router } from 'expo-router';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -122,12 +123,14 @@ export default function TodayScreen() {
             // Height changes must not feed back into layout; ignore subpixel width jitter.
             setProgressWidth(previous => previous !== null && Math.abs(previous - width) < 0.5 ? previous : width);
           }} style={[styles.progressCard, progressLayout.container]}>
+            <View style={{alignSelf:'center'}}><ProgressRing completed={doneCount} total={total} size={progressLayout.ringSize} captionBelow={progressLayout.captionBelow} /></View>
             <View style={progressLayout.text}>
               <Text style={[styles.cardLabel,arabic.title]}>{t('today.dailyProgress')}</Text>
-              <Text style={[styles.progressTitle,arabic.title,{fontSize:20}]}>{m('today.progress',{completed:doneCount,total})}</Text>
-              <Text style={[styles.progressSubtitle,arabic.supporting]}>{t(progressMessageKey(doneCount,total))}</Text>
+              <StableText textStyle={[styles.progressTitle,arabic.title]}
+                alternatives={[m('today.progress',{completed:0,total}), m('today.progress',{completed:total,total})]}>{m('today.progress',{completed:doneCount,total})}</StableText>
+              <StableText textStyle={[styles.progressSubtitle,arabic.supporting]}
+                alternatives={(['today.restDay','today.getStarted','today.greatStart','today.halfway','today.allDone'] as const).map(key => t(key))}>{t(progressMessageKey(doneCount,total))}</StableText>
             </View>
-            <View style={{alignSelf:'center'}}><ProgressRing completed={doneCount} total={total} size={progressLayout.ringSize} strokeWidth={8} captionBelow={progressLayout.captionBelow} /></View>
           </View> : <View style={styles.progressCard}>
             <ProgressRing completed={doneCount} total={total} />
             <View style={styles.progressText}>
@@ -156,13 +159,14 @@ export default function TodayScreen() {
           )}
 
           {/* Habits */}
-          <View style={styles.sectionHeader}>
+          <View style={[styles.sectionHeader, { alignItems: 'center', gap: 12 }]}>
             <Text style={styles.sectionTitle}>{t('today.habits')}</Text>
             {habitsReady && total > 0 && (
-              <Text style={styles.sectionMeta} accessibilityLiveRegion="polite">
+              <StableText textStyle={[styles.sectionMeta, { textAlign: 'end' }]} style={{ flex: 1 }} accessibilityLiveRegion="polite"
+                alternatives={[m('today.remainingCount', { count: total - doneCount }), ...(['common.saving', 'today.saved'] as const).map(key => m('today.remainingSaved', { count: total - doneCount, status: t(key) }))]}>
                 {savingText ? <LocalizedInline message={todayRich(language, 'today.remainingSaved', { count: total - doneCount, status: savingText }, 'status')} slotStyle={styles.saveMeta} />
                   : m('today.remainingCount', { count: total - doneCount })}
-              </Text>
+              </StableText>
             )}
           </View>
 

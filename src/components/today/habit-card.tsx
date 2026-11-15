@@ -11,8 +11,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ChecklistSteps } from '@/components/today/checklist-steps';
 import { CountControl } from '@/components/today/count-control';
+import { StableText } from '@/components/stable-text';
 import { Radius, Spacing } from '@/constants/theme';
-import type { DayRecord } from '@/data/completion-storage';
+import { COUNT_VALUE_MAX, type DayRecord } from '@/data/completion-storage';
 import { habitIconSymbol } from '@/data/habit-options';
 import type { Habit } from '@/data/habit-storage';
 import { countValue, doneStepIds, isCompleteNow, requiredStepIds } from '@/utils/habit-progress';
@@ -118,16 +119,17 @@ function CountCard({ habit, record, disabled = false, onAdjustCount }: Props) {
             {habit.name}
           </Text>
           <View style={styles.metaRow}>
-            <Text style={[styles.progressValue, done && { color: readableAccent(habit.color, Palette) }]} numberOfLines={1}>
+            <StableText style={{ flex: 1 }} textStyle={[styles.progressValue, done && { color: readableAccent(habit.color, Palette) }]} numberOfLines={1}
+              alternatives={[0, COUNT_VALUE_MAX].map(value => unit ? m('today.countValueUnit', { value, target, unit }) : m('today.countValue', { value, target }))}>
               {progressText}
-            </Text>
-            {done && (
+            </StableText>
               <SymbolView
                 name={{ ios: 'checkmark.circle.fill', android: 'check_circle', web: 'check_circle' }}
                 size={14}
                 tintColor={readableAccent(habit.color, Palette)}
+                style={{ flexShrink: 0, opacity: done ? 1 : 0 }}
+                accessible={false}
               />
-            )}
           </View>
         </View>
         <CountControl

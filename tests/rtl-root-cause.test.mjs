@@ -69,17 +69,18 @@ test('Text knows its paragraph direction; Input keeps its distinct contract; cen
  platform='ios';language='ar';assert.equal(flattenStyle(Text({style:{textAlign:'start'}}).props.style).textAlign,'right');
 });
 
-test('progress uses measured card space and font scale, starts safely, and reflows after width changes',()=>{
- assert.equal(arabicTodayProgress(null,1).stacked,true);
- assert.equal(arabicTodayProgress(320,1).stacked,true);
+test('progress defaults to the English row proportions and stacks only when measured width or large type requires it',()=>{
+ assert.equal(arabicTodayProgress(null,1).stacked,false);
+ assert.equal(arabicTodayProgress(320,1).stacked,false);
+ assert.equal(arabicTodayProgress(280,1).stacked,true);
  assert.equal(arabicTodayProgress(350,1).stacked,false);
  assert.equal(arabicTodayProgress(350,1.5).stacked,true);
  assert.equal(arabicTodayProgress(350,1).captionBelow,false);
  assert.equal(arabicTodayProgress(350,1.5).captionBelow,true);
  assert.equal(arabicTodayProgress(600,1.5).stacked,false);
  for(const width of [200,260,320,350,420,600,800])for(const scale of [1,1.3,1.6,2,3]) {
-  const layout=arabicTodayProgress(width,scale);assert.ok(layout.ringSize<=width-34);
-  if(!layout.stacked)assert.ok(width-34-layout.ringSize-16>=176*scale);
+  const layout=arabicTodayProgress(width,scale);assert.ok(layout.ringSize<=width-42);
+  if(!layout.stacked)assert.ok(width-42-layout.ringSize-24>=104*scale);
   assert.equal(layout.text.flexGrow,layout.stacked?0:1);assert.equal(layout.container.flexDirection,layout.stacked?'column':'row');
  }
  const route=readFileSync('src/app/(tabs)/index.tsx','utf8');
@@ -97,6 +98,7 @@ test('Arabic achievements group heading then count, badge strip, summary and act
  const {AchievementsSummaryCard}=load('src/components/achievements/achievements-summary-card.tsx',{
   'react-native':{Pressable:'Pressable',View:'View',StyleSheet:{create:s=>s}},'react/jsx-runtime':{jsx,jsxs:jsx,Fragment:'Fragment'},
   '@/components/localized-native':{Text:'Text',SymbolView:'Symbol'},
+  '@/components/stable-text':{StableText:'StableText'},
   '@/hooks/use-app-styles':{useAppStyles:()=>({styles:new Proxy({},{get:(_,key)=>key}),palette:{accent:'accent',accentBlue:'blue'}})},
   '@/hooks/use-language':{useLanguage:()=>({language})},'@/i18n/today':{todayCopy,todayAchievementProgress,todayBadgeName},
   '@/constants/theme':{Radius:{}},'@/data/achievement-definitions':{ACHIEVEMENTS},
