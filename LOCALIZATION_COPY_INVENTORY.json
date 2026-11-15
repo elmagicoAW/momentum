@@ -4,11 +4,11 @@
   "method": "All Expo Router route files are roots; local static imports/re-exports/literal dynamic imports, including platform variants, form an intentionally conservative dependency graph. Type-only imports may overstate reachability. Candidates are not automatic translation instructions.",
   "limitations": "May include developer errors/identifiers/URLs and miss one-word lowercase copy, computed copy, OS-owned strings, external dependencies and arbitrary runtime imports. Dynamic JSX expressions require manual data-producer review. No user/device data is read.",
   "summary": {
-    "sourceFiles": 189,
-    "routeRoots": 22,
-    "reachableFiles": 182,
-    "candidateFiles": 120,
-    "candidates": 1521
+    "sourceFiles": 200,
+    "routeRoots": 23,
+    "reachableFiles": 193,
+    "candidateFiles": 128,
+    "candidates": 1577
   },
   "files": [
     {
@@ -1408,7 +1408,7 @@
     },
     {
       "file": "src/app/(tabs)/settings.tsx",
-      "sourceSha256": "ff887eee7f40a1b5b28330e5e37dd951826747c9603a267d515cc647f43d09ec",
+      "sourceSha256": "f7af43c6cec9549b69fa5b5584fc14da58d03ad5e2533dc071af31a7d60feb4b",
       "reachable": true,
       "imports": [
         "src/hooks/use-arabic-composition.ts",
@@ -1504,55 +1504,65 @@
         {
           "line": 105,
           "kind": "copy-or-technical-review",
-          "text": "settings.privacy"
+          "text": "notifications.title"
         },
         {
-          "line": 108,
+          "line": 106,
           "kind": "copy-or-technical-review",
-          "text": "lock.fill"
+          "text": "notifications.title"
         },
         {
           "line": 110,
           "kind": "copy-or-technical-review",
-          "text": "settings.storedLocally"
+          "text": "settings.privacy"
         },
         {
-          "line": 111,
+          "line": 113,
           "kind": "copy-or-technical-review",
-          "text": "settings.yourHabitsGoalsRoutinesCheckInsProfileAndAchievementsAreStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoInAppCloudSync"
+          "text": "lock.fill"
         },
         {
           "line": 115,
           "kind": "copy-or-technical-review",
+          "text": "settings.storedLocally"
+        },
+        {
+          "line": 116,
+          "kind": "copy-or-technical-review",
+          "text": "settings.yourHabitsGoalsRoutinesCheckInsProfileAndAchievementsAreStoredLocallyOnThisDeviceMomentumHasNoAccountAndNoInAppCloudSync"
+        },
+        {
+          "line": 120,
+          "kind": "copy-or-technical-review",
           "text": "info.circle.fill"
-        },
-        {
-          "line": 117,
-          "kind": "copy-or-technical-review",
-          "text": "settings.deviceBackups"
-        },
-        {
-          "line": 118,
-          "kind": "copy-or-technical-review",
-          "text": "settings.whetherAppDataIsIncludedInYourPhoneSOwnBackupsDependsOnYourDeviceAndItsSettings"
         },
         {
           "line": 122,
           "kind": "copy-or-technical-review",
-          "text": "settings.about"
+          "text": "settings.deviceBackups"
         },
         {
-          "line": 126,
+          "line": 123,
           "kind": "copy-or-technical-review",
-          "text": "settings.momentum"
+          "text": "settings.whetherAppDataIsIncludedInYourPhoneSOwnBackupsDependsOnYourDeviceAndItsSettings"
         },
         {
           "line": 127,
           "kind": "copy-or-technical-review",
+          "text": "settings.about"
+        },
+        {
+          "line": 131,
+          "kind": "copy-or-technical-review",
+          "text": "settings.momentum"
+        },
+        {
+          "line": 132,
+          "kind": "copy-or-technical-review",
           "text": "settings.personalGrowth"
         },
         {
-          "line": 133,
+          "line": 138,
           "kind": "copy-or-technical-review",
           "text": "settings.version"
         }
@@ -1560,7 +1570,7 @@
     },
     {
       "file": "src/app/_layout.tsx",
-      "sourceSha256": "ba51ca378e9fb7c224881514dadee6ab4f3473f0e6777029cc690db4d137d7ec",
+      "sourceSha256": "5463cec5a961e70f11c75a754436785e8ad014941cdcb89f3b80806cc62cd463",
       "reachable": true,
       "imports": [
         "src/utils/presentation.ts",
@@ -1578,7 +1588,8 @@
         "src/hooks/use-profile.tsx",
         "src/hooks/use-preferences.tsx",
         "src/hooks/use-theme-preview.tsx",
-        "src/hooks/use-routines.tsx"
+        "src/hooks/use-routines.tsx",
+        "src/hooks/use-notifications.tsx"
       ],
       "candidates": [
         {
@@ -1955,6 +1966,106 @@
           "line": 107,
           "kind": "copy-or-technical-review",
           "text": "data-backup.completedRecoveryCopiesRemovedCurrentAppDataWasNotChanged"
+        }
+      ]
+    },
+    {
+      "file": "src/app/notifications.tsx",
+      "sourceSha256": "8e72af88b17a79801897c616b4896d4261142c07fa6a872d0306cf4893b3feb7",
+      "reachable": true,
+      "imports": [
+        "src/components/localized-native.tsx",
+        "src/components/notifications/controls.tsx",
+        "src/components/notifications/permission-notice.tsx",
+        "src/hooks/use-notifications.tsx",
+        "src/hooks/use-form-navigation.ts",
+        "src/hooks/use-app-styles.ts",
+        "src/hooks/use-data-backup.tsx",
+        "src/i18n/app-copy.ts",
+        "src/notifications/model.ts",
+        "src/constants/theme.ts",
+        "src/constants/palettes.ts"
+      ],
+      "candidates": [
+        {
+          "line": 1,
+          "kind": "copy-or-technical-review",
+          "text": "use no memo"
+        },
+        {
+          "line": 24,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.title"
+        },
+        {
+          "line": 26,
+          "kind": "copy-or-technical-review",
+          "text": "habits.habit-form.cancel"
+        },
+        {
+          "line": 50,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.unfinished"
+        },
+        {
+          "line": 51,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.inactivity"
+        },
+        {
+          "line": 52,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.motivationTime"
+        },
+        {
+          "line": 53,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.quietStart"
+        },
+        {
+          "line": 54,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.quietEnd"
+        },
+        {
+          "line": 55,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.cap"
+        },
+        {
+          "line": 56,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.inactiveDays"
+        },
+        {
+          "line": 57,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.invalid"
+        },
+        {
+          "line": 58,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.error"
+        },
+        {
+          "line": 59,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.localOnly"
+        },
+        {
+          "line": 59,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.limits"
+        },
+        {
+          "line": 60,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.save"
+        },
+        {
+          "line": 61,
+          "kind": "copy-or-technical-review",
+          "text": "habits.habit-form.cancel"
         }
       ]
     },
@@ -3521,10 +3632,11 @@
     },
     {
       "file": "src/components/habits/habit-form.tsx",
-      "sourceSha256": "a814d5289dcbaa0456e4271d1fbbc37e3c34cc93834422ac7cf1ef4b23e388d9",
+      "sourceSha256": "7ef783931109262fdc3294d8b36967b89bf199c51544dadd1c81105c1c2dab14",
       "reachable": true,
       "imports": [
         "src/hooks/use-form-navigation.ts",
+        "src/components/notifications/habit-reminder-field.tsx",
         "src/hooks/use-arabic-composition.ts",
         "src/components/localized-native.tsx",
         "src/i18n/app-copy.ts",
@@ -3549,107 +3661,127 @@
           "text": "use no memo"
         },
         {
-          "line": 114,
+          "line": 116,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to save habit"
         },
         {
-          "line": 115,
+          "line": 117,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.couldnTSaveThisHabitYourChangesAreStillHereTryAgain"
         },
         {
-          "line": 133,
+          "line": 135,
           "kind": "copy-or-technical-review",
           "text": "[momentum] Failed to delete habit"
         },
         {
-          "line": 134,
+          "line": 136,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.couldnTDeleteThisHabitNothingWasRemovedTryAgain"
         },
         {
-          "line": 148,
+          "line": 150,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.cancel"
         },
         {
-          "line": 191,
+          "line": 193,
           "kind": "dynamic-template",
           "text": "${draft.color}22"
         },
         {
-          "line": 195,
+          "line": 197,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.newHabit"
         },
         {
-          "line": 199,
+          "line": 201,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.name"
         },
         {
-          "line": 199,
+          "line": 201,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 205,
+          "line": 207,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.eGMorningWalk"
         },
         {
-          "line": 211,
+          "line": 213,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.habitName"
         },
         {
-          "line": 217,
+          "line": 219,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.description"
         },
         {
-          "line": 220,
+          "line": 222,
           "kind": "copy-or-technical-review",
           "text": "display.ratio"
         },
         {
-          "line": 226,
+          "line": 228,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.whenWhereOrHowMuch"
         },
         {
-          "line": 232,
+          "line": 234,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.habitDescription"
         },
         {
-          "line": 237,
+          "line": 239,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.notes"
+        },
+        {
+          "line": 241,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.notes"
+        },
+        {
+          "line": 241,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.notesHint"
+        },
+        {
+          "line": 246,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.title"
+        },
+        {
+          "line": 249,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.tracking"
         },
         {
-          "line": 263,
+          "line": 275,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.schedule"
         },
         {
-          "line": 273,
+          "line": 285,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.icon"
         },
         {
-          "line": 277,
+          "line": 289,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.color"
         },
         {
-          "line": 291,
+          "line": 303,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.deleteHabit"
         },
         {
-          "line": 322,
+          "line": 334,
           "kind": "copy-or-technical-review",
           "text": "habits.habit-form.optional"
         }
@@ -4673,6 +4805,122 @@
         "src/utils/rtl-presentation.ts"
       ],
       "candidates": []
+    },
+    {
+      "file": "src/components/notifications/controls.tsx",
+      "sourceSha256": "37e3d3f45876fa1366a2837594318898a699c47d9f2cbbe9c15291a7a9c16a76",
+      "reachable": true,
+      "imports": [
+        "src/components/localized-native.tsx",
+        "src/constants/palettes.ts",
+        "src/hooks/use-app-styles.ts",
+        "src/i18n/format.ts",
+        "src/i18n/app-copy.ts",
+        "src/i18n/types.ts"
+      ],
+      "candidates": [
+        {
+          "line": 1,
+          "kind": "copy-or-technical-review",
+          "text": "use no memo"
+        }
+      ]
+    },
+    {
+      "file": "src/components/notifications/habit-reminder-field.tsx",
+      "sourceSha256": "315e7b3ef509c28224c626a117162c1baac9c8377e9af3af9857cb78aaacf80e",
+      "reachable": true,
+      "imports": [
+        "src/i18n/app-copy.ts",
+        "src/components/habits/weekday-picker.tsx",
+        "src/notifications/model.ts",
+        "src/components/notifications/controls.tsx",
+        "src/components/notifications/permission-notice.tsx"
+      ],
+      "candidates": [
+        {
+          "line": 1,
+          "kind": "copy-or-technical-review",
+          "text": "use no memo"
+        },
+        {
+          "line": 11,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.reminder"
+        },
+        {
+          "line": 13,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.time"
+        },
+        {
+          "line": 14,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.days"
+        },
+        {
+          "line": 18,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.daysHint"
+        },
+        {
+          "line": 20,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.limits"
+        }
+      ]
+    },
+    {
+      "file": "src/components/notifications/permission-notice.tsx",
+      "sourceSha256": "d1916ab5df335d64ca1e8e118c8ad26c13dc412cee19424437fe62b763949134",
+      "reachable": true,
+      "imports": [
+        "src/hooks/use-notifications.tsx",
+        "src/i18n/app-copy.ts",
+        "src/components/notifications/controls.tsx"
+      ],
+      "candidates": [
+        {
+          "line": 1,
+          "kind": "copy-or-technical-review",
+          "text": "use no memo"
+        },
+        {
+          "line": 17,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.allowed"
+        },
+        {
+          "line": 17,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.unavailable"
+        },
+        {
+          "line": 17,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.blocked"
+        },
+        {
+          "line": 18,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.error"
+        },
+        {
+          "line": 19,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.retry"
+        },
+        {
+          "line": 19,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.permission"
+        },
+        {
+          "line": 21,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.openSettings"
+        }
+      ]
     },
     {
       "file": "src/components/placeholder-screen.tsx",
@@ -8035,56 +8283,57 @@
     },
     {
       "file": "src/data/habit-storage.ts",
-      "sourceSha256": "dcc1cf159ac1e4741e7c6e3ed20c420b1789ffd106acb7c3df0057877c76ca14",
+      "sourceSha256": "aba71ff6ac4d0559c11330b9628cbb4e5a1281389ab75e22a44d1ce4eb67fe43",
       "reachable": true,
       "imports": [
         "src/data/persistence-coordinator.ts",
         "src/data/completion-storage.ts",
-        "src/data/demo-habits.ts"
+        "src/data/demo-habits.ts",
+        "src/notifications/model.ts"
       ],
       "candidates": [
         {
-          "line": 60,
+          "line": 64,
           "kind": "copy-or-technical-review",
           "text": "momentum:habits:v2"
         },
         {
-          "line": 61,
+          "line": 65,
           "kind": "copy-or-technical-review",
           "text": "momentum:habits:v1"
         },
         {
-          "line": 62,
+          "line": 66,
           "kind": "copy-or-technical-review",
           "text": "momentum:backup:pre-habits-v1"
         },
         {
-          "line": 158,
+          "line": 166,
           "kind": "error-or-dialog",
           "text": "Saved habits have an unexpected format"
         },
         {
-          "line": 161,
+          "line": 169,
           "kind": "error-or-dialog",
           "text": "Saved habits use unsupported version ${String(data.version)}"
         },
         {
-          "line": 165,
+          "line": 173,
           "kind": "error-or-dialog",
           "text": "Saved habits contain an invalid entry"
         },
         {
-          "line": 169,
+          "line": 177,
           "kind": "error-or-dialog",
           "text": "Saved habits contain duplicate IDs"
         },
         {
-          "line": 187,
+          "line": 195,
           "kind": "dynamic-template",
           "text": "${prefix}_${Date.now().toString(36)}_${random}"
         },
         {
-          "line": 271,
+          "line": 279,
           "kind": "copy-or-technical-review",
           "text": "Before migrating demo habits to editable habits"
         }
@@ -8761,6 +9010,43 @@
       "candidates": []
     },
     {
+      "file": "src/hooks/use-notifications.tsx",
+      "sourceSha256": "2f46e18c5c5e25f6c08d419532ad01caf2bdc23e0ba58f389187c7c872cdb72b",
+      "reachable": true,
+      "imports": [
+        "src/hooks/use-habits.tsx",
+        "src/hooks/use-daily-progress.tsx",
+        "src/hooks/use-data-backup.tsx",
+        "src/hooks/use-preferences.tsx",
+        "src/hooks/use-presentation-language.ts",
+        "src/data/persistence-coordinator.ts",
+        "src/data/completion-storage.ts",
+        "src/utils/date.ts",
+        "src/utils/form-navigation.ts",
+        "src/notifications/engine.ts",
+        "src/notifications/native.ts",
+        "src/notifications/planner.ts",
+        "src/notifications/model.ts"
+      ],
+      "candidates": [
+        {
+          "line": 94,
+          "kind": "copy-or-technical-review",
+          "text": "expo.modules.notifications.actions.DEFAULT"
+        },
+        {
+          "line": 104,
+          "kind": "error-or-dialog",
+          "text": "Notifications not ready"
+        },
+        {
+          "line": 112,
+          "kind": "error-or-dialog",
+          "text": "NotificationsProvider is missing"
+        }
+      ]
+    },
+    {
       "file": "src/hooks/use-preferences.tsx",
       "sourceSha256": "3d8a4db6cd883d9ed0f700688227ec0708e54cf11a041d2454d3de384807fcaf",
       "reachable": true,
@@ -8894,10 +9180,11 @@
     },
     {
       "file": "src/i18n/ar.ts",
-      "sourceSha256": "7d5b5b882457eeba88a13827b27e46233ca8c5c886738fc1f6d13e9cb03dc4a9",
+      "sourceSha256": "90e1755adb0cffa4b0968781e10e3eb99e1c28ca8321a432e4506a6fc67335e4",
       "reachable": true,
       "imports": [
         "src/i18n/language-ar.ts",
+        "src/i18n/notifications-ar.ts",
         "src/i18n/types.ts",
         "src/i18n/today-ar.ts",
         "src/i18n/remaining-ar.ts"
@@ -8928,10 +9215,11 @@
     },
     {
       "file": "src/i18n/en.ts",
-      "sourceSha256": "19ea4a722679c1351928fd14b6a0c2f84e38b3b9635fd441232e709e134b80e8",
+      "sourceSha256": "d7101321a0197ba0e930df3bc99b6692fc0db832b098c145fe60b26bcb16647b",
       "reachable": true,
       "imports": [
         "src/i18n/language-en.ts",
+        "src/i18n/notifications-en.ts",
         "src/i18n/today-en.ts",
         "src/i18n/remaining-en.ts"
       ],
@@ -8989,6 +9277,22 @@
     {
       "file": "src/i18n/language-en.ts",
       "sourceSha256": "6f5097478be18ef8402b5d60d6d6c50a15dbb24fe8aae9b1dde1e7fc2fcdc0df",
+      "reachable": true,
+      "imports": [],
+      "candidates": []
+    },
+    {
+      "file": "src/i18n/notifications-ar.ts",
+      "sourceSha256": "bb1e4fa2831e90d7150a9aabc6770fc3b174ac15de0d421e2d8772fbcc076454",
+      "reachable": true,
+      "imports": [
+        "src/i18n/notifications-en.ts"
+      ],
+      "candidates": []
+    },
+    {
+      "file": "src/i18n/notifications-en.ts",
+      "sourceSha256": "e1ec80980c1c00d247709ddd907b56943839b0c6762f23fc48fcf64d0b8c5ca9",
       "reachable": true,
       "imports": [],
       "candidates": []
@@ -9116,6 +9420,126 @@
         "src/i18n/en-messages.ts"
       ],
       "candidates": []
+    },
+    {
+      "file": "src/notifications/engine.ts",
+      "sourceSha256": "2da18aa8cc334445be14cc0b79ae2411f2e981637ffc4f439a9feaa8e2cd3a00",
+      "reachable": true,
+      "imports": [
+        "src/notifications/model.ts",
+        "src/notifications/planner.ts"
+      ],
+      "candidates": [
+        {
+          "line": 4,
+          "kind": "copy-or-technical-review",
+          "text": "momentum:notification-device:v1"
+        },
+        {
+          "line": 11,
+          "kind": "error-or-dialog",
+          "text": "Invalid notification device preferences"
+        },
+        {
+          "line": 33,
+          "kind": "error-or-dialog",
+          "text": "Invalid notification settings"
+        },
+        {
+          "line": 64,
+          "kind": "dynamic-template",
+          "text": "${PREFIX}inactivity.${state.lastActive}"
+        }
+      ]
+    },
+    {
+      "file": "src/notifications/model.ts",
+      "sourceSha256": "6aa133fe2c71121f758a2e1e050617fdf8697405de7d13bd3ed75f28de79afea",
+      "reachable": true,
+      "imports": [
+        "src/data/habit-storage.ts"
+      ],
+      "candidates": []
+    },
+    {
+      "file": "src/notifications/native.ts",
+      "sourceSha256": "0d7724ece09a42ac02873b747f168161844fdfb429a79244bf94a3cdd9ce821a",
+      "reachable": true,
+      "imports": [
+        "src/i18n/notifications-en.ts",
+        "src/i18n/notifications-ar.ts",
+        "src/notifications/planner.ts",
+        "src/notifications/engine.ts"
+      ],
+      "candidates": [
+        {
+          "line": 10,
+          "kind": "error-or-dialog",
+          "text": "Notifications unavailable"
+        },
+        {
+          "line": 21,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.channel"
+        },
+        {
+          "line": 24,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.openHabit"
+        },
+        {
+          "line": 25,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.openToday"
+        }
+      ]
+    },
+    {
+      "file": "src/notifications/planner.ts",
+      "sourceSha256": "d8bbf3b21c0367bdaacbf4e6fa587406bd1152568a8d6fc31681b964251dc0ba",
+      "reachable": true,
+      "imports": [
+        "src/data/completion-storage.ts",
+        "src/data/habit-storage.ts",
+        "src/utils/habit-progress.ts",
+        "src/utils/schedule.ts",
+        "src/utils/date.ts",
+        "src/i18n/notifications-en.ts",
+        "src/i18n/notifications-ar.ts",
+        "src/notifications/model.ts"
+      ],
+      "candidates": [
+        {
+          "line": 10,
+          "kind": "copy-or-technical-review",
+          "text": "momentum.smart.v1."
+        },
+        {
+          "line": 42,
+          "kind": "dynamic-template",
+          "text": "${PREFIX}${kind}.${date}.${encodeURIComponent(habit?.id ?? 'today')}"
+        },
+        {
+          "line": 48,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.gentleTitle"
+        },
+        {
+          "line": 49,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.habitBody"
+        },
+        {
+          "line": 49,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.unfinishedBody"
+        },
+        {
+          "line": 49,
+          "kind": "copy-or-technical-review",
+          "text": "notifications.inactivityBody"
+        }
+      ]
     },
     {
       "file": "src/utils/achievements.ts",
@@ -9554,66 +9978,77 @@
     },
     {
       "file": "src/utils/habit-validation.ts",
-      "sourceSha256": "c13fa382d9c95ae0763823baca516a6813d439817ac059d7efbc40884a25edc5",
+      "sourceSha256": "e4b81c86971f52e7ce712ff2a3f6aecc406f757e064c09db9e3a5f0e49b9061e",
       "reachable": true,
       "imports": [
         "src/i18n/app-copy.ts",
         "src/data/habit-options.ts",
+        "src/notifications/model.ts",
         "src/data/habit-storage.ts"
       ],
       "candidates": [
         {
-          "line": 79,
+          "line": 86,
           "kind": "copy-or-technical-review",
-          "text": "habit-validation.giveYourHabitAName"
-        },
-        {
-          "line": 80,
-          "kind": "copy-or-technical-review",
-          "text": "validation.habit.nameLength"
-        },
-        {
-          "line": 83,
-          "kind": "copy-or-technical-review",
-          "text": "validation.habit.descriptionLength"
+          "text": "notifications.notesError"
         },
         {
           "line": 87,
           "kind": "copy-or-technical-review",
+          "text": "notifications.reminderError"
+        },
+        {
+          "line": 89,
+          "kind": "copy-or-technical-review",
+          "text": "habit-validation.giveYourHabitAName"
+        },
+        {
+          "line": 90,
+          "kind": "copy-or-technical-review",
+          "text": "validation.habit.nameLength"
+        },
+        {
+          "line": 93,
+          "kind": "copy-or-technical-review",
+          "text": "validation.habit.descriptionLength"
+        },
+        {
+          "line": 97,
+          "kind": "copy-or-technical-review",
           "text": "habit-validation.pickAtLeastOneDay"
-        },
-        {
-          "line": 92,
-          "kind": "copy-or-technical-review",
-          "text": "validation.habit.countRange"
-        },
-        {
-          "line": 95,
-          "kind": "copy-or-technical-review",
-          "text": "validation.habit.unitLength"
-        },
-        {
-          "line": 101,
-          "kind": "copy-or-technical-review",
-          "text": "habit-validation.addAtLeastOneStep"
         },
         {
           "line": 102,
           "kind": "copy-or-technical-review",
-          "text": "validation.habit.stepLimit"
-        },
-        {
-          "line": 103,
-          "kind": "copy-or-technical-review",
-          "text": "habit-validation.nameEveryStepOrRemoveEmptyOnes"
+          "text": "validation.habit.countRange"
         },
         {
           "line": 105,
           "kind": "copy-or-technical-review",
+          "text": "validation.habit.unitLength"
+        },
+        {
+          "line": 111,
+          "kind": "copy-or-technical-review",
+          "text": "habit-validation.addAtLeastOneStep"
+        },
+        {
+          "line": 112,
+          "kind": "copy-or-technical-review",
+          "text": "validation.habit.stepLimit"
+        },
+        {
+          "line": 113,
+          "kind": "copy-or-technical-review",
+          "text": "habit-validation.nameEveryStepOrRemoveEmptyOnes"
+        },
+        {
+          "line": 115,
+          "kind": "copy-or-technical-review",
           "text": "validation.habit.stepLength"
         },
         {
-          "line": 106,
+          "line": 116,
           "kind": "copy-or-technical-review",
           "text": "habit-validation.atLeastOneStepMustBeRequired"
         }

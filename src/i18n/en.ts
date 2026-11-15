@@ -1,8 +1,10 @@
 import { languageEn } from './language-en';
+import { notificationsEn } from './notifications-en';
 import { todayEn } from './today-en';
 import { remainingEn } from './remaining-en';
 /** Fixed labels. Public language remains English/LTR. */
 export const en = {
+  ...notificationsEn,
   'forms.discardTitle': "Discard changes?",
   'forms.discardMessage': "Your changes have not been saved.",
   'forms.discard': "Discard",

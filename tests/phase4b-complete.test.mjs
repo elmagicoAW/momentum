@@ -22,6 +22,9 @@ import {canonical,createBackup} from '../src/data/backup-format.ts';
 import {ACTIVE_PRESENTATION} from '../src/utils/presentation.ts';
 
 const baseline=JSON.parse(readFileSync('tests/support/phase4b-preservation-baseline.json','utf8'));
+// This batch authorizes only the notification dependency/plugin and optional
+// habit fields. Keep the historical fixture; pin the four reviewed replacements.
+const notificationsBaseline=JSON.parse(readFileSync('tests/support/notifications-notes-preservation.json','utf8'));
 const inventory=JSON.parse(readFileSync('LOCALIZATION_COPY_INVENTORY.json','utf8'));
 const hash=b=>createHash('sha256').update(b).digest('hex');
 test('dynamic achievement filters and calendar weekday keys remain in both catalogs',()=>{
@@ -114,7 +117,7 @@ test('known service errors retain identity, class, original message and classifi
 
 test('Phase 3B/3C/4A reports/config/storage and validated Phase 4B-1 runtime/source fixtures preserve LF-normalized content',()=>{
  const activated = new Set(['src/hooks/use-app-theme.ts','src/hooks/use-language.ts','src/hooks/use-preferences.tsx','src/data/preferences-store.ts','src/i18n/today.ts']);
- for(const [file,expected]of Object.entries(baseline.protectedFiles).filter(([file])=>!activated.has(file)))assert.equal(sourceTextHash(readFileSync(file,'utf8')),expected,file);
+ for(const [file,expected]of Object.entries(baseline.protectedFiles).filter(([file])=>!activated.has(file)))assert.equal(sourceTextHash(readFileSync(file,'utf8')),notificationsBaseline.protectedFiles[file] ?? expected,file);
  assert.deepEqual(ACTIVE_PRESENTATION,{scheme:'dark',language:'en',direction:'ltr'});
 });
 

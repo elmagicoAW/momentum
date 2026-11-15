@@ -1,0 +1,127 @@
+{
+  "checkpoint": "254f052cdee0bd8ccda6ea34e01753a5634f01fe",
+  "protectedFiles": {
+    "app.json": "2f04427d0d6cf7db7770f7eee38ee1dc811c2cfae3b73ab6f2ee0b3ae37be6ef",
+    "package.json": "0b21d626e9acbb2dd88b2407d8a7ad6fa01a198b517819a0eda70b56ac2b3209",
+    "package-lock.json": "ad799023aef34d3b30da52190d60e70be9aa73ed4a7465ec6716616121223547",
+    "src/data/habit-storage.ts": "aba71ff6ac4d0559c11330b9628cbb4e5a1281389ab75e22a44d1ce4eb67fe43"
+  },
+  "beforeApp": {
+    "expo": {
+      "name": "MOMENTUM Dev",
+      "slug": "momentum",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/images/icon.png",
+      "scheme": "momentum-dev",
+      "userInterfaceStyle": "automatic",
+      "backgroundColor": "#08080D",
+      "ios": {
+        "icon": "./assets/expo.icon"
+      },
+      "android": {
+        "package": "com.beeviro1.momentum.dev",
+        "adaptiveIcon": {
+          "backgroundColor": "#E6F4FE",
+          "foregroundImage": "./assets/images/android-icon-foreground.png",
+          "backgroundImage": "./assets/images/android-icon-background.png",
+          "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        },
+        "predictiveBackGestureEnabled": false
+      },
+      "web": {
+        "output": "server",
+        "favicon": "./assets/images/favicon.png"
+      },
+      "plugins": [
+        "expo-router",
+        [
+          "expo-splash-screen",
+          {
+            "backgroundColor": "#08080D",
+            "image": "./assets/images/splash-icon.png",
+            "imageWidth": 76
+          }
+        ]
+      ],
+      "experiments": {
+        "typedRoutes": true,
+        "reactCompiler": true
+      },
+      "extra": {
+        "router": {
+          "asyncRoutes": {
+            "web": true
+          }
+        },
+        "eas": {
+          "projectId": "38bb19b4-9b46-444e-b928-2618fcc66e31"
+        }
+      },
+      "owner": "elmagico_aw"
+    }
+  },
+  "beforePackage": {
+    "name": "momentum",
+    "version": "1.0.0",
+    "main": "expo-router/entry",
+    "dependencies": {
+      "@expo/ui": "~58.0.27",
+      "@react-native-async-storage/async-storage": "2.2.0",
+      "expo": "~58.0.23",
+      "expo-constants": "~58.0.15",
+      "expo-crypto": "~58.0.7",
+      "expo-dev-client": "~58.0.18",
+      "expo-device": "~58.0.5",
+      "expo-file-system": "~58.0.13",
+      "expo-font": "~58.0.11",
+      "expo-glass-effect": "~58.0.5",
+      "expo-image": "~58.0.18",
+      "expo-linking": "~58.0.16",
+      "expo-router": "~58.0.30",
+      "expo-sharing": "~58.0.22",
+      "expo-splash-screen": "~58.0.13",
+      "expo-status-bar": "~58.0.4",
+      "expo-symbols": "~58.0.4",
+      "expo-system-ui": "~58.0.7",
+      "expo-web-browser": "~58.0.7",
+      "react": "19.3.0",
+      "react-dom": "19.3.0",
+      "react-native": "0.88.1",
+      "react-native-gesture-handler": "~3.3.0",
+      "react-native-reanimated": "4.7.1",
+      "react-native-safe-area-context": "~5.11.1",
+      "react-native-screens": "~4.30.1",
+      "react-native-web": "~0.21.4",
+      "react-native-worklets": "0.13.0"
+    },
+    "devDependencies": {
+      "@types/react": "~19.3.0",
+      "eslint": "^9.0.0",
+      "eslint-config-expo": "~58.0.4",
+      "typescript": "~6.0.3"
+    },
+    "scripts": {
+      "start": "expo start",
+      "reset-project": "node ./scripts/reset-project.js",
+      "android": "expo start --android",
+      "ios": "expo start --ios",
+      "web": "expo start --web",
+      "lint": "expo lint",
+      "test": "node --import ./tests/support/register.mjs --test \"tests/*.test.mjs\""
+    },
+    "private": true
+  },
+  "allowedLockChanges": [
+    "node_modules/@expo/image-utils",
+    "node_modules/@expo/require-utils",
+    "node_modules/expo-constants",
+    "node_modules/abort-controller",
+    "node_modules/badgin",
+    "node_modules/event-target-shim",
+    "node_modules/expo-application",
+    "node_modules/expo-constants/node_modules/@expo/env",
+    "node_modules/expo-notifications"
+  ],
+  "unchangedLockHash": "28d54a60f11a11218d8e7980b8b18223a1f757617cde18001850708c12fcaa24"
+}

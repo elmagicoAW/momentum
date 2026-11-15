@@ -102,6 +102,11 @@ export default function SettingsScreen() {
             <SettingsRow variant="link" icon={{ ios: 'square.and.arrow.down', android: 'file_download', web: 'file_download' }} label={appLabel("settings.importBackup")} onPress={() => router.push('/data-backup')} />
           </SettingsSection>
 
+          <SettingsSection title={appLabel('notifications.title')}>
+            <SettingsRow variant="link" label={appLabel('notifications.title')}
+              icon={{ ios: 'bell', android: 'notifications', web: 'notifications' }}
+              onPress={() => router.push('/notifications')} />
+          </SettingsSection>
           <SettingsSection title={appLabel("settings.privacy")}>
             <SettingsRow
               variant="text"

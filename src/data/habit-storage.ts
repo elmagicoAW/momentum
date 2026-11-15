@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { listCompletionKeys } from '@/data/completion-storage';
 import { LEGACY_DEMO_HABITS } from '@/data/demo-habits';
+import { validReminder, type HabitReminder } from '@/notifications/model';
 
 /** 0 = Sunday … 6 = Saturday, matching `Date#getDay()` in local time. */
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -33,6 +34,9 @@ export type Habit = {
   id: string;
   name: string;
   description?: string;
+  /** Optional personal text; separate from the short description. */
+  notes?: string;
+  reminder?: HabitReminder;
   /** Key from `HABIT_ICONS`; unknown keys render a fallback icon. */
   icon: string;
   color: string;
@@ -123,12 +127,16 @@ function parseHabitBase(value: Record<string, unknown>): Omit<Habit, 'tracking'>
   if (typeof name !== 'string' || typeof icon !== 'string' || typeof color !== 'string') return null;
   if (typeof createdAt !== 'string') return null;
   if (description !== undefined && typeof description !== 'string') return null;
+  if (value.notes !== undefined && typeof value.notes !== 'string') return null;
+  if (value.reminder !== undefined && !validReminder(value.reminder)) return null;
   const parsedSchedule = parseSchedule(schedule);
   if (!parsedSchedule) return null;
   return {
     id,
     name,
     ...(description ? { description } : {}),
+    ...(value.notes !== undefined ? { notes: value.notes as string } : {}),
+    ...(value.reminder !== undefined ? { reminder: value.reminder as HabitReminder } : {}),
     icon,
     color,
     schedule: parsedSchedule,

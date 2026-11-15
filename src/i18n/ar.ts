@@ -1,9 +1,11 @@
 import { languageAr } from './language-ar';
+import { notificationsAr } from './notifications-ar';
 import type { Dictionary } from '@/i18n/types';
 import { todayAr } from './today-ar';
 import { remainingAr } from './remaining-ar';
 
 export const ar = {
+  ...notificationsAr,
   'forms.discardTitle': "تجاهل التغييرات؟",
   'forms.discardMessage': "لم تُحفظ تغييراتك بعد.",
   'forms.discard': "تجاهل",

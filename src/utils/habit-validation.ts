@@ -1,5 +1,6 @@
 import { appLabel, appMessage } from '@/i18n/app-copy';
 import { DEFAULT_HABIT_COLOR, DEFAULT_HABIT_ICON } from '@/data/habit-options';
+import { DEFAULT_REMINDER, validReminder, type HabitReminder } from '@/notifications/model';
 import {
   CHECKLIST_MAX_STEPS,
   COUNT_TARGET_MAX,
@@ -13,6 +14,7 @@ import {
 
 export const NAME_MAX_LENGTH = 40;
 export const DESCRIPTION_MAX_LENGTH = 120;
+export const NOTES_MAX_LENGTH = 2000;
 export const UNIT_MAX_LENGTH = 16;
 export const STEP_LABEL_MAX_LENGTH = 40;
 
@@ -22,6 +24,8 @@ export type StepDraft = { id: string; label: string; optional: boolean };
 export type HabitDraft = {
   name: string;
   description: string;
+  notes?: string;
+  reminder?: HabitReminder;
   icon: string;
   color: string;
   scheduleKind: 'daily' | 'weekdays';
@@ -34,12 +38,14 @@ export type HabitDraft = {
 };
 
 export type HabitDraftErrors = Partial<
-  Record<'name' | 'description' | 'schedule' | 'countTarget' | 'countUnit' | 'steps', string>
+  Record<'name' | 'description' | 'notes' | 'reminder' | 'schedule' | 'countTarget' | 'countUnit' | 'steps', string>
 >;
 
 export const NEW_HABIT_DRAFT: HabitDraft = {
   name: '',
   description: '',
+  notes: '',
+  reminder: DEFAULT_REMINDER,
   icon: DEFAULT_HABIT_ICON,
   color: DEFAULT_HABIT_COLOR,
   scheduleKind: 'daily',
@@ -55,6 +61,8 @@ export function habitToDraft(habit: Habit): HabitDraft {
   return {
     name: habit.name,
     description: habit.description ?? '',
+    notes: habit.notes ?? '',
+    reminder: habit.reminder,
     icon: habit.icon,
     color: habit.color,
     scheduleKind: habit.schedule.kind,
@@ -75,6 +83,8 @@ export function parseCountTarget(text: string): number | null {
 
 export function validateHabitDraft(draft: HabitDraft): HabitDraftErrors {
   const errors: HabitDraftErrors = {};
+  if ((draft.notes?.length ?? 0) > NOTES_MAX_LENGTH || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(draft.notes ?? '')) errors.notes = appLabel('notifications.notesError');
+  if (draft.reminder !== undefined && !validReminder(draft.reminder)) errors.reminder = appLabel('notifications.reminderError');
   const name = draft.name.trim();
   if (name.length === 0) errors.name = appLabel("habit-validation.giveYourHabitAName");
   else if (name.length > NAME_MAX_LENGTH) errors.name = appMessage("validation.habit.nameLength", { limit: (NAME_MAX_LENGTH) });
@@ -136,6 +146,8 @@ export function draftToInput(draft: HabitDraft): HabitInput {
   return {
     name: draft.name.trim(),
     ...(description ? { description } : {}),
+    ...(draft.notes ? { notes: draft.notes } : {}),
+    ...(draft.reminder ? { reminder: { ...draft.reminder, days: normalizeDays(draft.reminder.days) } } : {}),
     icon: draft.icon,
     color: draft.color,
     schedule:

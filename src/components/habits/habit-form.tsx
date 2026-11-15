@@ -1,5 +1,6 @@
 "use no memo"; // Keep external locale reads live; explicit domain memos remain intact.
 import { useFormNavigation } from '@/hooks/use-form-navigation';
+import { HabitReminderField } from '@/components/notifications/habit-reminder-field';
 import { useArabicComposition } from '@/hooks/use-arabic-composition';
 import {SymbolView, Text, TextInput} from '@/components/localized-native';
 import { appLabel, appMessage, displayError } from '@/i18n/app-copy';
@@ -23,6 +24,7 @@ import { createStepId, type HabitInput, type TrackingType } from '@/data/habit-s
 import {
   DESCRIPTION_MAX_LENGTH,
   NAME_MAX_LENGTH,
+  NOTES_MAX_LENGTH,
   draftToInput,
   hasErrors,
   validateHabitDraft,
@@ -234,6 +236,16 @@ export function HabitForm({ title, initialDraft, submitLabel, onSubmit, onCancel
                 />
               </Field>
 
+              <Field label={appLabel('notifications.notes')} error={visibleErrors.notes}>
+                <TextInput value={draft.notes ?? ''} onChangeText={text => update('notes', text)}
+                  accessibilityLabel={appLabel('notifications.notes')} placeholder={appLabel('notifications.notesHint')}
+                  placeholderTextColor={Palette.textMuted} multiline textAlignVertical="top" editable={!locked}
+                  maxLength={Math.max(NOTES_MAX_LENGTH, initialDraft.notes?.length ?? 0)} keyboardAppearance={scheme}
+                  style={[styles.input, styles.multiline, visibleErrors.notes && styles.inputError]} />
+              </Field>
+              <Field label={appLabel('notifications.title')} error={visibleErrors.reminder}>
+                <HabitReminderField value={draft.reminder} color={draft.color} disabled={locked} onChange={reminder => update('reminder', reminder)} />
+              </Field>
               <Field label={appLabel("habits.habit-form.tracking")}>
                 <TrackingTypePicker value={draft.trackingType} disabled={locked} onChange={changeTrackingType} />
                 {draft.trackingType === 'count' && (

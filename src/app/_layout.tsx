@@ -18,6 +18,7 @@ import { ProfileProvider } from '@/hooks/use-profile';
 import { PreferencesProvider } from '@/hooks/use-preferences';
 import { ThemePreviewProvider } from '@/hooks/use-theme-preview';
 import { RoutinesProvider } from '@/hooks/use-routines';
+import { NotificationsProvider } from '@/hooks/use-notifications';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -55,6 +56,7 @@ function RootNavigator() {
       <ProfileProvider>
         <HabitsProvider>
           <DailyProgressProvider>
+            <NotificationsProvider>
             <AchievementsProvider>
               <GoalsProvider>
                 <RoutinesProvider>
@@ -75,6 +77,7 @@ function RootNavigator() {
                 </RoutinesProvider>
               </GoalsProvider>
             </AchievementsProvider>
+            </NotificationsProvider>
           </DailyProgressProvider>
         </HabitsProvider>
       </ProfileProvider>
